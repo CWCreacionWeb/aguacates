@@ -1,1 +1,2 @@
 mi fichero
+version 02
