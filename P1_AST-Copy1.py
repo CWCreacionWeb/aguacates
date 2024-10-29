@@ -1,4 +1,4 @@
-import pandas as pd
+
 from statsmodels.tsa.seasonal import seasonal_decompose
 from datetime import datetime
 import numpy as np
@@ -7,74 +7,9 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import seaborn as sns
 import math
+import pandas as pd
 
-mFile ='datos/avocado.csv'
-mDbg =''
-
-def create_plot(x, y, color='blue', size =(16,7), legend='Close Price', y_label='Price in USD' ):   
-    plt.style.use('dark_background')
-    plt.rcParams["figure.figsize"] = size    
-    fig,ax1 = plt.subplots()    
-    plt.plot(x,y, color=color)
-    plt.legend([legend])
-    plt.ylabel(y_label)
-    date_form = mdates.DateFormatter("%m-%Y")
-    ax1.xaxis.set_major_formatter(date_form)
-    start, end = ax1.get_xlim()
-    ax1.xaxis.set_ticks(np.arange(start, end, 90))
-    _=plt.xticks(rotation=45)
-
-
-def Cargar(pFile):
-    data = pd.read_csv(pFile)
-    return data
-
-def Ejecutar():
-    """
-        Ejecuta los procesos siguientes
-        Carga el Fichero CSV definido
-        Ejecuta la conversión del campo Date
-        mDbg --> Almacena el detalle del resultado 
-    """
-
-    global Datos
-    global mDbg
-    
-    Datos =Cargar(mFile)
-    mDbg =""
-    mDbg +=f'**********************************\n'
-    mDbg +=f'Cargando fichero :{mFile}\n'
-    mDbg +=f'numero Registros :{len(Datos)}\n'
-    mDbg +=f'numero Columnas :{Datos.shape[1]}\n'
-    mDbg +=f'**********************************\n'
-    print(mDbg)
-    PreparacionDatos()
-
-def PreparacionDatos():
-    """
-        Añade las siguientes columnas a la tabla
-        CalFecha:Convierte el campo dato de un string con formato yyyy-mm-dd 
-        CalYear: Componente Year de la fecha
-        CalMes: Componente Mes de la fecha
-        mDbg --> Almacena el detalle del resultado de la conversión
-    """
-    global mDbg
-    mDbg +='***********************************************************************\n'
-    mDbg +='PreparacionDatos\n'
-    mDbg +='Añade las siguientes columnas a la tabla\n'
-    mDbg +='   CalFecha:Convierte el campo dato de un string con formato yyyy-mm-dd \n'
-
-    Datos['CalFecha']=pd.to_datetime(Datos['Date'],errors='coerce',format='%Y-%m-%d') 
-    errores_conversion = Datos['CalFecha'].isna().sum()
-    mDbg +='      Conversion campo Date de string a Datetime formato original YYYY-MM-DD\n'
-    mDbg +=f'      errores_conversion --> {errores_conversion}\n'
-    # Extraer año y mes para análisis estacional
-    Datos['CalYear'] = Datos['CalFecha'].dt.year
-    mDbg +='   CalYear: Componente Year de la fecha\n'
-    Datos['CalMonth'] = Datos['CalFecha'].dt.month
-    mDbg +='   CalMes: Componente Mes de la fecha\n'
-    mDbg +='Proceso Finalizado\n'
-    mDbg +='***********************************************************************\n'
+Datos =''    
 
 # --------------------- 1. Análisis de Series Temporales ---------------------
 
@@ -212,7 +147,7 @@ def P1_3_ComparacionPreciosPromedioMensuales(pCampo='AveragePrice'):
     plt.figure(figsize=(20, 6))
     precios_mensuales = Datos.groupby(pd.Grouper(key='CalFecha', freq='M'))[pCampo].mean()
     
-    plt.plot(precios_mensuales.index, precios_mensuales.values, label="Precio Promedio Mensual")
+    plt.plot(precios_mensuales.index, precios_mensuales.values, label=f"{pCampo} Mensual")
 
     plt.grid(axis='x')  # Cuadrícula vertical
     plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
@@ -220,40 +155,53 @@ def P1_3_ComparacionPreciosPromedioMensuales(pCampo='AveragePrice'):
     plt.xticks(rotation=45)
     
     plt.xlabel("Fecha")
-    plt.ylabel("Precio Promedio")
-    plt.title("Comparación de Precios Promedio Mensuales")
+    plt.ylabel(f'{pCampo}')
+    plt.title(f"Comparación de {pCampo} Mensuales")
     plt.legend()
     plt.show()
 
 # P1.4_TendenciaVentasALoLargoDelTiempo
-def P1_4_TendenciaVentasALoLargoDelTiempo():
-    Datos['Fecha'] = pd.to_datetime(Datos['Fecha'], errors='coerce')
-    volumen_total = Datos.groupby('Fecha')['Total Volume'].sum()
+def P1_4_TendenciaVentasALoLargoDelTiempo(pCampo='Total Volume'):
+    plt.figure(figsize=(20, 6))
+    volumen_total = Datos.groupby('CalFecha')[pCampo].sum()
     
-    plt.plot(volumen_total.index, volumen_total.values, label="Volumen Total de Ventas")
+    plt.plot(volumen_total.index, volumen_total.values, label=f"{pCampo}")
     plt.xlabel("Fecha")
-    plt.ylabel("Volumen Total")
-    plt.title("Tendencia de Ventas de Aguacates a lo Largo del Tiempo")
+    plt.ylabel(f"{pCampo}")
+    plt.title(f"Tendencia {pCampo} de Aguacates a lo Largo del Tiempo")
     plt.legend()
     plt.show()
 
 # P1.5_AnalisisCambiosPreciosAnuales
-def P1_5_AnalisisCambiosPreciosAnuales():
-    precios_anuales = Datos.groupby('Year')['AveragePrice'].mean()
+def P1_5_AnalisisCambiosPreciosAnuales(pCampo='AveragePrice',pxCampo='CalYear'):
+    plt.figure(figsize=(20, 6))
+    precios_anuales = Datos.groupby(pxCampo)[pCampo].mean()
     
-    plt.bar(precios_anuales.index, precios_anuales.values, color='skyblue', label="Precio Promedio Anual")
-    plt.xlabel("Año")
-    plt.ylabel("Precio Promedio")
-    plt.title("Análisis de Cambios en Precios Anuales")
+    plt.bar(precios_anuales.index, precios_anuales.values, color='skyblue', label=f"{pCampo} Anual")
+
+    plt.grid(axis='x')  # Cuadrícula vertical
+    #plt.gca().xaxis.set_major_locator(mdates.YearLocator())
+    #plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%y'))    
+    plt.xticks(rotation=45)
+
+    plt.xlabel(f'{pxCampo}')
+    plt.ylabel(f'{pCampo}')
+    plt.title(f"Análisis de Cambios en {pCampo} Anuales")
     plt.legend()
     plt.show()
 
 
 # --------------------- 2. Gráficos para Visualización de Datos ---------------------
 
-def P21_Grafico_Violin_Volumen_Venta_Region():
+def P21_Grafico_Violin_Volumen_Venta_Region(pListaRegiones =''):
+    print('prueba 01')
+
     plt.figure(figsize=(12, 6))
-    sns.violinplot(x='region', y='Total Volume', data=Datos)
+    if pListaRegiones =='':
+        SubData = Datos[Datos['region'] == 'TotalUS']
+    else:
+        SubData = Datos[Datos['region'].isin(pListaRegiones)]
+    sns.violinplot(x='region', y='Total Volume', data=SubData)
     #sns.violinplot(x=Datos['region'],y=Datos['Total Volume'])
     plt.title("Distribución del Volumen Total de Ventas por Región")
     plt.xlabel("Región")
@@ -778,59 +726,4 @@ def P1_Series_Temporales_Precios():
     plt.legend(loc='upper left')
     plt.grid(axis='y')
     plt.show()
-
-print('Ver 0.1\n')
-tiempo_ejecucion = timeit.timeit(lambda: Ejecutar(), number=1) 
-tiempo_ejecucion*=1000
-mDbg+=f'Tiempo de ejecución ms:{tiempo_ejecucion}'
-
-#Series_Temporales_Precios()
-
-#Datos.info()
-
-#Datos.info()
-#print(Datos.describe())
-#print(Datos.isna())
-
-print(mDbg)
-avg_price_daily = Datos.groupby('Date')['AveragePrice'].mean()
-
-x = avg_price_daily[0]
-y = avg_price_daily[1]
-#create_plot(x,y, legend = 'SPY Close Price')
-
-#Series_Temporales_Precios()
-#Analisis_Estacionalidad_Region()
-#MyDatos = Datos
-
-# Ejemplo de llamada a funciones:
-
-
-#P1_1_DescomposicionSerieTemporal()
-#P1_2_EstacionalidadPorRegion()
-
-#P1_Series_Temporales_Precios()
-"""
-P.P21_Grafico_Violin_Volumen_Venta_Region()
-P.P22_Boxplot_Comparativo_Precios_Entre_Años()
-P.P23_Histograma_Volumen_Total_Ventas()
-P.P24_Grafico_Barras_Ventas_Tipo_Bolsa()
-P.P25_Grafico_Lineas_Precios_Promedios_Año()
-P.P31_Elasticidad_Precio_Demanda_Año()
-P.P32_Comparacion_Elasticidad_Diferentes_Mercados()
-P.P41_Cohortes_Precios_Promedios_Trimestrales()
-P.P51_Matriz_Correlacion()
-P.P52_Analisis_Dispersion_Variables_Clave()
-"""
-#P1_Proceso()
-#P1_ProcesoRuido()
-
-#P2_Analisis_Estacionalidad_Region()
-"""
-P11= P11_DST()
-P11.mTipo ='observed' #observed seasonal
-P11.Periodos([30,52,80])
-P11.MostrarGrafico()
-P11_DST_TEST(52)
-"""
 
