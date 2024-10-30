@@ -5,7 +5,7 @@ import P3_EP as P3
 import P4_AC as P4
 import P5_ACR as P5
 import pandas as pd
-
+import Region_Clasificacion as RC
 mFile ='datos/avocado.csv'
 mDbg =''
 
@@ -22,18 +22,19 @@ def Ejecutar():
         mDbg --> Almacena el detalle del resultado 
     """
 
-    global Datos
+    global DatosORG
     global mDbg
     
-    Datos =Cargar(mFile)
+    DatosORG =Cargar(mFile)
     mDbg =""
     mDbg +=f'**********************************\n'
     mDbg +=f'Cargando fichero :{mFile}\n'
-    mDbg +=f'numero Registros :{len(Datos)}\n'
-    mDbg +=f'numero Columnas :{Datos.shape[1]}\n'
+    mDbg +=f'numero Registros :{len(DatosORG)}\n'
+    mDbg +=f'numero Columnas :{DatosORG.shape[1]}\n'
     mDbg +=f'**********************************\n'
     print(mDbg)
     PreparacionDatos()
+
 
 def PreparacionDatos():
     """
@@ -49,14 +50,14 @@ def PreparacionDatos():
     mDbg +='Añade las siguientes columnas a la tabla\n'
     mDbg +='   CalFecha:Convierte el campo dato de un string con formato yyyy-mm-dd \n'
 
-    Datos['CalFecha']=pd.to_datetime(Datos['Date'],errors='coerce',format='%Y-%m-%d') 
-    errores_conversion = Datos['CalFecha'].isna().sum()
+    DatosORG['CalFecha']=pd.to_datetime(DatosORG['Date'],errors='coerce',format='%Y-%m-%d') 
+    errores_conversion = DatosORG['CalFecha'].isna().sum()
     mDbg +='      Conversion campo Date de string a Datetime formato original YYYY-MM-DD\n'
     mDbg +=f'      errores_conversion --> {errores_conversion}\n'
     # Extraer año y mes para análisis estacional
-    Datos['CalYear'] = Datos['CalFecha'].dt.year
+    DatosORG['CalYear'] = DatosORG['CalFecha'].dt.year
     mDbg +='   CalYear: Componente Year de la fecha\n'
-    Datos['CalMonth'] = Datos['CalFecha'].dt.month
+    DatosORG['CalMonth'] = DatosORG['CalFecha'].dt.month
     mDbg +='   CalMes: Componente Mes de la fecha\n'
     mDbg +='Proceso Finalizado\n'
     mDbg +='***********************************************************************\n'
@@ -67,11 +68,16 @@ tiempo_ejecucion = timeit.timeit(lambda: Ejecutar(), number=1)
 tiempo_ejecucion*=1000
 mDbg+=f'Tiempo de ejecución ms:{tiempo_ejecucion}'
 
+RC.addClasificacionRegion(DatosORG)
+Lista_CalRegionGrupo = RC.Lista_CalRegionGrupo
 print(mDbg)
 
-P1.Datos = Datos
-P2.Datos = Datos
-P3.Datos = Datos
-P4.Datos = Datos
-P5.Datos = Datos
+P1.DatosORG = DatosORG
+P1.Datos = DatosORG.copy()
+
+P1.Lista_CalRegionGrupo = Lista_CalRegionGrupo
+P2.Datos = DatosORG
+P3.Datos = DatosORG
+P4.Datos = DatosORG
+P5.Datos = DatosORG
 
