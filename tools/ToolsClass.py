@@ -13,3 +13,6 @@ class tools:
 
     def date_format(date):
         return pd.to_datetime(date)
+
+    def p(self):
+        return 'HOLA'
