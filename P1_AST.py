@@ -8,8 +8,68 @@ import matplotlib.dates as mdates
 import seaborn as sns
 import math
 import pandas as pd
+import UTL_Combo as UTL_CBO
+#from IPython.display import display
+import ULT_FUNC as M_UF
+from ipywidgets import widgets, VBox, HBox, Output, Button
 
-Datos =''    
+DatosORG =None
+Datos = None
+Lista_CalRegionGrupo =None
+# Creamos un widget de salida para mostrar los resultados
+salida = Output()
+
+def Btn_Ejecutar(seleccion):
+    print("Función personalizada. Selección realizada:", seleccion)
+
+def Btn_EjecutarRG(seleccion):
+    global Datos
+    global DatosORG
+    print("Función personalizada. Selección realizada RG:", seleccion)
+    Datos = DatosORG[DatosORG['CalRegionGrupo'].isin(seleccion)]
+    mDbg =""
+    mDbg +=f'**********************************\n'
+    mDbg +=f'Datos\n'
+    mDbg +=f'numero Registros :{len(Datos)}\n'
+    mDbg +=f'numero Columnas :{Datos.shape[1]}\n'
+    mDbg +=f'**********************************\n'
+    print(mDbg)
+
+    mDbg =""
+    mDbg +=f'**********************************\n'
+    mDbg +=f'DatosORG\n'
+    mDbg +=f'numero Registros :{len(DatosORG)}\n'
+    mDbg +=f'numero Columnas :{DatosORG.shape[1]}\n'
+    mDbg +=f'**********************************\n'
+    print(mDbg)
+
+
+def Btn_EjecutarRN(seleccion):
+    print("Función personalizada. Selección realizada RG:", seleccion)
+
+def P1_1_Inicio():
+
+    vLista = M_UF.Lista_Atributo(Datos,'region')
+    print(vLista)
+    print ('P1_1_Inicio')
+
+
+    vCBO_region = UTL_CBO.Widget_lst(vLista,'Regiones','BTN Regiones',Btn_Ejecutar)
+    vCBO_region.mostrar()
+
+
+    vLista = M_UF.Lista_Atributo(Datos,'CalRegionGrupo')
+    print(vLista)
+
+    vCBO_CalRegionGrupo = UTL_CBO.Widget_lst(vLista,'CalRegionGrupo','BTN CalRegionGrupo',Btn_EjecutarRG)
+    vCBO_CalRegionGrupo.mostrar()
+
+    vLista  = ["Todos", "Region Grupo", "Region"]
+    vCBO_RegionNivel = UTL_CBO.Widget_lst(vLista,'RegionNivel','BTN RegionNivel',Btn_EjecutarRN)
+    vCBO_RegionNivel.mostrar()
+
+
+    
 
 # --------------------- 1. Análisis de Series Temporales ---------------------
 
@@ -51,8 +111,8 @@ def P1_2_EstacionalidadPorRegion():
     plt.figure(figsize=(20, 6))
     for region, data in Datos.groupby('region'):
         if region in['Albany','Boston']:
-            #precios_region = data.groupby('Fecha')['AveragePrice','Total Volume'].mean()
-            precios_region = Datos.groupby('CalFecha').agg({'AveragePrice':'mean','Total Volume':'mean'}).reset_index()
+            precios_region = data.groupby('CalFecha')['AveragePrice'].mean()
+            #precios_region = Datos.groupby('CalFecha').agg({'AveragePrice':'mean','Total Volume':'mean'}).reset_index()
             plt.plot(precios_region.index, precios_region.values, label=region)
     
     
@@ -173,11 +233,27 @@ def P1_4_TendenciaVentasALoLargoDelTiempo(pCampo='Total Volume'):
     plt.show()
 
 # P1.5_AnalisisCambiosPreciosAnuales
-def P1_5_AnalisisCambiosPreciosAnuales(pCampo='AveragePrice',pxCampo='CalYear'):
+def P1_5_AnalisisCambiosPreciosAnuales(pClasificacion ='Cyti',pCampo='AveragePrice',pxCampo='CalYear'):
     plt.figure(figsize=(20, 6))
-    precios_anuales = Datos.groupby(pxCampo)[pCampo].mean()
+        # Filtrar datos de la región específica
+    if pClasificacion =='':
+        DatosF = Datos
+    else:
+        DatosF = Datos[Datos['CalRegionGrupo'] == pClasificacion]
+    print(len(DatosF))
+    if pCampo =='AveragePrice':
+        precios_anuales = DatosF.groupby(pxCampo)[pCampo].mean()
+    elif pCampo =='Total Volume':
+        precios_anuales = DatosF.groupby(pxCampo)[pCampo].sum()
     
-    plt.bar(precios_anuales.index, precios_anuales.values, color='skyblue', label=f"{pCampo} Anual")
+    barras=plt.bar(precios_anuales.index, precios_anuales.values, color='skyblue', label=f"{pCampo} Anual")
+
+    # Añadir etiquetas a las barras
+    for barra in barras:
+        yval = barra.get_height()
+        vValorFormateado =  "{:,.2f}".format(yval)#.replace(",", ".").replace(".", ",", 1)
+        plt.text(barra.get_x() + barra.get_width() / 2, yval, vValorFormateado, ha='center', va='bottom')
+ 
 
     plt.grid(axis='x')  # Cuadrícula vertical
     #plt.gca().xaxis.set_major_locator(mdates.YearLocator())
@@ -186,7 +262,7 @@ def P1_5_AnalisisCambiosPreciosAnuales(pCampo='AveragePrice',pxCampo='CalYear'):
 
     plt.xlabel(f'{pxCampo}')
     plt.ylabel(f'{pCampo}')
-    plt.title(f"Análisis de Cambios en {pCampo} Anuales")
+    plt.title(f"Análisis de Cambios en {pCampo} Anuales:{pClasificacion}")
     plt.legend()
     plt.show()
 
