@@ -1,4 +1,4 @@
-
+from IPython.display import display, Markdown, HTML
 from statsmodels.tsa.seasonal import seasonal_decompose
 from datetime import datetime
 import numpy as np
@@ -20,7 +20,26 @@ Lista_CalRegionGrupo =None
 salida = Output()
 
 def Btn_Ejecutar(seleccion):
-    print("Función personalizada. Selección realizada:", seleccion)
+    global Datos
+    global DatosORG
+    print("Función personalizada. Selección realizada Region:", seleccion)
+    Datos = DatosORG[DatosORG['region'].isin(seleccion)]
+    mDbg =""
+    mDbg +=f'**********************************\n'
+    mDbg +=f'Datos\n'
+    mDbg +=f'numero Registros :{len(Datos)}\n'
+    mDbg +=f'numero Columnas :{Datos.shape[1]}\n'
+    mDbg +=f'**********************************\n'
+    print(mDbg)
+
+    mDbg =""
+    mDbg +=f'**********************************\n'
+    mDbg +=f'DatosORG\n'
+    mDbg +=f'numero Registros :{len(DatosORG)}\n'
+    mDbg +=f'numero Columnas :{DatosORG.shape[1]}\n'
+    mDbg +=f'**********************************\n'
+    print(mDbg)
+
 
 def Btn_EjecutarRG(seleccion):
     global Datos
@@ -75,20 +94,34 @@ def P1_1_Inicio():
 
 # P1.1_DescomposicionSerieTemporal
 def P1_1_DescomposicionSerieTemporal(pPeriodo=52,pCampo='AveragePrice'):
+    """
+1. **Descomposición de Series Temporales de Precios:** 
+   - **Uso de Datos:** Usa la columna `AveragePrice` y `Date`.
+   - **Esperado:** Utiliza la función `seasonal_decompose` de la librería `statsmodels` para descomponer la serie temporal de precios en componentes de tendencia, estacionalidad y ruido. 
+     - Convierte `Date` a tipo datetime usando `pd.to_datetime()`.
+     - Agrupa los datos por `Date` y calcula el promedio de `AveragePrice` utilizando `groupby()` si es necesario.
+     - Visualiza los componentes descompuestos usando `matplotlib` para cada uno de ellos.    
+
+        - **Parametros:** 
+        - pPeriodo:{pPeriodo}
+        - pCampo:{pCampo}
+
+    """
+    global Datos
+    display(Markdown(P1_1_DescomposicionSerieTemporal.__doc__))
     mDbg=''    
     mDbg +=f'**************************************************************\n'
     mDbg +=f'Parametro pPeriodo:{pPeriodo}\n'
     mDbg +=f'Parametro pCampo:{pCampo}\n'
-    mDbg +=f'--------------------------------------------------------------\n'
-    mDbg +=f'1.Descomposición de Series Temporales de Precios:\n'
-    mDbg +=f'  <strong>Uso de Datos</strong>: Usa la columna AveragePrice y Date.\n'
-    mDbg +=f'  Esperado: Utiliza la función seasonal_decompose de la librería statsmodels\n'
-    mDbg +=f'  para descomponer la serie temporal de precios en componentes de \n'
-    mDbg +=f'  tendencia, estacionalidad y ruido.\n'
-    mDbg +=f'Convierte Date a tipo datetime usando pd.to_datetime().\n'
-    mDbg +=f'Agrupa los datos por Date y calcula el promedio de AveragePrice utilizando groupby() si es necesario.\n'
-    mDbg +=f'Visualiza los componentes descompuestos usando matplotlib para cada uno de ellos.\n'
     mDbg +=f'**************************************************************\n'
+    print(mDbg)
+
+    mDbg =""
+    mDbg +=f'**********************************\n'
+    mDbg +=f'Datos\n'
+    mDbg +=f'numero Registros :{len(Datos)}\n'
+    mDbg +=f'numero Columnas :{Datos.shape[1]}\n'
+    mDbg +=f'**********************************\n'
     print(mDbg)
 
 
@@ -101,7 +134,7 @@ def P1_1_DescomposicionSerieTemporal(pPeriodo=52,pCampo='AveragePrice'):
     decomposicion.seasonal.plot(ax=ax3, title="Estacionalidad",xlabel='')
     decomposicion.resid.plot(ax=ax4, title="Ruido",xlabel='')
     plt.xlabel("Fecha")
-    plt.ylabel("Precio Promedio")
+    plt.ylabel(f"{pCampo} Promedio")
 
     plt.tight_layout()
     plt.show()
@@ -234,6 +267,16 @@ def P1_4_TendenciaVentasALoLargoDelTiempo(pCampo='Total Volume'):
 
 # P1.5_AnalisisCambiosPreciosAnuales
 def P1_5_AnalisisCambiosPreciosAnuales(pClasificacion ='Cyti',pCampo='AveragePrice',pxCampo='CalYear'):
+    """
+5. **Gráfico de Líneas de Precios Promedios por Año:**
+   - **Uso de Datos:** Utiliza las columnas `AveragePrice` y `year`.
+   - **Esperado:** Visualiza la tendencia de precios promedio a lo largo de los años.
+     - Agrupa los datos por `year` y calcula el promedio de `AveragePrice`.
+     - Usa `plt.plot()` para crear un gráfico de líneas que muestre la evolución de precios.
+     - Añade un título y etiquetas descriptivas a los ejes usando `plt.title()` y `plt.xlabel()`.
+    """
+    display(Markdown(P1_5_AnalisisCambiosPreciosAnuales.__doc__))
+
     plt.figure(figsize=(20, 6))
         # Filtrar datos de la región específica
     if pClasificacion =='':

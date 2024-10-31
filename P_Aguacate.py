@@ -1,3 +1,4 @@
+from IPython.display import display, Markdown, HTML
 import timeit
 import P1_AST as P1
 import P2_GVD as P2
@@ -8,6 +9,46 @@ import pandas as pd
 import Region_Clasificacion as RC
 mFile ='datos/avocado.csv'
 mDbg =''
+def InicioDoc():
+    """
+# Análisis del Conjunto de Datos de Precios de Aguacate
+
+**Conjunto de Datos de Precios de Aguacate**: El conjunto de datos "Precios de Aguacate", obtenido de Kaggle, es un conjunto de datos ampliamente utilizado para proyectos de análisis de datos y aprendizaje automático. Proporciona datos históricos sobre precios y ventas de aguacates en varias regiones de los Estados Unidos. Este conjunto de datos es valioso para entender las tendencias en los precios de los aguacates, los volúmenes de ventas y su relación con diferentes factores.
+
+## Atributos Clave
+
+- **Columnas**: El conjunto de datos incluye varias columnas de información. Algunas de las columnas clave típicamente encontradas en este conjunto de datos incluyen:
+    - **Fecha** (`Date`): La fecha de observación.
+    - **Precio Promedio** (`AveragePrice`): El precio promedio de los aguacates.
+    - **Volumen Total** (`Total Volume`): El volumen total de aguacates vendidos.
+    - **4046**: Volumen de aguacates Hass pequeños vendidos.
+    - **4225**: Volumen de aguacates Hass grandes vendidos.
+    - **4770**: Volumen de aguacates Hass extra grandes vendidos.
+    - **Bolsas Totales** (`Total Bags`): Total de bolsas de aguacates vendidas.
+    - **Bolsas Pequeñas** (`Small Bags`): Bolsas de aguacates pequeños vendidas.
+    - **Bolsas Grandes** (`Large Bags`): Bolsas de aguacates grandes vendidas.
+    - **Bolsas Extra Grandes** (`XLarge Bags`): Bolsas de aguacates extra grandes vendidas.
+    - **Tipo** (`Type`): El tipo de aguacates, generalmente categorizados como convencionales u orgánicos.
+    - **Región** (`Region`): La región o ciudad dentro de los Estados Unidos donde se registraron los datos.
+
+- **Rango de Fechas**: El conjunto de datos abarca un rango de fechas, lo que permite el análisis de series de tiempo. Puedes examinar cómo cambian los precios y ventas de aguacates a lo largo de diferentes estaciones y años.
+
+- **Regiones**: Se proporciona información para varias regiones o ciudades a través de los Estados Unidos, lo que permite el análisis de variaciones de precios y ventas en diferentes mercados.
+
+- **Tipos**: El conjunto de datos distingue entre diferentes tipos de aguacates, como convencionales y orgánicos, lo que puede ser útil para comparar tendencias de precios entre estas categorías.
+
+- **Volumen**: Están disponibles datos sobre el volumen total de aguacates vendidos. Esta métrica de volumen se utiliza a menudo para analizar la demanda del mercado.
+
+- **Precio Promedio**: El conjunto de datos contiene el precio promedio de los aguacates, una métrica fundamental para entender las tendencias de precios.
+
+## Casos de Uso
+
+- Este conjunto de datos se utiliza comúnmente para aprender y practicar el análisis de datos, visualización de datos y modelado de regresión en proyectos de ciencia de datos y aprendizaje automático.
+
+- Sirve como un recurso valioso para entender cómo trabajar con datos del mundo real, extraer conocimientos y tomar decisiones basadas en datos.
+
+---
+    """
 
 
 def Cargar(pFile):
@@ -64,6 +105,7 @@ def PreparacionDatos():
 
 
 print('P_Aguacate Ver 0.1\n')
+display(Markdown(InicioDoc.__doc__))
 tiempo_ejecucion = timeit.timeit(lambda: Ejecutar(), number=1) 
 tiempo_ejecucion*=1000
 mDbg+=f'Tiempo de ejecución ms:{tiempo_ejecucion}'
