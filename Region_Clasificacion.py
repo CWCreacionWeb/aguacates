@@ -86,15 +86,19 @@ Estacion_Segmentacion = {
 }
 
 Lista_CalRegionGrupo =''
+
+
 def PreparacionDatosSegmentacion(pDfDatos):
     """
 
-- **Añade las siguientes columnas de Segmentación a la tabla**: 
-    - **CalRegionGrupo:** Agrupación de region en City,Region,GreaterRegion,TotalUS
-    - **CalEstacion:** Estación del año para ese mes, Verano,Otoño etc
-
+- **PreparacionDatosSegmentacion** Añade las siguientes columnas de Segmentación a la tabla: 
+    - **CalRegionGrupo:** Agrupación de region en `City,Region,GreaterRegion,TotalUS`
+    - **CalEstacion:** Estación del año para ese mes, `Verano,Otoño etc`
     """
-    display(Markdown(PreparacionDatosSegmentacion.__doc__))
+
+    mDbg = PreparacionDatosSegmentacion.__doc__
+
+   
 
     # Convertir el array a un DataFrame de pandas
     df_Segmentacion = pd.DataFrame(Region_Segmentacion, columns=['region', 'Segmento'])
@@ -104,11 +108,29 @@ def PreparacionDatosSegmentacion(pDfDatos):
 
     # Paso 4: Usar map para agregar la nueva columna 'clasificacionNueva'
     pDfDatos['CalRegionGrupo'] = pDfDatos['region'].map(Map_Segmentacion)
-    pDfDatos['CalEstacion'] = pDfDatos['CalMonth'].map(Map_Segmentacion)
+    pDfDatos['CalEstacion'] = pDfDatos['CalMonth'].map(Estacion_Segmentacion)
+    display(Markdown(mDbg))
+
+
+
+
 
     
-    
 def PreparacionDatosClasificacionVolumen(pDfDatos):
+    """
+- **PreparacionDatosClasificacionVolumen**  A partir del volumen, calcula el peso de cada region
+    - **CalRegion_Total_Volume:** Total Volumen de la región
+    - **CalRegion_Porcentaje:** Porcentaje sobre el total
+    - **CalRegion_Acumulado_Total_Volume:** Acumulado a efectos de ordenación
+    - **CalRegion_Acumulado_Porcentaje:** Acumulado a efectos de ordenación
+
+De este dataFrame obtenido, se desnormaliza y añade a los datos estos campos.
+
+    """
+
+
+    mDbg = PreparacionDatosClasificacionVolumen.__doc__
+
    # Agrupar por 'region' y sumar el 'Total Volume' por región
     total_volumen_por_region = pDfDatos.groupby('region')['Total Volume'].sum().reset_index()
     
@@ -137,7 +159,8 @@ def PreparacionDatosClasificacionVolumen(pDfDatos):
 
     # Fusionar los resultados con el dataframe original
     #pDfDatos = pDfDatos.merge(total_volumen_por_region, on='region', how='left', inplace=True)    
-    
+    display(Markdown(mDbg))
+
     return total_volumen_por_region
 
 # Ejemplo de uso

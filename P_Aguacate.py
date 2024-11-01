@@ -53,7 +53,6 @@ def InicioDoc():
 
 def Cargar(pFile):
     data = pd.read_csv(pFile)
-    print(data)
     return data
 
 def Ejecutar():
@@ -75,41 +74,36 @@ def Ejecutar():
     mDbg +=f'numero Columnas :{DatosORG.shape[1]}\n'
     mDbg +=f'**********************************\n'
     print(mDbg)
-    PreparacionDatos()
+    
 
 
 def PreparacionDatos():
     """
 
 - **Añade las siguientes columnas a la tabla**: 
-    - **CalFecha:**Convierte el campo dato de un string con formato yyyy-mm-dd 
+    - **CalFecha:** Convierte el campo dato de un string con formato yyyy-mm-dd 
     - **CalYear:** Componente Year de la fecha
-    - **CalMes:** Componente Mes de la fecha
-    - **mDbg -->** Almacena el detalle del resultado de la conversión
-
+    - **CalMes:** Componente Mes de la fecha  
     """
-    display(Markdown(PreparacionDatos.__doc__))
-
+    #display(Markdown(PreparacionDatos.__doc__))
     global mDbg
-    mDbg +='***********************************************************************\n'
-    mDbg +='PreparacionDatos\n'
-    mDbg +='Añade las siguientes columnas a la tabla\n'
-    mDbg +='   CalFecha:Convierte el campo dato de un string con formato yyyy-mm-dd \n'
+    mDbg =PreparacionDatos.__doc__
 
     DatosORG['CalFecha']=pd.to_datetime(DatosORG['Date'],errors='coerce',format='%Y-%m-%d') 
     errores_conversion = DatosORG['CalFecha'].isna().sum()
-    mDbg +='      Conversion campo Date de string a Datetime formato original YYYY-MM-DD\n'
-    mDbg +=f'      errores_conversion --> {errores_conversion}\n'
+    mDbg +=f"""
+**Validaciónes**  
+  **errores_conversion CalFecha:** {errores_conversion}"""
+    # Añadimos el título en negrita y el texto en la siguiente línea en negrita con tabulación
+    # Añadimos el título en negrita y el texto en la siguiente línea con tabulación
+
     # Extraer año y mes para análisis estacional
     DatosORG['CalYear'] = DatosORG['CalFecha'].dt.year
-    mDbg +='   CalYear: Componente Year de la fecha\n'
     DatosORG['CalMonth'] = DatosORG['CalFecha'].dt.month
-    mDbg +='   CalMes: Componente Mes de la fecha\n'
-    mDbg +='Proceso Finalizado\n'
-    mDbg +='***********************************************************************\n'
+    display(Markdown(mDbg))  
+    mDbg =""
 
-print('P_Aguacate Ver 0.1\n')
-display(Markdown(InicioDoc.__doc__))
+
 DatosRegionClasificacionVolumen = None
 
 
@@ -117,15 +111,18 @@ def Inicio():
     global mDbg
     global DatosORG
     global DatosRegionClasificacionVolumen
+    global Lista_CalRegionGrupo
     tiempo_ejecucion = timeit.timeit(lambda: Ejecutar(), number=1) 
     tiempo_ejecucion*=1000
     mDbg+=f'Tiempo de ejecución ms:{tiempo_ejecucion}'
 
+    PreparacionDatos()
     RC.PreparacionDatosSegmentacion(DatosORG)
     DatosRegionClasificacionVolumen= RC.PreparacionDatosClasificacionVolumen(DatosORG)
     Lista_CalRegionGrupo = RC.Lista_CalRegionGrupo
     print(mDbg)
-    DatosORG = DatosORG[(DatosORG['CalRegion_Acumulado_Porcentaje'] > 99.85) | (DatosORG['CalRegion_Acumulado_Porcentaje'] <52)]
+    #DatosORG = DatosORG[(DatosORG['CalRegion_Acumulado_Porcentaje'] > 99.85) | (DatosORG['CalRegion_Acumulado_Porcentaje'] <52)]
+    #DatosORG = DatosORG[(DatosORG['CalRegion_Acumulado_Porcentaje'] > 99.85) | (DatosORG['CalRegion_Acumulado_Porcentaje'] <45)]
     print('Len filtrado')
     print(len(DatosORG))
 
@@ -142,3 +139,4 @@ def Inicio():
 
 
 #Inicio()
+#P1.plot_average_price_by_region_estacion(DatosORG)
