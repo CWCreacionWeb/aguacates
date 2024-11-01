@@ -53,6 +53,7 @@ def InicioDoc():
 
 def Cargar(pFile):
     data = pd.read_csv(pFile)
+    print(data)
     return data
 
 def Ejecutar():
@@ -79,12 +80,16 @@ def Ejecutar():
 
 def PreparacionDatos():
     """
-        Añade las siguientes columnas a la tabla
-        CalFecha:Convierte el campo dato de un string con formato yyyy-mm-dd 
-        CalYear: Componente Year de la fecha
-        CalMes: Componente Mes de la fecha
-        mDbg --> Almacena el detalle del resultado de la conversión
+
+- **Añade las siguientes columnas a la tabla**: 
+    - **CalFecha:**Convierte el campo dato de un string con formato yyyy-mm-dd 
+    - **CalYear:** Componente Year de la fecha
+    - **CalMes:** Componente Mes de la fecha
+    - **mDbg -->** Almacena el detalle del resultado de la conversión
+
     """
+    display(Markdown(PreparacionDatos.__doc__))
+
     global mDbg
     mDbg +='***********************************************************************\n'
     mDbg +='PreparacionDatos\n'
@@ -103,23 +108,37 @@ def PreparacionDatos():
     mDbg +='Proceso Finalizado\n'
     mDbg +='***********************************************************************\n'
 
-
 print('P_Aguacate Ver 0.1\n')
 display(Markdown(InicioDoc.__doc__))
-tiempo_ejecucion = timeit.timeit(lambda: Ejecutar(), number=1) 
-tiempo_ejecucion*=1000
-mDbg+=f'Tiempo de ejecución ms:{tiempo_ejecucion}'
+DatosRegionClasificacionVolumen = None
 
-RC.addClasificacionRegion(DatosORG)
-Lista_CalRegionGrupo = RC.Lista_CalRegionGrupo
-print(mDbg)
 
-P1.DatosORG = DatosORG
-P1.Datos = DatosORG.copy()
+def Inicio():
+    global mDbg
+    global DatosORG
+    global DatosRegionClasificacionVolumen
+    tiempo_ejecucion = timeit.timeit(lambda: Ejecutar(), number=1) 
+    tiempo_ejecucion*=1000
+    mDbg+=f'Tiempo de ejecución ms:{tiempo_ejecucion}'
 
-P1.Lista_CalRegionGrupo = Lista_CalRegionGrupo
-P2.Datos = DatosORG
-P3.Datos = DatosORG
-P4.Datos = DatosORG
-P5.Datos = DatosORG
+    RC.PreparacionDatosSegmentacion(DatosORG)
+    DatosRegionClasificacionVolumen= RC.PreparacionDatosClasificacionVolumen(DatosORG)
+    Lista_CalRegionGrupo = RC.Lista_CalRegionGrupo
+    print(mDbg)
+    DatosORG = DatosORG[(DatosORG['CalRegion_Acumulado_Porcentaje'] > 99.85) | (DatosORG['CalRegion_Acumulado_Porcentaje'] <52)]
+    print('Len filtrado')
+    print(len(DatosORG))
 
+    P1.DatosORG = DatosORG
+
+
+    P1.Datos = DatosORG.copy()
+
+    P1.Lista_CalRegionGrupo = Lista_CalRegionGrupo
+    P2.Datos = DatosORG
+    P3.Datos = DatosORG
+    P4.Datos = DatosORG
+    P5.Datos = DatosORG
+
+
+#Inicio()

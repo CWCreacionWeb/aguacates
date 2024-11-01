@@ -122,11 +122,18 @@ def P1_1_DescomposicionSerieTemporal(pPeriodo=52,pCampo='AveragePrice'):
     mDbg +=f'numero Registros :{len(Datos)}\n'
     mDbg +=f'numero Columnas :{Datos.shape[1]}\n'
     mDbg +=f'**********************************\n'
-    print(mDbg)
+    #print(mDbg)
 
 
     precios = Datos.groupby('CalFecha')[pCampo].mean()
+    # Asegurar que el índice esté en formato de fecha y en frecuencia semanal
+    #precios.index = pd.to_datetime(precios.index)
+    #precios = precios.asfreq('W-SUN')  # Frecuencia semanal, lunes
+    #precios = precios.asfreq('W-SUN')  # Frecuencia semanal, lunes
+
     decomposicion = seasonal_decompose(precios, model='additive', period=pPeriodo)
+
+
     
     fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 1, figsize=(10, 8))
     decomposicion.observed.plot(ax=ax1, title=f'{pCampo} Promedio Observado',xlabel='')
@@ -141,9 +148,20 @@ def P1_1_DescomposicionSerieTemporal(pPeriodo=52,pCampo='AveragePrice'):
 
 # P1.2_EstacionalidadPorRegion
 def P1_2_EstacionalidadPorRegion():
+    """
+2. **Análisis de Estacionalidad por Región:** 
+   - **Uso de Datos:** Usa las columnas `AveragePrice`, `Date` y `Total Volume`.
+   - **Esperado:** Utiliza gráficos de líneas para visualizar cómo varían los precios de aguacates por región a lo largo de diferentes estaciones del año.
+     - Agrupa los datos por `region` y `Date` utilizando `groupby()`.
+     - Calcula el promedio de `AveragePrice` para cada región.
+     - Representa gráficamente las tendencias utilizando `plt.plot()` de `matplotlib`.    
+    """
+    global Datos
+    display(Markdown(P1_1_DescomposicionSerieTemporal.__doc__))
+
     plt.figure(figsize=(20, 6))
     for region, data in Datos.groupby('region'):
-        if region in['Albany','Boston']:
+        #if region in['Albany','Boston']:
             precios_region = data.groupby('CalFecha')['AveragePrice'].mean()
             #precios_region = Datos.groupby('CalFecha').agg({'AveragePrice':'mean','Total Volume':'mean'}).reset_index()
             plt.plot(precios_region.index, precios_region.values, label=region)
