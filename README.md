@@ -1,4 +1,4 @@
-# **Proyecto: # Análisis del Conjunto de Datos de Precios de Aguacate **
+# Proyecto: # Análisis del Conjunto de Datos de Precios de Aguacate 
 
 
 1. **Metodología de trabajo**
