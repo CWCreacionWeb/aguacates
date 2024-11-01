@@ -39,7 +39,7 @@ Como puedes observar `P` es el Proyecto importado, `P1` es el modulo , y `P1_1_D
 ```sh
 P.P1.P1_1_DescomposicionSerieTemporal(52,'AveragePrice')
 ```
-![This is an alt text.](/image/sample.webp "This is a sample image.")
+![This is an alt text.](/Readme_Ejemplo.png)
 
 ## Links
 
