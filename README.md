@@ -1,5 +1,7 @@
 # Proyecto: # Análisis del Conjunto de Datos de Precios de Aguacate 
-      Requerimientos en el fichero Proyecto_Analisis_Aguacate.pdf
+
+Requerimientos [Proyecto_Analisis_Aguacate.pdf](/documentacion/Proyecto_Analisis_Aguacate.pdf) 
+
 ## Metodología de trabajo
 
 - **Extreme programming (XP) :** Como un equipo de Jazz,
@@ -39,10 +41,10 @@ Como puedes observar `P` es el Proyecto importado, `P1` es el modulo , y `P1_1_D
 ```sh
 P.P1.P1_1_DescomposicionSerieTemporal(52,'AveragePrice')
 ```
-![This is an alt text.](/Readme_Ejemplo.png)
+![Readme ejemplo 01](/documentacion/Readme_Ejemplo.png)
 
 ## Links
 
-Editor `Markdown`  [Markdown Live Preview](https://markdownlivepreview.com/).
+Editor `Markdown Live Preview` https://markdownlivepreview.com/
 
-https://markdownlivepreview.com/
+
