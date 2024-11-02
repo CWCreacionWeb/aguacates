@@ -1,4 +1,4 @@
-
+from IPython.display import display, Markdown, HTML
 from statsmodels.tsa.seasonal import seasonal_decompose
 from datetime import datetime
 import numpy as np
@@ -20,7 +20,26 @@ Lista_CalRegionGrupo =None
 salida = Output()
 
 def Btn_Ejecutar(seleccion):
-    print("Función personalizada. Selección realizada:", seleccion)
+    global Datos
+    global DatosORG
+    print("Función personalizada. Selección realizada Region:", seleccion)
+    Datos = DatosORG[DatosORG['region'].isin(seleccion)]
+    mDbg =""
+    mDbg +=f'**********************************\n'
+    mDbg +=f'Datos\n'
+    mDbg +=f'numero Registros :{len(Datos)}\n'
+    mDbg +=f'numero Columnas :{Datos.shape[1]}\n'
+    mDbg +=f'**********************************\n'
+    print(mDbg)
+
+    mDbg =""
+    mDbg +=f'**********************************\n'
+    mDbg +=f'DatosORG\n'
+    mDbg +=f'numero Registros :{len(DatosORG)}\n'
+    mDbg +=f'numero Columnas :{DatosORG.shape[1]}\n'
+    mDbg +=f'**********************************\n'
+    print(mDbg)
+
 
 def Btn_EjecutarRG(seleccion):
     global Datos
@@ -75,25 +94,34 @@ def P1_1_Inicio():
 
 # P1.1_DescomposicionSerieTemporal
 def P1_1_DescomposicionSerieTemporal(pPeriodo=52,pCampo='AveragePrice'):
-    mDbg=''    
-    mDbg +=f'**************************************************************\n'
-    mDbg +=f'Parametro pPeriodo:{pPeriodo}\n'
-    mDbg +=f'Parametro pCampo:{pCampo}\n'
-    mDbg +=f'--------------------------------------------------------------\n'
-    mDbg +=f'1.Descomposición de Series Temporales de Precios:\n'
-    mDbg +=f'  <strong>Uso de Datos</strong>: Usa la columna AveragePrice y Date.\n'
-    mDbg +=f'  Esperado: Utiliza la función seasonal_decompose de la librería statsmodels\n'
-    mDbg +=f'  para descomponer la serie temporal de precios en componentes de \n'
-    mDbg +=f'  tendencia, estacionalidad y ruido.\n'
-    mDbg +=f'Convierte Date a tipo datetime usando pd.to_datetime().\n'
-    mDbg +=f'Agrupa los datos por Date y calcula el promedio de AveragePrice utilizando groupby() si es necesario.\n'
-    mDbg +=f'Visualiza los componentes descompuestos usando matplotlib para cada uno de ellos.\n'
-    mDbg +=f'**************************************************************\n'
-    print(mDbg)
+    """
+1. **Descomposición de Series Temporales de Precios:** 
+   - **Uso de Datos:** Usa la columna `AveragePrice` y `Date`.
+   - **Esperado:** Utiliza la función `seasonal_decompose` de la librería `statsmodels` para descomponer la serie temporal de precios en componentes de tendencia, estacionalidad y ruido. 
+     - Convierte `Date` a tipo datetime usando `pd.to_datetime()`.
+     - Agrupa los datos por `Date` y calcula el promedio de `AveragePrice` utilizando `groupby()` si es necesario.
+     - Visualiza los componentes descompuestos usando `matplotlib` para cada uno de ellos.    
 
+    """
+    global Datos
+    global mDbg
+    mDbg =P1_1_DescomposicionSerieTemporal.__doc__
+
+    mDbg += f"""- **parametros**:  
+         - *pPeriodo:*\t`{pPeriodo}`
+         - *pCampo:*\t`{pCampo}`
+    """
+
+
+    display(Markdown(mDbg))
+
+        # Mostramos el texto en formato Markdown
 
     precios = Datos.groupby('CalFecha')[pCampo].mean()
+
     decomposicion = seasonal_decompose(precios, model='additive', period=pPeriodo)
+
+
     
     fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 1, figsize=(10, 8))
     decomposicion.observed.plot(ax=ax1, title=f'{pCampo} Promedio Observado',xlabel='')
@@ -101,109 +129,163 @@ def P1_1_DescomposicionSerieTemporal(pPeriodo=52,pCampo='AveragePrice'):
     decomposicion.seasonal.plot(ax=ax3, title="Estacionalidad",xlabel='')
     decomposicion.resid.plot(ax=ax4, title="Ruido",xlabel='')
     plt.xlabel("Fecha")
-    plt.ylabel("Precio Promedio")
+    plt.ylabel(f"{pCampo} Promedio")
 
+    plt.tight_layout()
+    plt.show()
+
+
+# Función 1: Evolución media de AveragePrice por region y CalFecha
+def plot_average_price_by_region_fecha(df):
+    # Agrupamos por 'region' y 'CalFecha', calculamos la media de 'AveragePrice'
+    df_grouped = df.groupby(['region', 'CalFecha'])['AveragePrice'].mean().reset_index()
+    
+    # Graficamos
+    plt.figure(figsize=(14, 8))
+    sns.lineplot(data=df_grouped, x='CalFecha', y='AveragePrice', hue='region', marker='o')
+    plt.title('Evolución media de AveragePrice por región y CalFecha')
+    plt.xlabel('Fecha')
+    plt.ylabel('Precio Promedio')
+    plt.legend(title='Region', bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
+
+# Función 2: Evolución media de AveragePrice por region y CalEstacion
+def plot_average_price_by_region_estacion(df):
+    # Convertimos 'CalEstacion' en una categoría con un orden específico
+    #estaciones = ['Invierno', 'Primavera', 'Verano', 'Otoño']
+    #df['CalEstacion'] = pd.Categorical(df['CalEstacion'], categories=estaciones, ordered=True)
+    #print(df[['CalFecha', 'region', 'AveragePrice', 'CalEstacion']])
+
+
+    # Agrupamos por 'region' y 'CalEstacion', calculamos la media de 'AveragePrice'
+    #df_grouped = df.groupby(['region', 'CalYear','CalEstacion'])['AveragePrice'].mean().reset_index()
+
+  # Agrupamos por 'region', 'CalYear' y 'CalEstacion', y calculamos el promedio ponderado de 'AveragePrice'
+    df_grouped = df.groupby(['region', 'CalYear', 'CalEstacion']).apply(
+        lambda x: (x['AveragePrice'] * x['Total Volume']).sum() / x['Total Volume'].sum()
+    ).reset_index(name='WeightedAveragePrice')
+
+ 
+
+        # Crear una nueva columna que combine 'CalYear' y 'CalEstacion' para el eje x
+    df_grouped['Year_Estacion'] = df_grouped['CalYear'].astype(str) + ' ' + df_grouped['CalEstacion']
+
+
+    print(df_grouped.head())
+    
+    # Graficamos
+    plt.figure(figsize=(14, 8))
+    sns.lineplot(data=df_grouped, x='Year_Estacion', y='WeightedAveragePrice', hue='region', marker='o')
+    plt.title('Evolución media de AveragePrice por región y estación')
+    plt.xlabel('Estación')
+    plt.ylabel('Precio Promedio')
+    plt.legend(title='Region', bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
+
+# Función 2: Evolución media de AveragePrice por region y CalEstacion
+def plot_average_price_by_region_estacionB(df):
+    # Convertimos 'CalEstacion' en una categoría con un orden específico
+    #estaciones = ['Invierno', 'Primavera', 'Verano', 'Otoño']
+    #df['CalEstacion'] = pd.Categorical(df['CalEstacion'], categories=estaciones, ordered=True)
+    #print(df[['CalFecha', 'region', 'AveragePrice', 'CalEstacion']])
+
+
+    # Agrupamos por 'region' y 'CalEstacion', calculamos la media de 'AveragePrice'
+    df_grouped = df.groupby(['region', 'CalYear','CalEstacion'])['AveragePrice'].mean().reset_index()
+
+  
+
+        # Crear una nueva columna que combine 'CalYear' y 'CalEstacion' para el eje x
+    df_grouped['Year_Estacion'] = df_grouped['CalYear'].astype(str) + ' ' + df_grouped['CalEstacion']
+
+
+    print(df_grouped.head())
+    
+    # Graficamos
+    plt.figure(figsize=(14, 8))
+    sns.lineplot(data=df_grouped, x='Year_Estacion', y='AveragePrice', hue='region', marker='o')
+    plt.title('Evolución media de AveragePrice por región y estación')
+    plt.xlabel('Estación')
+    plt.ylabel('Precio Promedio')
+    plt.legend(title='Region', bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
+
+# Función 3: Evolución media ponderada de AveragePrice sobre Total Volume por region y CalFecha
+def plot_weighted_average_price_by_region_fecha(df):
+    # Calculamos la media ponderada de AveragePrice usando Total Volume
+    df['Weighted_AveragePrice'] = df['AveragePrice'] * df['Total Volume']
+    df_grouped = df.groupby(['region', 'CalYear']).apply(
+        lambda x: x['Weighted_AveragePrice'].sum() / x['Total Volume'].sum()).reset_index(name='Weighted_AveragePrice')
+    
+    # Graficamos
+    plt.figure(figsize=(14, 8))
+    sns.lineplot(data=df_grouped, x='CalYear', y='Weighted_AveragePrice', hue='region', marker='o')
+    plt.title('Evolución media ponderada de AveragePrice por región y CalFecha')
+    plt.xlabel('Fecha')
+    plt.ylabel('Precio Promedio Ponderado')
+    plt.legend(title='Region', bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.xticks(rotation=45)
     plt.tight_layout()
     plt.show()
 
 # P1.2_EstacionalidadPorRegion
 def P1_2_EstacionalidadPorRegion():
+    """
+2. **Análisis de Estacionalidad por Región:** 
+   - **Uso de Datos:** Usa las columnas `AveragePrice`, `Date` y `Total Volume`.
+   - **Esperado:** Utiliza gráficos de líneas para visualizar cómo varían los precios de aguacates por región a lo largo de diferentes estaciones del año.
+     - Agrupa los datos por `region` y `Date` utilizando `groupby()`.
+     - Calcula el promedio de `AveragePrice` para cada región.
+     - Representa gráficamente las tendencias utilizando `plt.plot()` de `matplotlib`.    
+    """
+    global Datos
+    global mDbg
+    mDbg =P1_2_EstacionalidadPorRegion.__doc__
+
+    display(Markdown(mDbg))
+
     plt.figure(figsize=(20, 6))
-    for region, data in Datos.groupby('region'):
-        if region in['Albany','Boston']:
-            precios_region = data.groupby('CalFecha')['AveragePrice'].mean()
-            #precios_region = Datos.groupby('CalFecha').agg({'AveragePrice':'mean','Total Volume':'mean'}).reset_index()
-            plt.plot(precios_region.index, precios_region.values, label=region)
-    
-    
-    plt.xlabel("Fecha")
-    plt.ylabel("Precio Promedio")
-    plt.title("Estacionalidad del Precio de Aguacates por Región")
-    plt.legend()
-    plt.show()
+    # Agrupamos por 'region' y 'CalEstacion', calculamos la media de 'AveragePrice'
+    df_grouped = Datos.groupby(['region', 'CalYear','CalEstacion'])['AveragePrice'].mean().reset_index()
+
+        # Crear una nueva columna que combine 'CalYear' y 'CalEstacion' para el eje x
+    df_grouped['Year_Estacion'] = df_grouped['CalYear'].astype(str) + ' ' + df_grouped['CalEstacion']
 
 
-def P1A_AnalisisEstacionalidadRegion(region='Albany'):
-    """
-    Análisis de estacionalidad por región: Precio promedio y volumen total a lo largo del tiempo.
     
-    Usa las columnas 'AveragePrice', 'Fecha' y 'Total Volume'.
-    Agrupa por 'Region' y 'Fecha' y calcula el promedio de precio y volumen.
-    Representa gráficamente las tendencias para una región específica.
-    """
-    global Datos
     
-    # Filtrar datos de la región específica
-    datos_region = Datos[Datos['region'] == region]
-    
-    # Agrupar por fecha y calcular la media de 'AveragePrice' y 'Total Volume'
-    datos_agrupados = datos_region.groupby('Fecha').agg({
-        'AveragePrice': 'mean',
-        'Total Volume': 'mean'
-    }).reset_index()
-    
-    # Crear la figura y el primer eje para 'AveragePrice'
-    fig, ax1 = plt.subplots(figsize=(14, 7))
-    
-    # Configuración del eje para 'AveragePrice'
-    ax1.set_title(f"Estacionalidad de Precio Promedio y Volumen Total en la Región: {region}")
-    ax1.set_xlabel("Fecha")
-    ax1.set_ylabel("Precio Promedio (USD)", color='blue')
-    ax1.plot(datos_agrupados['Fecha'], datos_agrupados['AveragePrice'], label='Average Price', color='blue')
-    ax1.tick_params(axis='y', labelcolor='blue')
-    
-    # Crear el segundo eje para 'Total Volume'
-    ax2 = ax1.twinx()
-    ax2.set_ylabel("Volumen Total", color='green')
-    ax2.plot(datos_agrupados['Fecha'], datos_agrupados['Total Volume'], label='Total Volume', color='green')
-    ax2.tick_params(axis='y', labelcolor='green')
-    
-    # Mostrar la gráfica
-    fig.tight_layout()
-    plt.show()
-
-def P1B_AnalisisEstacionalidadRegion():
-    """
-    Análisis de estacionalidad por región: Precio promedio y volumen total a lo largo del tiempo.
-    
-    Usa las columnas 'AveragePrice', 'Fecha' y 'Total Volume'.
-    Agrupa por 'Region' y 'Fecha' y calcula el promedio de precio y volumen.
-    Representa gráficamente las tendencias para una región específica.
-    """
-    global Datos
-    
-    # Filtrar datos de la región específica
-    datos_region = Datos
-    
-    # Agrupar por fecha y calcular la media de 'AveragePrice' y 'Total Volume'
-    datos_agrupados = datos_region.groupby('Fecha').agg({
-        'AveragePrice': 'mean',
-        'Total Volume': 'mean'
-    }).reset_index()
-    
-    # Crear la figura y el primer eje para 'AveragePrice'
-    fig, ax1 = plt.subplots(figsize=(14, 7))
-    
-    # Configuración del eje para 'AveragePrice'
-    ax1.set_title(f"Estacionalidad de Precio Promedio y Volumen Total:")
-    ax1.set_xlabel("Fecha")
-    ax1.set_ylabel("Precio Promedio (USD)", color='blue')
-    ax1.plot(datos_agrupados['Fecha'], datos_agrupados['AveragePrice'], label='Average Price', color='blue')
-    ax1.tick_params(axis='y', labelcolor='blue')
-    
-    # Crear el segundo eje para 'Total Volume'
-    ax2 = ax1.twinx()
-    ax2.set_ylabel("Volumen Total", color='green')
-    ax2.plot(datos_agrupados['Fecha'], datos_agrupados['Total Volume'], label='Total Volume', color='green')
-    ax2.tick_params(axis='y', labelcolor='green')
-    
-    # Mostrar la gráfica
-    fig.tight_layout()
+    # Graficamos
+    plt.figure(figsize=(14, 8))
+    sns.lineplot(data=df_grouped, x='Year_Estacion', y='AveragePrice', hue='region', marker='o')
+    plt.title('Evolución media de AveragePrice por región y estación')
+    plt.xlabel('Estación')
+    plt.ylabel('Precio Promedio')
+    plt.legend(title='Region', bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.xticks(rotation=45)
+    plt.tight_layout()
     plt.show()
 
 
 # Pº_ComparacionPreciosPromedioMensuales
 def P1_3_ComparacionPreciosPromedioMensuales(pCampo='AveragePrice'):
+    """
+3. **Comparación de Precios Promedio Mensuales:**
+   - **Uso de Datos:** Usa las columnas `AveragePrice` y `Date`.
+   - **Esperado:** Calcula y compara los precios promedio mensuales.
+     - Agrupa los datos por mes usando `pd.Grouper` con `freq='M'`.
+     - Calcula el promedio de `AveragePrice` para cada mes con `mean()`.
+     - Visualiza los resultados con un gráfico de líneas usando `plt.plot()`.
+    """
+    mDbg =P1_3_ComparacionPreciosPromedioMensuales.__doc__
+
+    display(Markdown(mDbg))
+
     plt.figure(figsize=(20, 6))
     precios_mensuales = Datos.groupby(pd.Grouper(key='CalFecha', freq='M'))[pCampo].mean()
     
@@ -222,10 +304,27 @@ def P1_3_ComparacionPreciosPromedioMensuales(pCampo='AveragePrice'):
 
 # P1.4_TendenciaVentasALoLargoDelTiempo
 def P1_4_TendenciaVentasALoLargoDelTiempo(pCampo='Total Volume'):
+    """
+4. **Tendencia de Ventas a lo Largo del Tiempo:**
+   - **Uso de Datos:** Usa las columnas `Total Volume` y `Date`.
+   - **Esperado:** Analiza cómo varía el volumen total de ventas a lo largo del tiempo.
+     - Agrupa los datos por `Date` y suma el `Total Volume` usando `groupby()`.
+     - Visualiza los resultados usando un gráfico de líneas con `plt.plot()` para mostrar la tendencia.    
+    """    
+    mDbg =P1_4_TendenciaVentasALoLargoDelTiempo.__doc__
+
+    display(Markdown(mDbg))
+
     plt.figure(figsize=(20, 6))
     volumen_total = Datos.groupby('CalFecha')[pCampo].sum()
     
     plt.plot(volumen_total.index, volumen_total.values, label=f"{pCampo}")
+
+    plt.grid(axis='x')  # Cuadrícula vertical
+    plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))    
+    plt.xticks(rotation=45)
+
     plt.xlabel("Fecha")
     plt.ylabel(f"{pCampo}")
     plt.title(f"Tendencia {pCampo} de Aguacates a lo Largo del Tiempo")
@@ -233,37 +332,61 @@ def P1_4_TendenciaVentasALoLargoDelTiempo(pCampo='Total Volume'):
     plt.show()
 
 # P1.5_AnalisisCambiosPreciosAnuales
-def P1_5_AnalisisCambiosPreciosAnuales(pClasificacion ='Cyti',pCampo='AveragePrice',pxCampo='CalYear'):
+def P1_5_AnalisisCambiosPreciosAnuales(pAnos='', pClasificacion ='',pCampo='AveragePrice',pxCampo='CalYear'):
+    """
+5. **Gráfico de Líneas de Precios Promedios por Año:**
+   - **Uso de Datos:** Utiliza las columnas `AveragePrice` y `year`.
+   - **Esperado:** Visualiza la tendencia de precios promedio a lo largo de los años.
+     - Agrupa los datos por `year` y calcula el promedio de `AveragePrice`.
+     - Usa `plt.plot()` para crear un gráfico de líneas que muestre la evolución de precios.
+     - Añade un título y etiquetas descriptivas a los ejes usando `plt.title()` y `plt.xlabel()`.
+    """
+    mDbg =P1_5_AnalisisCambiosPreciosAnuales.__doc__
+
+    mDbg += f"""- **parametros**:  
+         - *pAnos:*\t`{[pAnos]}`
+         - *pClasificacion:*\t`{[pClasificacion]}` City,Region,GreaterRegion,TotalUS
+    """
+
+    display(Markdown(mDbg))
+
     plt.figure(figsize=(20, 6))
         # Filtrar datos de la región específica
-    if pClasificacion =='':
-        DatosF = Datos
+    DatosF = Datos 
+    if pAnos =='':
+        DatosF = DatosF
     else:
-        DatosF = Datos[Datos['CalRegionGrupo'] == pClasificacion]
-    print(len(DatosF))
-    if pCampo =='AveragePrice':
-        precios_anuales = DatosF.groupby(pxCampo)[pCampo].mean()
-    elif pCampo =='Total Volume':
-        precios_anuales = DatosF.groupby(pxCampo)[pCampo].sum()
+       DatosF = DatosF[DatosF['CalYear'].isin(pAnos)] 
+
+    if pClasificacion =='':
+        DatosF = DatosF
+    else:
+        DatosF = DatosF[DatosF['CalRegionGrupo'] == pClasificacion]
     
-    barras=plt.bar(precios_anuales.index, precios_anuales.values, color='skyblue', label=f"{pCampo} Anual")
+    if pCampo =='AveragePrice':
+        precios_anuales = DatosF.groupby(pxCampo)[pCampo].mean().reset_index()
+    elif pCampo =='Total Volume':
+        precios_anuales = DatosF.groupby(pxCampo)[pCampo].sum().reset_index()
+    
+    # Crear el gráfico de líneas
+    plt.figure(figsize=(10, 6))
+    #plt.plot(precios_anuales[pxCampo], precios_anuales[pCampo], marker='o', linestyle='-')
+    plt.plot(precios_anuales[pxCampo], precios_anuales[pCampo], marker='o', linestyle='-')
 
-    # Añadir etiquetas a las barras
-    for barra in barras:
-        yval = barra.get_height()
-        vValorFormateado =  "{:,.2f}".format(yval)#.replace(",", ".").replace(".", ",", 1)
-        plt.text(barra.get_x() + barra.get_width() / 2, yval, vValorFormateado, ha='center', va='bottom')
- 
+    # Añadir título y etiquetas
+    plt.title('Evolución de Precios Promedios de Aguacates por Año')
 
-    plt.grid(axis='x')  # Cuadrícula vertical
+    plt.grid() 
     #plt.gca().xaxis.set_major_locator(mdates.YearLocator())
     #plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%y'))    
-    plt.xticks(rotation=45)
-
     plt.xlabel(f'{pxCampo}')
     plt.ylabel(f'{pCampo}')
     plt.title(f"Análisis de Cambios en {pCampo} Anuales:{pClasificacion}")
-    plt.legend()
-    plt.show()
+
+    # Mostrar el gráfico
+    plt.tight_layout()
+    plt.show()    
+    #plt.legend()
+    #plt.show()
 
 
