@@ -16,6 +16,12 @@ class Charts:
         self.figureConfig()
         self.seasonal_decompose = seasonal_decompose
 
+    def to_excel(self, data,filename):
+        # Guardar como archivo Excel
+        excel_file = filename + '.xlsx'  # Nombre del archivo Excel a crear
+        data.to_excel(excel_file, index=False)  # index=False para no incluir el índice como una columna
+
+
     def figureConfig(self, width=11, height=6,**kwargs):
         plt.figure(figsize=(width, height))
         plt.grid(True)
@@ -97,4 +103,14 @@ class Charts:
         else:
             return 'Autumn'
 
-
+    def paintPlotTitle(self, data,key1,key2,ha='center',va='bottom',fontsize=10,color="black"):
+        for i in range(len(data)):
+            plt.text(
+                data[key1].iloc[i],
+                data[key2].iloc[i],
+                f'{data[key2].iloc[i]:.2f}',
+                ha=ha,
+                va=va,
+                fontsize=fontsize,
+                color=color
+            )
