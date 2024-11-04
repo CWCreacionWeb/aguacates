@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score, mean_squared_error
 from sklearn.preprocessing import PolynomialFeatures
+from sklearn.model_selection import train_test_split
+import statsmodels.api as sm 
 
 
 Datos =''    
@@ -191,6 +193,26 @@ def P5_4_PrediccionesTrimestrales():
         r2_polinomico = r2_score(y, prediccion_polinomica)
         rmse_polinomico = mean_squared_error(y, prediccion_polinomica, squared=False)
 
+        # Diferencias en porcentaje
+        dif_pred_pct = round((prediccion_lineal[-1] - prediccion_polinomica[-1]) / prediccion_lineal[-1] * 100, 2) 
+        dif_r2_pct = round((r2_lineal - r2_polinomico) / abs(r2_lineal) * 100, 2)  if r2_lineal != 0 else 0
+        dif_rmse_pct = round((rmse_polinomico - rmse_lineal) / rmse_lineal * 100, 2)  if rmse_lineal != 0 else 0
+        """
+        # Interpretación de las diferencias
+        interpr_dif_pred = '.' if abs(dif_pred_pct) < 5 else 'M' if abs(dif_pred_pct) <= 20 else 'S'
+        interpr_dif_r2 = '' if dif_r2_pct < 0 else 'KO'
+        interpr_dif_rmse = '' if dif_rmse_pct < 0 else 'KO'
+        """
+
+        # Interpretación de las diferencias con prefijo '+' o '-'
+        interpr_dif_pred = (f"+{'.' if abs(dif_pred_pct) < 5 else 'M' if abs(dif_pred_pct) <= 20 else 'S'}" 
+                            if dif_pred_pct >= 0 else 
+                            f"-{'.' if abs(dif_pred_pct) < 5 else 'M' if abs(dif_pred_pct) <= 20 else 'S'}")
+        
+        interpr_dif_r2 = ('' if dif_r2_pct < 0 else f"+KO" if dif_r2_pct >= 0 else f"-KO")
+        
+        interpr_dif_rmse = ('' if dif_rmse_pct < 0 else f"+KO" if dif_rmse_pct >= 0 else f"-KO")
+
 
         # Añadir resultados al DataFrame
         resultados_df = pd.concat([resultados_df, pd.DataFrame({
@@ -200,10 +222,38 @@ def P5_4_PrediccionesTrimestrales():
             'R² Lineal': [r2_lineal],
             'R² Polinómica': [r2_polinomico],            
             'RMSE Lineal': [rmse_lineal],
-            'RMSE Polinómica': [rmse_polinomico]
+            'RMSE Polinómica': [rmse_polinomico],
+            'Dif Pred_%': [dif_pred_pct],
+            'Interpr Dif Pred_%': [interpr_dif_pred],
+            'Dif R2_%': [dif_r2_pct],
+            'Interpr Dif R2_%': [interpr_dif_r2],
+            'Dif RMSE_%': [dif_rmse_pct],
+            'Interpr Dif RMSE_%': [interpr_dif_rmse]            
         })], ignore_index=True)
     # Mostrar el DataFrame de resultados
     display(resultados_df)
+        # Crear variable de texto con la interpretación en Markdown
+    interpretacion_md = """
+
+### Interpretación de las diferencias en porcentaje:
+
+   - **Interpr_Dif_Pred_%**: Indicador del cambio en la predicción.
+        - `+.` : Cambio pequeño positivo en la predicción (< 5%)
+        - `-.` : Cambio pequeño negativo en la predicción (< 5%)
+        - `+M` : Cambio moderado positivo en la predicción (5% - 20%)
+        - `-M` : Cambio moderado negativo en la predicción (5% - 20%)
+        - `+S` : Cambio significativo positivo en la predicción (> 20%)
+        - `-S` : Cambio significativo negativo en la predicción (> 20%)
+        
+   - **Interpr_Dif_R2_%**: Indica si el ajuste del modelo mejora o empeora.
+        - ''  : Mejora el ajuste en el modelo polinómico
+        - `+KO`: Empeora el ajuste en el modelo polinómico
+
+   - **Interpr_Dif_RMSE_%**: Indica si hay un cambio notable en el error.
+        - ''  : Mejora (disminuye el error) en el modelo polinómico
+        - `+KO`: Empeora (aumenta el error) en el modelo polinómico
+    """
+    display(Markdown(interpretacion_md))
     
 def P5_5_PrediccionesAnuales(anios_previos=1):
     """
@@ -291,20 +341,171 @@ def P5_5_PrediccionesAnuales(anios_previos=1):
     # Convertir los resultados a DataFrame para visualización y retorno
     df_resultados = pd.DataFrame(resultados)
     display(df_resultados)
+    # Exportar el DataFrame a un fichero Excel
+    df_resultados.to_excel('P5_5_PrediccionesAnuales.xlsx', index=False)
+    print(f"Resultados exportados a: P5_5_PrediccionesAnuales")
+
+def P5_6_Modelos_Regresión_Múltiple():
+    """
+    6. Desarrollo de Modelos de Regresión Múltiple:
+       - Uso de Datos: Selecciona varias variables numéricas como `Total Volume`, `4046`, `4225`, `4770`, y `Total Bags` para predecir `AveragePrice`.
+       - Esperado: 
+         - Define las variables independientes (X) y dependientes (y).
+         - Ajusta modelos de regresión múltiple.
+         - Compara su rendimiento utilizando métricas como R² y RMSE y discute las implicaciones de los resultados.
+    """
+
+    global Datos  # Asegurarse de que los datos están accesibles
+    
+    # Filtrar columnas relevantes
+    features = ['Total Volume', '4046', '4225', '4770','Large Bags', 'Total Bags']
+    target = 'AveragePrice'
+    
+
+    # Definir variables independientes (X) y dependientes (y)
+    X = Datos[features]
+    y = Datos[target]
+
+    # Ajustar el modelo de regresión lineal
+    modelo_regresion = LinearRegression()
+    modelo_regresion.fit(X, y)
+
+    # Realizar predicciones
+    predicciones = modelo_regresion.predict(X)
+
+    # Calcular métricas de rendimiento
+    r2 = r2_score(y, predicciones)
+    rmse = mean_squared_error(y, predicciones, squared=False)
+
+    
+    # Mostrar los resultados
+    print("Resultados del Modelo de Regresión Múltiple:")
+    print(f"R²: {r2:.4f}")
+    print(f"RMSE: {rmse:.4f}")
+    
+    # Coeficientes del modelo
+    coeficientes = pd.DataFrame(modelo_regresion.coef_, features, columns=['Coeficiente'])
+    print("\nCoeficientes del Modelo:")
+    print(coeficientes)
+
+    # Implicaciones de los resultados
+    print("\nImplicaciones:")
+    if r2 < 0:
+        print("El modelo no es adecuado, ya que el R² es negativo.")
+    elif r2 < 0.5:
+        print("El modelo tiene un ajuste bajo, lo que sugiere que las variables seleccionadas no explican bien la variabilidad de AveragePrice.")
+    elif r2 < 0.8:
+        print("El modelo tiene un ajuste moderado. Hay margen para mejorar la precisión mediante la selección de características o modelos alternativos.")
+    else:
+        print("El modelo tiene un buen ajuste y las variables seleccionadas explican bien la variabilidad de AveragePrice.")
 
 
 def P5_7_CoefficientsRegresionMultiple():
     """
-    Analiza los coeficientes del modelo de regresión múltiple ajustado.
+    7. Análisis de Coeficientes de Regresión Múltiple:
+       - Uso de Datos: Examina los coeficientes de los modelos de regresión múltiple ajustados.
+       - Esperado: 
+         - Extrae los coeficientes del modelo ajustado.
+         - Interpreta los coeficientes para entender el impacto de cada variable numérica en `AveragePrice`.
+         - Comenta sobre las variables más significativas y su relevancia.
     """
-    print("Analizando coeficientes de regresión múltiple...")
     
-    # Usar el último modelo de regresión múltiple
-    coeficientes = modelo.coef_
+    global Datos  # Asegurarse de que los datos están accesibles
     
-    print("Coeficientes de las variables:")
-    for i, coef in enumerate(coeficientes):
-        print(f"Variable {X.columns[i]}: {coef}")
+    # Filtrar columnas relevantes
+    features = ['Total Volume', '4046', '4225', '4770', 'Large Bags','Total Bags']
+    target = 'AveragePrice'
+    
+    # Comprobar si las columnas existen en los datos
+    if not all(col in Datos.columns for col in features + [target]):
+        print("Faltan algunas columnas necesarias en los datos.")
+        return
+
+    # Definir variables independientes (X) y dependientes (y)
+    X = Datos[features]
+    y = Datos[target]
+
+    # Ajustar el modelo de regresión lineal
+    modelo_regresion = LinearRegression()
+    modelo_regresion.fit(X, y)
+
+    # Extraer los coeficientes del modelo
+    coeficientes = modelo_regresion.coef_
+
+    # Crear un DataFrame para visualizar los coeficientes
+    df_coeficientes = pd.DataFrame(coeficientes, index=features, columns=['Coeficiente'])
+    df_coeficientes['Interpretación'] = df_coeficientes['Coeficiente'].apply(lambda x: "Aumenta" if x > 0 else "Disminuye")
+
+
+    # Mostrar los coeficientes y su interpretación
+    print("Análisis de Coeficientes de Regresión Múltiple:")
+    print(df_coeficientes)
+
+    # Comentar sobre las variables más significativas
+    variables_significativas = df_coeficientes[df_coeficientes['Coeficiente'].abs() > 0.1]  # Definir un umbral para significancia
+    print("\nVariables más significativas:")
+    print(variables_significativas)
+
+    print("\nComentarios sobre las variables:")
+    for var, row in variables_significativas.iterrows():
+        impacto = row['Coeficiente']
+        if impacto > 0:
+            print(f"- Un aumento en {var} de una unidad incrementa el precio promedio en {impacto:.6f}.")
+        else:
+            print(f"- Un aumento en {var} de una unidad disminuye el precio promedio en {abs(impacto):.6f}.")
+
+
+
+def P5_8_Regresion_VolumenVentas():
+    global Datos
+    
+    # Verificamos si las columnas necesarias están en el DataFrame
+    required_columns = {'AveragePrice', 'Total Volume', '4046', '4225', '4770'}
+    if not required_columns.issubset(Datos.columns):
+        raise ValueError("Los datos no contienen todas las columnas necesarias: " + str(required_columns))
+    
+    # Seleccionamos las columnas de interés
+    X = Datos[['Total Volume', '4046', '4225', '4770']]
+    y = Datos['AveragePrice']
+    
+    # Dividimos los datos en conjuntos de entrenamiento y prueba
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    
+    # Modelo de Regresión Lineal
+    linear_model = LinearRegression()
+    linear_model.fit(X_train, y_train)
+    y_pred_linear = linear_model.predict(X_test)
+    
+    # Evaluación del modelo lineal
+    mse_linear = mean_squared_error(y_test, y_pred_linear)
+    r2_linear = r2_score(y_test, y_pred_linear)
+    
+    # Modelo de Regresión Polinómica (grado 2)
+    poly_features = PolynomialFeatures(degree=2)
+    X_train_poly = poly_features.fit_transform(X_train)
+    X_test_poly = poly_features.transform(X_test)
+    
+    poly_model = LinearRegression()
+    poly_model.fit(X_train_poly, y_train)
+    y_pred_poly = poly_model.predict(X_test_poly)
+    
+    # Evaluación del modelo polinómico
+    mse_poly = mean_squared_error(y_test, y_pred_poly)
+    r2_poly = r2_score(y_test, y_pred_poly)
+    
+    # Imprimimos los resultados de las métricas para comparar
+    print("Resultados de la Regresión Lineal:")
+    print(f"Error Cuadrático Medio (MSE): {mse_linear:.4f}")
+    print(f"Coeficiente de Determinación (R^2): {r2_linear:.4f}")
+    print("\nResultados de la Regresión Polinómica (Grado 2):")
+    print(f"Error Cuadrático Medio (MSE): {mse_poly:.4f}")
+    print(f"Coeficiente de Determinación (R^2): {r2_poly:.4f}")
+    
+    # Conclusiones
+    if r2_poly > r2_linear:
+        print("\nEl modelo de regresión polinómica proporciona un mejor ajuste a los datos en comparación con el modelo lineal.")
+    else:
+        print("\nEl modelo de regresión lineal proporciona un ajuste comparable o mejor que el modelo polinómico para estos datos.")
 
 def P5_8_VolumenVentas():
     """
@@ -327,24 +528,107 @@ def P5_8_VolumenVentas():
 
     print(f"Modelo Lineal - MSE: {mse_lineal}, R²: {r2_lineal}")
 
-def P5_9_InfluenciaVentas():
+def P5_9_AnalisisInfluenciaVentas():
     """
-    Analiza cómo varía AveragePrice en función del volumen total de ventas.
+    Análisis de la Influencia de las Ventas Totales en el Precio Promedio.
+    
+    Ajusta modelos de regresión lineal y polinómica para evaluar cómo varía 
+    el Precio Promedio en función del Volumen Total de Ventas.
     """
-    print("Analizando la influencia de las ventas totales en el precio promedio...")
     
-    # Ajustar modelo de regresión
-    X = Datos[['Total Volume']]
-    y = Datos['AveragePrice']
+    global Datos  # Asegurarse de que los datos están accesibles
+
+    # Seleccionar las variables de interés
+    X = Datos[['Total Volume', 'Total Bags']]  # Variables independientes
+    y = Datos['AveragePrice']  # Variable dependiente
+
+    # Agregar un término constante para el modelo lineal
+    X = sm.add_constant(X)  # Agregar término independiente para statsmodels
+
+    # Ajuste del modelo de regresión lineal
+    modelo_lineal = sm.OLS(y, X).fit()
+
+    # Predicciones y evaluación del modelo lineal
+    predicciones_lineales = modelo_lineal.predict(X)
+    r2_lineal = modelo_lineal.rsquared
+    rmse_lineal = np.sqrt(mean_squared_error(y, predicciones_lineales))
+
+    # Imprimir resultados del modelo lineal
+    print("Resultados del Modelo de Regresión Lineal:")
+    print(modelo_lineal.summary())
+    print(f"R² Lineal: {r2_lineal:.6f}")
+    print(f"RMSE Lineal: {rmse_lineal:.6f}\n")
+
+    # Ajuste del modelo de regresión polinómica (grados 2)
+    poly = PolynomialFeatures(degree=2)
+    X_poly = poly.fit_transform(X)  # Transformar las variables independientes
+    modelo_polinomico = sm.OLS(y, X_poly).fit()
+
+    # Predicciones y evaluación del modelo polinómico
+    predicciones_polinomicas = modelo_polinomico.predict(X_poly)
+    r2_polinomico = modelo_polinomico.rsquared
+    rmse_polinomico = np.sqrt(mean_squared_error(y, predicciones_polinomicas))
+
+    # Imprimir resultados del modelo polinómico
+    print("Resultados del Modelo de Regresión Polinómica:")
+    print(modelo_polinomico.summary())
+    print(f"R² Polinómico: {r2_polinomico:.6f}")
+    print(f"RMSE Polinómico: {rmse_polinomico:.6f}")
+
+def P5_10_RegresionPrecioPromedioPorTipo():
+    """
+    Regresión para Predecir el Precio Promedio Según el Volumen de Aguacates por Tipo.
     
-    modelo = LinearRegression()
-    modelo.fit(X, y)
+    Ajusta modelos de regresión lineal y polinómica para evaluar cómo varía 
+    el Precio Promedio en función del volumen de aguacates por tipo.
+    """
     
-    # Predicciones
-    predicciones = modelo.predict(X)
-    
-    # Métricas
-    mse = mean_squared_error(y, predicciones)
-    r2 = r2_score(y, predicciones)
-    
-    print(f"MSE: {mse}, R²: {r2}")
+    global Datos  # Asegurarse de que los datos están accesibles
+
+    # Seleccionar las variables de interés
+    X = Datos[['4046', '4225', '4770', 'Total Volume']]  # Variables independientes
+    y = Datos['AveragePrice']  # Variable dependiente
+
+    # Agregar un término constante para el modelo lineal
+    X = sm.add_constant(X)  # Agregar término independiente para statsmodels
+
+    # Ajuste del modelo de regresión lineal
+    modelo_lineal = sm.OLS(y, X).fit()
+
+    # Predicciones y evaluación del modelo lineal
+    predicciones_lineales = modelo_lineal.predict(X)
+    r2_lineal = modelo_lineal.rsquared
+    rmse_lineal = np.sqrt(mean_squared_error(y, predicciones_lineales))
+
+    # Imprimir resultados del modelo lineal
+    print("Resultados del Modelo de Regresión Lineal:")
+    print(modelo_lineal.summary())
+    print(f"R² Lineal: {r2_lineal:.6f}")
+    print(f"RMSE Lineal: {rmse_lineal:.6f}\n")
+
+    # Ajuste del modelo de regresión polinómica (grados 2)
+    poly = PolynomialFeatures(degree=2)
+    X_poly = poly.fit_transform(X)  # Transformar las variables independientes
+    modelo_polinomico = sm.OLS(y, X_poly).fit()
+
+    # Predicciones y evaluación del modelo polinómico
+    predicciones_polinomicas = modelo_polinomico.predict(X_poly)
+    r2_polinomico = modelo_polinomico.rsquared
+    rmse_polinomico = np.sqrt(mean_squared_error(y, predicciones_polinomicas))
+
+    # Imprimir resultados del modelo polinómico
+    print("Resultados del Modelo de Regresión Polinómica:")
+    print(modelo_polinomico.summary())
+    print(f"R² Polinómico: {r2_polinomico:.6f}")
+    print(f"RMSE Polinómico: {rmse_polinomico:.6f}")
+
+    # Comparación de modelos
+    if r2_lineal > r2_polinomico:
+        print("El modelo de regresión lineal ofrece mejores predicciones según el R².")
+    else:
+        print("El modelo de regresión polinómica ofrece mejores predicciones según el R².")
+
+    if rmse_lineal < rmse_polinomico:
+        print("El modelo de regresión lineal tiene un RMSE más bajo, lo que indica mejor precisión.")
+    else:
+        print("El modelo de regresión polinómica tiene un RMSE más bajo, lo que indica mejor precisión.")

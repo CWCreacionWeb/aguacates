@@ -371,16 +371,17 @@ def P3_5_Elasticidad_Precio_Ventas():
      - Presenta un gráfico de dispersión que muestre la relación y discute la tendencia observada utilizando `plt.scatter()` y `plt.plot()`    
     """
     mDbg =P3_5_Elasticidad_Precio_Ventas.__doc__
-
+    global Datos
+    MisDatos = Datos.copy()
     display(Markdown(mDbg))
 
     print("Analizando Elasticidad entre Precios y Ventas Totales...")
     # Calcular elasticidad entre precio promedio y volumen total
-    elasticidad = calcular_elasticidad(Datos['Total Volume'], Datos['AveragePrice'])
-    Datos['Elasticidad_Precio_Ventas'] = elasticidad
+    elasticidad = calcular_elasticidadB(MisDatos['Total Volume'], MisDatos['AveragePrice'])
+    MisDatos['Elasticidad_Precio_Ventas'] = elasticidad
     # Gráfico de dispersión de la relación entre precio y volumen
     plt.figure(figsize=(10, 6))
-    plt.scatter(Datos['AveragePrice'], Datos['Total Volume']/1000, alpha=0.5, color='purple')
+    plt.scatter(MisDatos['AveragePrice'], MisDatos['Total Volume']/1000, alpha=0.5, color='purple')
     plt.title('Relación entre Precio y Volumen de Ventas')
     plt.xlabel('Precio Promedio')
     plt.ylabel('Volumen Total (miles)')
