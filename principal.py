@@ -7,9 +7,16 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import seaborn as sns
 import math
+from Models.Charts import Charts
+from Models.Enunciados import Enunciados
+# --------------------- 0. Configuración Inicial ---------------------
 
 mFile ='datos/avocado.csv'
 mDbg =''
+
+chart = Charts(mFile)
+# Crear una instancia de Enunciados
+enun = Enunciados()
 
 def create_plot(x, y, color='blue', size =(16,7), legend='Close Price', y_label='Price in USD' ):   
     plt.style.use('dark_background')
@@ -47,7 +54,7 @@ def Ejecutar():
     mDbg +=f'numero Registros :{len(Datos)}\n'
     mDbg +=f'numero Columnas :{Datos.shape[1]}\n'
     mDbg +=f'**********************************\n'
-    print(mDbg)
+    # print(mDbg)
     PreparacionDatos()
 
 def PreparacionDatos():
@@ -94,8 +101,9 @@ def P1_1_DescomposicionSerieTemporal(pPeriodo=52,pCampo='AveragePrice'):
     mDbg +=f'Agrupa los datos por Date y calcula el promedio de AveragePrice utilizando groupby() si es necesario.\n'
     mDbg +=f'Visualiza los componentes descompuestos usando matplotlib para cada uno de ellos.\n'
     mDbg +=f'**************************************************************\n'
-    print(mDbg)
+    # print(mDbg)
 
+    enun.getEnunciado('1.1', moreData=mDbg)
 
     precios = Datos.groupby('CalFecha')[pCampo].mean()
     decomposicion = seasonal_decompose(precios, model='additive', period=pPeriodo)
@@ -119,7 +127,8 @@ def P1_2_EstacionalidadPorRegion():
             #precios_region = data.groupby('Fecha')['AveragePrice','Total Volume'].mean()
             precios_region = Datos.groupby('CalFecha').agg({'AveragePrice':'mean','Total Volume':'mean'}).reset_index()
             plt.plot(precios_region.index, precios_region.values, label=region)
-    
+
+    enun.getEnunciado('1.2')
     
     plt.xlabel("Fecha")
     plt.ylabel("Precio Promedio")
@@ -211,7 +220,7 @@ def P1B_AnalisisEstacionalidadRegion():
 def P1_3_ComparacionPreciosPromedioMensuales(pCampo='AveragePrice'):
     plt.figure(figsize=(20, 6))
     precios_mensuales = Datos.groupby(pd.Grouper(key='CalFecha', freq='M'))[pCampo].mean()
-    
+    enun.getEnunciado('1.3')
     plt.plot(precios_mensuales.index, precios_mensuales.values, label="Precio Promedio Mensual")
 
     plt.grid(axis='x')  # Cuadrícula vertical
@@ -229,7 +238,7 @@ def P1_3_ComparacionPreciosPromedioMensuales(pCampo='AveragePrice'):
 def P1_4_TendenciaVentasALoLargoDelTiempo():
     Datos['Fecha'] = pd.to_datetime(Datos['Fecha'], errors='coerce')
     volumen_total = Datos.groupby('Fecha')['Total Volume'].sum()
-    
+    enun.getEnunciado('1.4')
     plt.plot(volumen_total.index, volumen_total.values, label="Volumen Total de Ventas")
     plt.xlabel("Fecha")
     plt.ylabel("Volumen Total")
@@ -240,7 +249,7 @@ def P1_4_TendenciaVentasALoLargoDelTiempo():
 # P1.5_AnalisisCambiosPreciosAnuales
 def P1_5_AnalisisCambiosPreciosAnuales():
     precios_anuales = Datos.groupby('Year')['AveragePrice'].mean()
-    
+    enun.getEnunciado('1.5')
     plt.bar(precios_anuales.index, precios_anuales.values, color='skyblue', label="Precio Promedio Anual")
     plt.xlabel("Año")
     plt.ylabel("Precio Promedio")
@@ -252,6 +261,7 @@ def P1_5_AnalisisCambiosPreciosAnuales():
 # --------------------- 2. Gráficos para Visualización de Datos ---------------------
 
 def P21_Grafico_Violin_Volumen_Venta_Region():
+    enun.getEnunciado('2.1')
     plt.figure(figsize=(12, 6))
     sns.violinplot(x='region', y='Total Volume', data=Datos)
     #sns.violinplot(x=Datos['region'],y=Datos['Total Volume'])
@@ -262,6 +272,7 @@ def P21_Grafico_Violin_Volumen_Venta_Region():
     plt.show()
 
 def P22_Boxplot_Comparativo_Precios_Entre_Años():
+    enun.getEnunciado('2.2')
     plt.figure(figsize=(10, 6))
     sns.boxplot(x='Year', y='AveragePrice', data=Datos)
     plt.title("Distribución de Precios Promedios entre Años")
@@ -270,6 +281,7 @@ def P22_Boxplot_Comparativo_Precios_Entre_Años():
     plt.show()
 
 def P23_Histograma_Volumen_Total_Ventas():
+    enun.getEnunciado('2.3')
     plt.figure(figsize=(8, 5))
     plt.hist(Datos['Total Volume'], bins=30, edgecolor='black')
     plt.title("Distribución del Volumen Total de Ventas")
@@ -278,6 +290,7 @@ def P23_Histograma_Volumen_Total_Ventas():
     plt.show()
 
 def P24_Grafico_Barras_Ventas_Tipo_Bolsa():
+    enun.getEnunciado('2.4')
     bags = ['Total Bags', 'Small Bags', 'Large Bags', 'XLarge Bags']
     total_bags = Datos[bags].sum()
     plt.figure(figsize=(8, 5))
@@ -288,6 +301,7 @@ def P24_Grafico_Barras_Ventas_Tipo_Bolsa():
     plt.show()
 
 def P25_Grafico_Lineas_Precios_Promedios_Año():
+    enun.getEnunciado('2.5')
     avg_price_by_year = Datos.groupby('Year')['AveragePrice'].mean()
     plt.figure(figsize=(10, 6))
     plt.plot(avg_price_by_year.index, avg_price_by_year.values, marker='o')
@@ -299,6 +313,7 @@ def P25_Grafico_Lineas_Precios_Promedios_Año():
 # --------------------- 3. Elasticidad del Precio ---------------------
 
 def P31_Elasticidad_Precio_Demanda_Año():
+    enun.getEnunciado('3.1')
     Datos['DeltaQ'] = Datos['Total Volume'].pct_change()
     Datos['DeltaP'] = Datos['AveragePrice'].pct_change()
     Datos['Elasticidad'] = (Datos['DeltaQ'] / Datos['Total Volume']) / (Datos['DeltaP'] / Datos['AveragePrice'])
@@ -311,6 +326,7 @@ def P31_Elasticidad_Precio_Demanda_Año():
     plt.show()
 
 def P32_Comparacion_Elasticidad_Diferentes_Mercados():
+    enun.getEnunciado('3.2')
     elasticidad_by_region = Datos.groupby('region')['Elasticidad'].mean()
     plt.figure(figsize=(12, 6))
     plt.bar(elasticidad_by_region.index, elasticidad_by_region.values, color='orange')
@@ -323,6 +339,7 @@ def P32_Comparacion_Elasticidad_Diferentes_Mercados():
 # --------------------- 4. Análisis de Cohortes ---------------------
 
 def P41_Cohortes_Precios_Promedios_Trimestrales():
+    enun.getEnunciado('4.1')
     Datos.set_index('Fecha', inplace=True)
     quarterly_data = Datos.resample('Q').agg({'AveragePrice': 'mean', 'Total Volume': 'sum'})
     plt.figure(figsize=(10, 6))
@@ -337,7 +354,7 @@ def P41_Cohortes_Precios_Promedios_Trimestrales():
 # --------------------- 5. Análisis de Correlación y Regresión ---------------------
 
 def P51_Matriz_Correlacion():
-    
+    enun.getEnunciado('5.1')
     #plt.figure(figsize=(10, 8))
     #sns.heatmap(Datos.corr(), annot=True, cmap='coolwarm')
     #plt.title("Matriz de Correlación entre Variables Numéricas")
@@ -795,8 +812,8 @@ mDbg+=f'Tiempo de ejecución ms:{tiempo_ejecucion}'
 print(mDbg)
 avg_price_daily = Datos.groupby('Date')['AveragePrice'].mean()
 
-x = avg_price_daily[0]
-y = avg_price_daily[1]
+x = avg_price_daily.iloc[0]
+y = avg_price_daily.iloc[1]
 #create_plot(x,y, legend = 'SPY Close Price')
 
 #Series_Temporales_Precios()

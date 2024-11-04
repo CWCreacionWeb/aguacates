@@ -7,12 +7,14 @@ class Enunciados:
         with open('./datos/enunciados.json', 'r') as file:
             self.enunciado = json.load(file)
 
-    def getEnunciado(self, key):
+    def getEnunciado(self, key,moreData=None):
         # Accede al enunciado específico
         enunciado = self.enunciado.get(key, {})
         descripcion = enunciado.get('descripcion', '')
         contenido = enunciado.get('contenido', '')
         comentarios = enunciado.get('comentarios', '')
+        if moreData:
+            contenido = contenido.format("\n**" + moreData)
         # Mostrar en formato Markdown
         display(Markdown(f"{key} | {descripcion}\n{contenido}\n{comentarios}"))
 
