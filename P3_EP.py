@@ -1,3 +1,4 @@
+from IPython.display import display, Markdown, HTML
 
 from statsmodels.tsa.seasonal import seasonal_decompose
 from datetime import datetime
@@ -14,30 +15,107 @@ Datos =''
 # --------------------- 3. Elasticidad del Precio ---------------------
 # Función para calcular la elasticidad
 def calcular_elasticidad(volumen, precio):
+    """
+### 3. **Elasticidad del Precio**
+**Resumen:** El análisis de elasticidad precio-demanda permite evaluar cómo los cambios en los precios afectan la demanda de aguacates. Comprender la elasticidad puede ayudar a formular estrategias de precios más efectivas.
+
+La fórmula de elasticidad precio-demanda es:
+
+$$
+E_d = \frac{\% \text{Cambio en la cantidad demandada}}{\% \text{Cambio en el precio}} = \frac{\Delta Q / Q}{\Delta P / P}
+$$    
+    """
+    mDbg =calcular_elasticidad.__doc__
+
+    mDbg += f"""
+**Notas**:
+
+- El año 2018 no está completo, tenemos 3 meses, lo que representa que el volumen es un 25%.
+- El incremento de volumen respecto al año anterior es incorrecto y, por tanto, la elasticidad también.
+- El incremento de precio medio es relativo a 3 meses, por lo que el valor de la elasticidad es inconsistente.
+    - Disminuyen las ventas un 71% y el precio un 11%, resultando en una elasticidad de 6.
+
+Si homogeneizamos los datos comparando solo 3 meses:
+   - Las ventas se incrementan un 14% y el precio un 4%, con una elasticidad de 0.35.
+
+    """
+
+    mDbg += f"""
+- **parametros**:  
+         - *volumen:*
+         - *precio:* 
+    """
+
+    display(Markdown(mDbg))
+
+
     # Calcular el porcentaje de cambio en volumen y precio
     cambio_volumen = volumen.pct_change()
     cambio_precio = precio.pct_change()
     # Calcular elasticidad precio-demanda
-    elasticidad = (cambio_volumen / cambio_precio).fillna(0)
-    return elasticidad
+    elasticidad = (cambio_volumen / cambio_precio)#.fillna(0)
+
+
+
+    return elasticidad, cambio_volumen, cambio_precio
+
 
 def P3_1_Elasticidad_Precio_Demanda_Año(pListaRegiones =''):
+    """
+1. **Elasticidad Precio-Demanda por Año:**
+   - **Uso de Datos:** Usa las columnas `AveragePrice` y `Total Volume`.
+   - **Esperado:** Calcula la elasticidad del precio de la demanda para cada año.
+     - Calcula la variación porcentual de `Total Volume` y `AveragePrice` utilizando `pd.pct_change()`.
+     - Utiliza la fórmula de elasticidad para determinar la sensibilidad de la demanda respecto al precio.
+     - Presenta los resultados en un gráfico de líneas usando `plt.plot()` para mostrar la elasticidad por año.    
+    """
+
+    mDbg =P3_1_Elasticidad_Precio_Demanda_Año.__doc__
+
+    mDbg += f"""- **parametros**:  
+         - *pListaRegiones:*{pListaRegiones}
+    """
+    display(Markdown(mDbg))
+
+
     print("Calculando Elasticidad Precio-Demanda por Año...")
     # Agrupar datos por año y calcular la elasticidad anual
     #SubDatos = datos['region'] =''
+    SubData= Datos
     if(pListaRegiones==''):
-        SubData = Datos
+        SubData = SubData
     else:
-        SubData = Datos[Datos['region'] == 'TotalUS']
+        SubData = SubData[Datos['region'] == 'TotalUS']
+
     Datos_anual = SubData.groupby('CalYear').agg({'Total Volume': 'sum', 'AveragePrice': 'mean'}).reset_index()
-    Datos_anual['Elasticidad'] = calcular_elasticidad(Datos_anual['Total Volume'], Datos_anual['AveragePrice'])
+
+
+    #Datos_anual['Elasticidad'] = calcular_elasticidad(Datos_anual['Total Volume'], Datos_anual['AveragePrice'])
+     # Calcular la elasticidad y cambios en volumen y precio
+    Datos_anual['Elasticidad'], Datos_anual['Cambio_Volumen'], Datos_anual['Cambio_Precio'] =  calcular_elasticidad(Datos_anual['Total Volume'], Datos_anual['AveragePrice'])
+
+
+    print('Tabla Elasticidad periodo')
+    print(Datos_anual[['Cambio_Volumen','Cambio_Precio','Elasticidad']])
     # Gráfico de elasticidad por año
     plt.figure(figsize=(12, 6))
     plt.plot(Datos_anual['CalYear'], Datos_anual['Elasticidad'], marker='o', color='b')
-    plt.title('Elasticidad Precio-Demanda por Año')
+    plt.title('Elasticidad cambio_volumen / cambio_precio por Año')
     plt.xlabel('Año')
     plt.ylabel('Elasticidad')
     plt.grid(True)
+
+    # Añadir el texto en cada punto del gráfico
+    for i, row in Datos_anual.iterrows():
+        year = row['CalYear']
+        elasticidad = row['Elasticidad']
+        cambio_volumen = row['Cambio_Volumen']
+        cambio_precio = row['Cambio_Precio']
+        texto_info=''
+        if math.isnan(elasticidad)==False: 
+            texto_info = f"Info: {cambio_volumen*100:.2f}% / {cambio_precio*100:.2f}% = {elasticidad:.2f}"
+        plt.text(year, elasticidad, texto_info, ha='right', va='bottom', fontsize=9, color='purple')
+
   # Asegurarse de que los años en el eje x se muestren como enteros
     plt.xticks(Datos_anual['CalYear'], rotation=45)  # Los años se muestran sin decimales y alineados verticalmente
 
@@ -45,10 +123,26 @@ def P3_1_Elasticidad_Precio_Demanda_Año(pListaRegiones =''):
 
 
 def P3_2_Elasticidad_Regiones():
+    """
+2. **Comparación de Elasticidad en Diferentes Mercados:**
+   - **Uso de Datos:** Utiliza las columnas `Total Volume` y `AveragePrice`.
+   - **Esperado:** Calcula la elasticidad del precio de la demanda en diferentes regiones.
+     - Agrupa los datos por `region` y calcula la elasticidad para cada región utilizando `pd.pct_change()`.
+     - Presenta un gráfico de barras que muestre la elasticidad por región usando `plt.bar()`.    
+    """
+    mDbg =P3_2_Elasticidad_Regiones.__doc__
+
+    display(Markdown(mDbg))
+
     print("Comparando Elasticidad en Diferentes Regiones...")
     # Agrupar datos por región y calcular la elasticidad para cada región
-    Datos_region = Datos.groupby('region').agg({'Total Volume': 'sum', 'AveragePrice': 'mean'}).reset_index()
+    SubData = Datos
+    Datos_region = SubData.groupby('CalYear','region').agg({'Total Volume': 'sum', 'AveragePrice': 'mean'}).reset_index()
+
     Datos_region['Elasticidad'] = calcular_elasticidad(Datos_region['Total Volume'], Datos_region['AveragePrice'])
+         # Calcular la elasticidad y cambios en volumen y precio
+    #Datos_anual['Elasticidad'], Datos_anual['Cambio_Volumen'], Datos_anual['Cambio_Precio'] =  calcular_elasticidad(Datos_anual['Total Volume'], Datos_anual['AveragePrice'])
+
     # Gráfico de elasticidad por región
     plt.figure(figsize=(12, 6))
     plt.bar(Datos_region['region'], Datos_region['Elasticidad'], color='skyblue')
@@ -59,49 +153,237 @@ def P3_2_Elasticidad_Regiones():
     plt.tight_layout()
     plt.show()
 
+def P3_2_Elasticidad_RegionesN():
+    """
+    Calcula la elasticidad del precio de la demanda por región y año
+    y muestra un gráfico de barras comparando elasticidades por región.
+    
+    - Datos: DataFrame que contiene las columnas 'Total Volume', 'AveragePrice', 'region', y 'CalYear'
+    """
+    global Datos
+
+    Datos_anual = Datos.groupby('region','CalYear').agg({'Total Volume': 'sum', 'AveragePrice': 'mean'}).reset_index()
+
+
+    Datos_anual['Elasticidad'], Datos_anual['Cambio_Volumen'], Datos_anual['Cambio_Precio'] =  calcular_elasticidad(Datos_anual['Total Volume'], Datos_anual['AveragePrice'])
+    DatosN = Datos_anual.copy()
+    """
+    DatosN = Datos.copy()
+    # Calcular el cambio porcentual en 'Total Volume' y 'AveragePrice' por año y región
+    DatosN['Cambio_Volumen'] = DatosN.groupby(['region', 'CalYear'])['Total Volume'].pct_change()
+    DatosN['Cambio_Precio'] = DatosN.groupby(['region', 'CalYear'])['AveragePrice'].pct_change()
+    
+
+
+    
+    # Calcular la elasticidad como cambio de volumen sobre cambio de precio
+    DatosN['Elasticidad'] = DatosN['Cambio_Volumen'] / DatosN['Cambio_Precio']
+    """
+    # Filtrar los datos para eliminar filas con NaN en elasticidad (primera fila de cada grupo)
+    print(DatosN)
+    Datos_filtrado = DatosN.dropna(subset=['Elasticidad'])
+    
+    # Agrupar por región y año para obtener la elasticidad promedio anual en cada región
+    Elasticidad_por_region = Datos_filtrado.groupby(['region', 'CalYear'])['Elasticidad'].mean().reset_index()
+    
+    # Graficar elasticidad por región y año
+    plt.figure(figsize=(14, 8))
+    
+    # Crear un gráfico de barras donde cada región tenga una barra por año
+    for region in Elasticidad_por_region['region'].unique():
+        # Filtrar datos de la región actual
+        datos_region = Elasticidad_por_region[Elasticidad_por_region['region'] == region]
+        # Crear gráfico de barras para la región actual
+        plt.bar(datos_region['CalYear'] + 0.1 * Elasticidad_por_region['region'].unique().tolist().index(region), 
+                datos_region['Elasticidad'], 
+                width=0.2, 
+                label=f'Región: {region}')
+    
+    # Configuración del gráfico
+    plt.title('Elasticidad Precio-Demanda por Región y Año')
+    plt.xlabel('Año')
+    plt.ylabel('Elasticidad')
+    plt.xticks(Elasticidad_por_region['CalYear'].unique())  # Años como etiquetas en el eje x
+    plt.legend(title='Región')
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.show()
+
 # Punto 3.3 Elasticidad a Nivel de Tipo de Bolsa
-def P3_3_Elasticidad_Bolsas():
+def P3_3_Elasticidad_BolsasA():
+    """
+    3. **Elasticidad a Nivel de Tipo de Bolsa:**
+       - **Uso de Datos:** Usa las columnas `AveragePrice` y `Total Bags`.
+       - **Esperado:** Calcula la elasticidad del precio de la demanda específica para cada tipo de bolsa.
+         - Suma los volúmenes de ventas por tipo de bolsa utilizando `groupby()` y `sum()`.
+         - Calcula la elasticidad para cada tipo y presenta los resultados en un gráfico comparativo usando `plt.bar()`.
+    """
+    
+    mDbg = P3_3_Elasticidad_Bolsas.__doc__
+    display(Markdown(mDbg))
+
     print("Calculando Elasticidad para Cada Tipo de Bolsa...")
+
     # Sumar volúmenes de cada tipo de bolsa por año y calcular elasticidad
     Datos_bolsas = Datos.groupby('CalYear').agg({'Total Bags': 'sum', 'AveragePrice': 'mean'}).reset_index()
-    Datos_bolsas['Elasticidad'] = calcular_elasticidad(Datos_bolsas['Total Bags'], Datos_bolsas['AveragePrice'])
-    # Gráfico comparativo de elasticidad para cada tipo de bolsa
+    
+    # Calcular cambios porcentuales en el volumen total de bolsas y el precio promedio
+    Datos_bolsas['Cambio_Volumen'] = Datos_bolsas['Total Bags'].pct_change()
+    Datos_bolsas['Cambio_Precio'] = Datos_bolsas['AveragePrice'].pct_change()
+    
+    # Calcular la elasticidad: cambio de volumen dividido por cambio de precio
+    Datos_bolsas['Elasticidad'] = Datos_bolsas['Cambio_Volumen'] / Datos_bolsas['Cambio_Precio']
+    
+    # Eliminar filas con valores NaN (debido al cálculo de pct_change en la primera fila)
+    Datos_bolsas = Datos_bolsas.dropna(subset=['Elasticidad'])
+
+    # Gráfico comparativo de elasticidad para cada año
     plt.figure(figsize=(10, 6))
     plt.bar(Datos_bolsas['CalYear'].astype(str), Datos_bolsas['Elasticidad'], color='blue')
     plt.title('Elasticidad Precio-Demanda por Tipo de Bolsa')
     plt.xlabel('Año')
     plt.ylabel('Elasticidad')
-    plt.show()
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.show()    
 
-# Punto 3.4 Análisis de Elasticidad Comparativa entre Orgánicos y Convencionales
+
+
+def calcular_elasticidadB(volumen, precio):
+    """
+    Calcula la elasticidad precio-demanda como el cambio porcentual en el volumen
+    dividido por el cambio porcentual en el precio.
+    """
+    # Evitar division por cero
+    if volumen.empty or precio.empty:
+        return pd.Series([0]*len(volumen))
+
+    cambio_volumen = volumen.pct_change().fillna(0)  # Cambio porcentual en el volumen
+    cambio_precio = precio.pct_change().fillna(0)    # Cambio porcentual en el precio
+
+    # Calculamos la elasticidad, evitando divisiones por cero
+    elasticidad = cambio_volumen / cambio_precio.replace(0, 1)  # Reemplaza 0 en cambio_precio por 1 para evitar division por cero
+    return elasticidad
+
+def P3_3_Elasticidad_BolsasB():
+    """
+    3. **Elasticidad a Nivel de Tipo de Bolsa:**
+       - **Uso de Datos:** Usa las columnas `AveragePrice`, `Small Bags`, `Large Bags`, `XLarge Bags`.
+       - **Esperado:** Calcula la elasticidad del precio de la demanda específica para cada tipo de bolsa.
+         - Suma los volúmenes de ventas por tipo de bolsa utilizando `groupby()` y `sum()`.
+         - Calcula la elasticidad para cada tipo y presenta los resultados en un gráfico comparativo usando `plt.bar()`.
+    """
+    print("Calculando Elasticidad para Cada Tipo de Bolsa...")
+    global Datos
+    # Agrupar y sumar los volúmenes de cada tipo de bolsa por año y calcular el precio promedio
+    Datos_bolsas = Datos.groupby('CalYear').agg({
+        'AveragePrice': 'mean', 
+        'Small Bags': 'sum', 
+        'Large Bags': 'sum', 
+        'XLarge Bags': 'sum'
+    }).reset_index()
+
+    # Calcular la elasticidad para cada tipo de bolsa
+    Datos_bolsas['Elasticidad_Small'] = calcular_elasticidadB(Datos_bolsas['Small Bags'], Datos_bolsas['AveragePrice'])
+    Datos_bolsas['Elasticidad_Large'] = calcular_elasticidadB(Datos_bolsas['Large Bags'], Datos_bolsas['AveragePrice'])
+    Datos_bolsas['Elasticidad_XLarge'] = calcular_elasticidadB(Datos_bolsas['XLarge Bags'], Datos_bolsas['AveragePrice'])
+
+    # Calcular la elasticidad promedio
+    elasticidades_promedio = [
+        Datos_bolsas['Elasticidad_Small'].mean(),
+        Datos_bolsas['Elasticidad_Large'].mean(),
+        Datos_bolsas['Elasticidad_XLarge'].mean()
+    ]
+
+    # Graficar las elasticidades de cada tipo de bolsa
+    plt.figure(figsize=(12, 6))
+    plt.bar(['Small Bags', 'Large Bags', 'XLarge Bags'], elasticidades_promedio, color=['blue', 'orange', 'green'])
+    
+    plt.title('Elasticidad Precio-Demanda por Tipo de Bolsa')
+    plt.xlabel('Tipo de Bolsa')
+    plt.ylabel('Elasticidad Promedio')
+    plt.show()
+    
 def P3_4_Elasticidad_Tipo():
+    """
+    4. **Análisis de Elasticidad Comparativa entre Orgánicos y Convencionales:**
+       - **Uso de Datos:** Usa las columnas `AveragePrice`, `Total Volume` y `type`.
+       - **Esperado:** Compara la elasticidad de la demanda entre aguacates orgánicos y convencionales.
+         - Agrupa los datos por `type` y calcula la elasticidad utilizando `pd.pct_change()`.
+         - Presenta un gráfico que muestre la diferencia en elasticidad entre los dos tipos usando `plt.plot()`
+    """
+    
+    mDbg = P3_4_Elasticidad_Tipo.__doc__
+    display(Markdown(mDbg))
+
     print("Comparando Elasticidad entre Aguacates Orgánicos y Convencionales...")
-    # Calcular elasticidad para aguacates orgánicos y convencionales
-    Datos_tipo = Datos.groupby(['CalYear', 'type']).agg({'Total Volume': 'sum', 'AveragePrice': 'mean'}).reset_index()
-    Datos_tipo['Elasticidad'] = Datos_tipo.groupby('type').apply(lambda x: calcular_elasticidad(x['Total Volume'], x['AveragePrice'])).reset_index(level=0, drop=True)
+
+    # Agrupar datos por año y tipo de aguacate, y calcular volumen total y precio promedio
+    Datos_tipo = Datos.groupby(['CalYear', 'type']).agg({
+        'Total Volume': 'sum', 
+        'AveragePrice': 'mean'
+    }).reset_index()
+
+    # Calcular cambios porcentuales
+    Datos_tipo['Cambio_Volumen'] = Datos_tipo.groupby('type')['Total Volume'].pct_change()
+    Datos_tipo['Cambio_Precio'] = Datos_tipo.groupby('type')['AveragePrice'].pct_change()
+    
+    # Calcular la elasticidad
+    Datos_tipo['Elasticidad'] = Datos_tipo['Cambio_Volumen'] / Datos_tipo['Cambio_Precio']
+    
+    # Eliminar filas con valores NaN (primera fila de cada grupo)
+    Datos_tipo = Datos_tipo.dropna(subset=['Elasticidad'])
+
     # Gráfico comparativo de elasticidad entre tipos de aguacates
     plt.figure(figsize=(10, 6))
+    """
     for tipo in Datos_tipo['type'].unique():
         subset = Datos_tipo[Datos_tipo['type'] == tipo]
         plt.plot(subset['CalYear'].astype(str), subset['Elasticidad'], marker='o', label=f'{tipo}')
+    """
+        # Configuración del gráfico
+    plt.figure(figsize=(12, 6))
+    años = Datos_tipo['CalYear'].unique()
+    ancho_barra = 0.35  # Ancho de las barras
+    # Generar el gráfico de barras para cada tipo (orgánico y convencional)
+    for i, tipo in enumerate(Datos_tipo['type'].unique()):
+        subset = Datos_tipo[Datos_tipo['type'] == tipo]
+        # Posiciones en el eje X con desplazamiento para evitar superposición
+        posiciones_x = subset['CalYear'] + (i * ancho_barra) - ancho_barra / 2
+        plt.bar(posiciones_x, subset['Elasticidad'], width=ancho_barra, label=f'{tipo}')
+
+
     plt.title('Elasticidad Comparativa: Orgánicos vs Convencionales')
     plt.xlabel('Año')
     plt.ylabel('Elasticidad')
-    plt.legend()
+    plt.legend(title="Tipo de Aguacate")
+    plt.grid(True)
     plt.show()
+
+
+
 
 # Punto 3.5 Análisis de la Elasticidad Precios-Ventas
 def P3_5_Elasticidad_Precio_Ventas():
+    """
+5. **Análisis de la Elasticidad Precios-Ventas:**
+   - **Uso de Datos:** Usa las columnas `AveragePrice` y `Total Volume`.
+   - **Esperado:** Examina cómo las variaciones en `AveragePrice` afectan a `Total Volume`.
+     - Realiza un análisis de la relación entre estas dos variables calculando la elasticidad.
+     - Presenta un gráfico de dispersión que muestre la relación y discute la tendencia observada utilizando `plt.scatter()` y `plt.plot()`    
+    """
+    mDbg =P3_5_Elasticidad_Precio_Ventas.__doc__
+
+    display(Markdown(mDbg))
+
     print("Analizando Elasticidad entre Precios y Ventas Totales...")
     # Calcular elasticidad entre precio promedio y volumen total
     elasticidad = calcular_elasticidad(Datos['Total Volume'], Datos['AveragePrice'])
     Datos['Elasticidad_Precio_Ventas'] = elasticidad
     # Gráfico de dispersión de la relación entre precio y volumen
     plt.figure(figsize=(10, 6))
-    plt.scatter(Datos['AveragePrice'], Datos['Total Volume'], alpha=0.5, color='purple')
+    plt.scatter(Datos['AveragePrice'], Datos['Total Volume']/1000, alpha=0.5, color='purple')
     plt.title('Relación entre Precio y Volumen de Ventas')
     plt.xlabel('Precio Promedio')
-    plt.ylabel('Volumen Total')
+    plt.ylabel('Volumen Total (miles)')
     plt.grid(True)
     plt.show()
 

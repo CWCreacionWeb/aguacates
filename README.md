@@ -5,6 +5,7 @@ Requerimientos [Proyecto_Analisis_Aguacate.pdf](/documentacion/Proyecto_Analisis
 ## Metodología de trabajo
 
 - **Extreme programming (XP) :** Como un equipo de Jazz,
+- **Trello :** Para gestionar la lista de tareas mediante KANBAN 
 - **Canales de comunicación equpipo :** whatsapp  y Google Meet video conferencia.
 - **Repositorio:** GitHub, cada usuario tiene un repositorio, con dos ramas para su organización main y DEV,para integrar los desarollos se realiza mediante Fork
 

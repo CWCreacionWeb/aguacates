@@ -331,15 +331,15 @@ def P1_4_TendenciaVentasALoLargoDelTiempo(pCampo='Total Volume'):
     plt.legend()
     plt.show()
 
-# P1.5_AnalisisCambiosPreciosAnuales
+
 def P1_5_AnalisisCambiosPreciosAnuales(pAnos='', pClasificacion ='',pCampo='AveragePrice',pxCampo='CalYear'):
     """
-5. **Gráfico de Líneas de Precios Promedios por Año:**
-   - **Uso de Datos:** Utiliza las columnas `AveragePrice` y `year`.
-   - **Esperado:** Visualiza la tendencia de precios promedio a lo largo de los años.
-     - Agrupa los datos por `year` y calcula el promedio de `AveragePrice`.
-     - Usa `plt.plot()` para crear un gráfico de líneas que muestre la evolución de precios.
-     - Añade un título y etiquetas descriptivas a los ejes usando `plt.title()` y `plt.xlabel()`.
+5. **Análisis de Cambios en Precios Anuales:**
+   - **Uso de Datos:** Usa las columnas `AveragePrice` y `year`.
+   - **Esperado:** Observa las diferencias anuales en los precios promedio.
+     - Agrupa los datos por `year` utilizando `groupby()`.
+     - Calcula el promedio de `AveragePrice` para cada año.
+     - Representa los resultados en un gráfico de barras usando `plt.bar()` que compare los precios de cada año.
     """
     mDbg =P1_5_AnalisisCambiosPreciosAnuales.__doc__
 
@@ -370,8 +370,8 @@ def P1_5_AnalisisCambiosPreciosAnuales(pAnos='', pClasificacion ='',pCampo='Aver
     
     # Crear el gráfico de líneas
     plt.figure(figsize=(10, 6))
+    plt.bar(precios_anuales[pxCampo], precios_anuales[pCampo], color='skyblue')
     #plt.plot(precios_anuales[pxCampo], precios_anuales[pCampo], marker='o', linestyle='-')
-    plt.plot(precios_anuales[pxCampo], precios_anuales[pCampo], marker='o', linestyle='-')
 
     # Añadir título y etiquetas
     plt.title('Evolución de Precios Promedios de Aguacates por Año')
@@ -383,6 +383,10 @@ def P1_5_AnalisisCambiosPreciosAnuales(pAnos='', pClasificacion ='',pCampo='Aver
     plt.ylabel(f'{pCampo}')
     plt.title(f"Análisis de Cambios en {pCampo} Anuales:{pClasificacion}")
 
+    # Añadir etiquetas de valor en cada barra
+    for i, valor in enumerate(precios_anuales[pCampo]):
+        plt.text(precios_anuales[pxCampo].iloc[i], valor, f'{valor:,.2f}', ha='center', va='bottom', fontsize=10)
+
     # Mostrar el gráfico
     plt.tight_layout()
     plt.show()    
@@ -390,3 +394,71 @@ def P1_5_AnalisisCambiosPreciosAnuales(pAnos='', pClasificacion ='',pCampo='Aver
     #plt.show()
 
 
+def P1_5_AnalisisCambiosPreciosMensuales():
+    # Crear columnas de Año y Mes si no existen
+    Datos['xYear'] = Datos['CalFecha'].dt.year
+    Datos['xMonth'] = Datos['CalFecha'].dt.month
+
+    # Agrupar por Año y Mes y calcular el promedio de AveragePrice
+    precios_mensuales = Datos.groupby(['xYear', 'xMonth'])['AveragePrice'].mean().reset_index()
+
+    # Crear el gráfico de líneas
+    plt.figure(figsize=(12, 6))
+
+    # Lista de colores para cada año
+    colores = plt.cm.viridis_r(precios_mensuales['xYear'].nunique())
+
+    # Graficar una línea para cada año
+    for i, year in enumerate(precios_mensuales['xYear'].unique()):
+        # Filtrar los datos para el año actual
+        datos_anuales = precios_mensuales[precios_mensuales['xYear'] == year]
+        # Crear la línea para el año con un color específico y una leyenda
+        #plt.plot(datos_anuales['xMonth'], datos_anuales['AveragePrice'], label=year, color=colores[i], marker='o')
+        plt.plot(datos_anuales['xMonth'], datos_anuales['AveragePrice'], label=year, marker='o')
+
+    # Configurar etiquetas y título
+    plt.title("Cambios Anuales en Precios Promedio de Aguacates por Mes")
+    plt.xlabel("Mes")
+    plt.ylabel("Precio Promedio")
+    plt.xticks(range(1, 13), ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'])
+    plt.legend(title='Año')
+    plt.grid()
+    plt.tight_layout()
+
+    # Mostrar el gráfico
+    plt.show()
+
+def P1_5_AnalisisCambiosPreciosSemanales():
+    # Crear columnas de Año y Mes si no existen
+    Datos['xYear'] = Datos['CalFecha'].dt.year
+    #Datos['xWeek'] = Datos['CalFecha'].dt.isocalendar().week
+    Datos['xWeek'] = Datos['CalFecha'].dt.dayofyear
+
+    # Agrupar por Año y Mes y calcular el promedio de AveragePrice
+    precios_semanales = Datos.groupby(['xYear', 'xWeek'])['AveragePrice'].mean().reset_index()
+    precios_semanales=precios_semanales[precios_semanales['xWeek'] <= 90]
+    # Crear el gráfico de líneas
+    plt.figure(figsize=(12, 6))
+
+    # Lista de colores para cada año
+    colores = plt.cm.viridis_r(precios_semanales['xYear'].nunique())
+
+    # Graficar una línea para cada año
+    for i, year in enumerate(precios_semanales['xYear'].unique()):
+        # Filtrar los datos para el año actual
+        datos_anuales = precios_semanales[precios_semanales['xYear'] == year]
+        # Crear la línea para el año con un color específico y una leyenda
+        #plt.plot(datos_anuales['xMonth'], datos_anuales['AveragePrice'], label=year, color=colores[i], marker='o')
+        plt.plot(datos_anuales['xWeek'], datos_anuales['AveragePrice'], label=year, marker='o')
+
+    # Configurar etiquetas y título
+    plt.title("Cambios Anuales en Precios Promedio de Aguacates por Mes")
+    plt.xlabel("Semana")
+    plt.ylabel("Precio Promedio")
+    plt.xticks(range(0, 91,7)) 
+    plt.legend(title='Año')
+    plt.grid()
+    plt.tight_layout()
+
+    # Mostrar el gráfico
+    plt.show()
