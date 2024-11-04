@@ -7,27 +7,27 @@ import pandas as pd
 import seaborn as sns
 import plotly.express as px
 from statsmodels.tsa.seasonal import seasonal_decompose
+import ipywidgets as widgets
+from IPython.display import display
 
 class Charts:
 
     def __init__(self, file):
         data = pd.read_csv(file)
         self.df = pd.DataFrame(data)
-        self.figureConfig()
+        # Configuro el label de todas las graficas con los nombres de las regiones
+        self.region_labels = self.df['region'].unique()
         self.seasonal_decompose = seasonal_decompose
-
-    def to_excel(self, data,filename):
-        # Guardar como archivo Excel
-        excel_file = filename + '.xlsx'  # Nombre del archivo Excel a crear
-        data.to_excel(excel_file, index=False)  # index=False para no incluir el índice como una columna
-
+        self.formatDate('Date')
 
     def figureConfig(self, width=11, height=6,**kwargs):
         plt.figure(figsize=(width, height))
-        plt.grid(True)
+        plt.legend(title='Region', labels=self.region_labels,bbox_to_anchor=(1.05, 1), loc='upper left')
+        plt.grid(True, color='gray', linestyle='--', linewidth=0.5, alpha=0.7, which='both')
         # Uso kwargs directamente en plt para pasar etiquetas, leyendas, etc.
         if kwargs:
             plt.gca().set(**kwargs)
+        plt.tight_layout()
 
     def showData(self,key = None):
         if key:
@@ -59,7 +59,6 @@ class Charts:
         plt.tight_layout()
         plt.show()
         plt.show()
-
 
     def plot_bar(self, x, y, title, xlabel, ylabel):
         fig, ax = plt.subplots()
@@ -114,3 +113,16 @@ class Charts:
                 fontsize=fontsize,
                 color=color
             )
+
+    def to_excel(self, data, filename):
+        # Guardar como archivo Excel
+        excel_file = filename + '.xlsx'  # Nombre del archivo Excel a crear
+        data.to_excel(excel_file, index=False)  # index=False para no incluir el índice como una columna
+
+    # CREO una funcion para coger las 5 primeras regions con mas volumen de ventas sobvre el campo Total Volume
+    def topRegions(self,num=5,exclude=None):
+        if exclude:
+            self.df = self.df[self.df['region'].isin(self.df.groupby('region')['Total Volume'].sum().sort_values(ascending=False).head(num).index)]
+            self.df = self.df[self.df['region'] != exclude]
+        else:
+            self.df = self.df[self.df['region'].isin(self.df.groupby('region')['Total Volume'].sum().sort_values(ascending=False).head(num).index)]
