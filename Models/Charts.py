@@ -7,8 +7,9 @@ import pandas as pd
 import seaborn as sns
 import plotly.express as px
 from statsmodels.tsa.seasonal import seasonal_decompose
-import ipywidgets as widgets
-from IPython.display import display
+# import ipywidgets as widgets
+# from IPython.display import display
+import random
 
 class Charts:
 
@@ -24,6 +25,9 @@ class Charts:
         plt.figure(figsize=(width, height))
         plt.legend(title='Region', labels=self.region_labels,bbox_to_anchor=(1.05, 1), loc='upper left')
         plt.grid(True, color='gray', linestyle='--', linewidth=0.5, alpha=0.7, which='both')
+        # Configuramos las posicion de los textos de x
+        plt.xticks(rotation=45)
+
         # Uso kwargs directamente en plt para pasar etiquetas, leyendas, etc.
         if kwargs:
             plt.gca().set(**kwargs)
@@ -53,19 +57,33 @@ class Charts:
     def formatDate(self, column_name):
         self.df[column_name] = pd.to_datetime(self.df[column_name])
 
-    def plot(self, x, y):
-        plt.plot(x, y,marker='o')
-        plt.legend()
-        plt.tight_layout()
-        plt.show()
+    def show(self):
         plt.show()
 
-    def plot_bar(self, x, y, title, xlabel, ylabel):
+    def plot(self, x, y, title, xlabel, ylabel,label=None,marker="o",show=True,**kwargs):
+        plt.plot(x, y,marker=marker,label=label)
+        plt.title(title)
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
+        plt.legend(title='Region', labels=self.region_labels,bbox_to_anchor=(1.05, 1), loc='upper left')
+        plt.grid(True, color='gray', linestyle='--', linewidth=0.5, alpha=0.7, which='both')
+        plt.xticks(rotation=45)
+        plt.axhline(0, color='red', linestyle='--', label=label, linewidth=1)
+        if kwargs:
+            plt.gca().set(**kwargs)
+
+        if show:
+            plt.show()
+
+    def plot_bar(self, x, y, title, xlabel, ylabel,axis='both', alpha=0.75,ylim=None,show=True):
         fig, ax = plt.subplots()
         ax.bar(x, y)
         ax.set(xlabel=xlabel, ylabel=ylabel, title=title)
-        ax.grid()
-        plt.show()
+        ax.grid(axis=axis, alpha=alpha)
+        if ylim:
+            ax.set_ylim(ylim)
+        if show:
+            plt.show()
 
     def plot_pie(self, x, y, title):
         fig, ax = plt.subplots()
@@ -74,12 +92,14 @@ class Charts:
         ax.set_title(title)
         plt.show()
 
-    def plot_hist(self, x, title, xlabel, ylabel):
+    def plot_hist(self, x, title, xlabel, ylabel,**kwargs):
         fig, ax = plt.subplots()
         ax.hist(x, bins=10)
+        plt.axhline(0, color='red', linestyle='--', linewidth=1)
         ax.set(xlabel=xlabel, ylabel=ylabel, title=title)
-        ax.grid()
-        plt.show()
+        if kwargs:
+            ax.hist(x, bins=10, **kwargs)  # Pasa los kwargs a ax.hist
+
 
     def plot_box(self, x, title, xlabel, ylabel):
         fig, ax = plt.subplots()
@@ -88,19 +108,16 @@ class Charts:
         ax.grid()
         plt.show()
 
-    def temporada(fecha) :
-        #COmprobamos a que estacion del año pertenece la fecha
-        #obtenemos el mes de la fecha dada
-        fecha = pd.to_datetime(fecha) #convertimos la fecha a formato datetime
+    def temporada(self,fecha) :
 
-        if fecha.month in [12, 1, 2]:
-            return 'Winter'
-        elif fecha.month in [3, 4, 5]:
-            return 'Spring'
-        elif fecha.month in [6, 7, 8]:
-            return 'Summer'
+        if fecha in [12, 1, 2]:
+            return 'Invierno'
+        elif fecha in [3, 4, 5]:
+            return 'Primavera'
+        elif fecha in [6, 7, 8]:
+            return 'Verano'
         else:
-            return 'Autumn'
+            return 'Otoño'
 
     def paintPlotTitle(self, data,key1,key2,ha='center',va='bottom',fontsize=10,color="black"):
         for i in range(len(data)):
