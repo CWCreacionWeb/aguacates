@@ -1,11 +1,27 @@
+from IPython.display import display, Markdown, HTML
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.ticker import ScalarFormatter
 
 # Variable global de datos
 Datos = None
 
 # 4.1 Cohortes Basadas en Precios Promedios Trimestrales
 def P4_1_CohortesPreciosPromedios():
+    """
+
+1. **Cohortes Basadas en Precios Promedios Trimestrales:**
+   - **Uso de Datos:** Usa las columnas `AveragePrice`, `Total Volume` y `Date`.
+   - **Esperado:** Crea cohortes trimestrales y analiza cambios en precios y volúmenes.
+     - Agrupa los datos por trimestre usando `pd.Grouper` con `freq='Q'`.
+     - Calcula el promedio de `AveragePrice` y suma `Total Volume` para cada cohorte.
+     - Visualiza los resultados en un gráfico de líneas que muestre la evolución de las cohortes.    
+    """    
+    mDbg =P4_1_CohortesPreciosPromedios.__doc__
+
+
+    display(Markdown(mDbg))
+
     P4_1_CohortesPreciosPromediosA()
     P4_1_CohortesPreciosPromediosB()
 
@@ -171,21 +187,25 @@ def P4_2_CohortesRegionFechaB(regiones, anio):
 
 def P4_2_CohortesRegionFecha(regiones, anio =''):
     """
-    Resumen: Analiza las cohortes de precios promedio y volumen total por región y año.
-    Esta función agrupa los datos por región y fecha para calcular el promedio de precios
-    y el volumen total, permitiendo observar las variaciones entre diferentes regiones.
-    
-    Parámetros:
-    - regiones: Lista de regiones a mostrar.
-    - anio: Año a filtrar.
-    """
-    print(f"Análisis de Cohortes por Región para el año: {anio}.")
+2. **Cohortes por Región y Fecha:**
+   - **Uso de Datos:** Utiliza las columnas `AveragePrice`, `Total Volume`, `region` y `Date`.
+   - **Esperado:** Analiza cómo varían las cohortes de diferentes regiones.
+     - Agrupa los datos por `region` y `Date` usando `groupby()`.
+     - Calcula el promedio de precios y volumen para cada cohorte.
+     - Presenta los resultados en gráficos de barras que muestren comparaciones entre regiones.
 
-    # Filtrar datos por año y regiones
-    if anio =='':
-        Datos_filtrados = Datos[ (Datos['region'].isin(regiones))]
-    else :
-        Datos_filtrados = Datos[(Datos['CalYear'] == anio) & (Datos['region'].isin(regiones))]
+    """
+
+    mDbg =P4_2_CohortesRegionFecha.__doc__
+
+    mDbg += f"""- **parametros**:  
+         - *regiones:*
+         - *anio:* 
+    """
+
+    display(Markdown(mDbg))
+
+    Datos_filtrados = Datos[(Datos['CalYear'] == anio) & (Datos['region'].isin(regiones))]
 
     # Agrupación de datos por región y fecha
     cohortes_region_fecha = Datos_filtrados.groupby(['region', 'CalFecha']).agg({
@@ -226,13 +246,25 @@ def P4_2_CohortesRegionFecha(regiones, anio =''):
     plt.tight_layout()
     plt.show()
 # 4.3 Análisis de Cohortes en Función del Tipo de Bolsa
-def P4_3_CohortesTipoBolsa():
+def P4_3_CohortesTipoBolsa(pTipoBolsa=['Total Bags','Small Bags','Large Bags','XLarge Bags'],pTipoEscala='',pPorcentaje='NO'):
     """
-    Resumen: Analiza cómo se comportan las diferentes cohortes de ventas según el tipo de bolsa.
-    Esta función agrupa los datos por tipo de bolsa y fecha, calculando el volumen total de ventas
-    para cada tipo de bolsa y visualizando los resultados.
+3. **Análisis de Cohortes en Función del Tipo de Bolsa:**
+   - **Uso de Datos:** Usa las columnas `Total Bags`, `Small Bags`, `Large Bags`, `XLarge Bags` y `Date`.
+   - **Esperado:** Examina cómo se comportan las diferentes cohortes según el tipo de bolsa.
+     - Agrupa los datos por tipo de bolsa y `Date`.
+     - Calcula el volumen de ventas total y muestra los resultados en un gráfico de líneas.
+
     """
-    print("Análisis de Cohortes en Función del Tipo de Bolsa.")
+
+    mDbg =P4_3_CohortesTipoBolsa.__doc__
+
+    mDbg += f"""- **parametros**:  
+         - **pTipoBolsa:**`{[pTipoBolsa]}` 
+         - **pTipoEscala:**`{[pTipoEscala]}`  **Posibles valores** '' Normal 'log'  Logaritmica
+         - **pTipoBolsa:**`{[pPorcentaje]}`   **Posibles valores** SI, NO                
+    """
+
+    display(Markdown(mDbg))
 
     # Agrupar los datos por tipo de bolsa y fecha
     cohortes_bolsas = Datos.groupby(['CalFecha']).agg({
@@ -242,14 +274,38 @@ def P4_3_CohortesTipoBolsa():
         'XLarge Bags': 'sum'
     }).reset_index()
 
-    print("Datos agrupados por fecha y calculados los volúmenes de ventas para cada tipo de bolsa.")
+    # Calcular el porcentaje de cada tipo de bolsa sobre Total Bags
+    cohortes_bolsas['Small Bags %'] = (cohortes_bolsas['Small Bags'] / cohortes_bolsas['Total Bags']) * 100 #-70
+    cohortes_bolsas['Large Bags %'] = (cohortes_bolsas['Large Bags'] / cohortes_bolsas['Total Bags']) * 100 #- 10
+    cohortes_bolsas['XLarge Bags %'] = (cohortes_bolsas['XLarge Bags'] / cohortes_bolsas['Total Bags']) * 100
 
     # Visualización: Gráfico de líneas para el volumen de ventas por tipo de bolsa
     plt.figure(figsize=(12, 6))
-    plt.plot(cohortes_bolsas['CalFecha'], cohortes_bolsas['Total Bags'], label='Total Bags', marker='o')
-    plt.plot(cohortes_bolsas['CalFecha'], cohortes_bolsas['Small Bags'], label='Small Bags', marker='o')
-    plt.plot(cohortes_bolsas['CalFecha'], cohortes_bolsas['Large Bags'], label='Large Bags', marker='o')
-    plt.plot(cohortes_bolsas['CalFecha'], cohortes_bolsas['XLarge Bags'], label='XLarge Bags', marker='o')
+    if pPorcentaje=='NO':
+        # Condicional para mostrar solo los tipos de bolsa especificados en pTipoBolsa
+        if 'Total Bags' in pTipoBolsa:
+            plt.plot(cohortes_bolsas['CalFecha'], cohortes_bolsas['Total Bags'], label='Total Bags', marker='o')
+        if 'Small Bags' in pTipoBolsa:
+            plt.plot(cohortes_bolsas['CalFecha'], cohortes_bolsas['Small Bags'], label='Small Bags', marker='o')
+        if 'Large Bags' in pTipoBolsa:
+            plt.plot(cohortes_bolsas['CalFecha'], cohortes_bolsas['Large Bags'], label='Large Bags', marker='o')
+        if 'XLarge Bags' in pTipoBolsa:
+            plt.plot(cohortes_bolsas['CalFecha'], cohortes_bolsas['XLarge Bags'], label='XLarge Bags', marker='o')
+    if pPorcentaje=='SI':        
+    # Condicional para mostrar solo los tipos de bolsa especificados en pTipoBolsa
+        if 'Small Bags' in pTipoBolsa:
+            plt.plot(cohortes_bolsas['CalFecha'], cohortes_bolsas['Small Bags %'], label='Small Bags %', marker='o')
+        if 'Large Bags' in pTipoBolsa:
+            plt.plot(cohortes_bolsas['CalFecha'], cohortes_bolsas['Large Bags %'], label='Large Bags %', marker='o')
+        if 'XLarge Bags' in pTipoBolsa:
+            plt.plot(cohortes_bolsas['CalFecha'], cohortes_bolsas['XLarge Bags %'], label='XLarge Bags %', marker='o')
+
+    if pTipoEscala=='log':
+        # Cambiar la escala del eje y a logarítmica
+        plt.yscale('log')
+
+    # Configurar el formato del eje y para que no use notación científica
+    plt.gca().yaxis.set_major_formatter(ScalarFormatter())
 
     plt.title("Análisis de Ventas por Tipo de Bolsa")
     plt.xlabel("Fecha")
@@ -263,10 +319,20 @@ def P4_3_CohortesTipoBolsa():
 # 4.4 Cohortes de Clientes Basadas en Ventas
 def P4_4_CohortesClientesVentas():
     """
-    Resumen: Agrupa y analiza clientes según el volumen de compras en distintas regiones.
-    Este análisis permite ver el comportamiento de las ventas en diferentes cohortes de clientes.
+4. **Cohortes de Clientes Basadas en Ventas:**
+   - **Uso de Datos:** Usa las columnas `Total Volume`, `Date` y `region`.
+   - **Esperado:** Analiza el comportamiento de las cohortes según el volumen de ventas.
+     - Clasifica los clientes según su volumen de compras.
+     - Visualiza las cohortes en gráficos de líneas o barras que muestren el comportamiento de compra a lo largo del tiempo.
     """
-    print("Análisis de Cohortes de Clientes Basadas en Ventas:")
+
+    mDbg =P4_4_CohortesClientesVentas.__doc__
+
+
+    display(Markdown(mDbg))
+
+
+
     cohortes_clientes = Datos.groupby(['region', 'CalFecha']).agg({
         'Total Volume': 'sum'
     }).reset_index()
@@ -281,10 +347,19 @@ def P4_4_CohortesClientesVentas():
 # 4.5 Evaluación de Retención de Ventas por Cohorte
 def P4_5_RetencionVentasCohorte():
     """
-    Resumen: Evaluación de la retención de ventas en cohortes a lo largo de un año.
-    Analiza la tasa de retención de ventas mensual en distintas cohortes para evaluar la consistencia del mercado.
+5. **Evaluación de Retención de Ventas por Cohorte:**
+   - **Uso de Datos:** Usa las columnas `Total Volume` y `Date`.
+   - **Esperado:** Estudia cómo se retienen las ventas en cohortes a lo largo de un año.
+     - Agrupa los datos por mes y cohortes.
+     - Calcula la retención de ventas y visualiza los resultados en un gráfico de líneas que muestre las tasas de retención.
     """
-    print("Evaluación de Retención de Ventas por Cohorte:")
+
+    mDbg =P4_5_RetencionVentasCohorte.__doc__
+
+
+    display(Markdown(mDbg))
+
+
     Datos['Cohorte_Mes'] = Datos['CalFecha'].dt.to_period('M')
     cohortes_retencion = Datos.groupby(['Cohorte_Mes']).agg({
         'Total Volume': 'sum'
