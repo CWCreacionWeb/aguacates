@@ -85,12 +85,6 @@ class Charts:
         if show:
             plt.show()
 
-    def plot_pie(self, x, y, title):
-        fig, ax = plt.subplots()
-        ax.pie(y, labels=x, autopct='%1.1f%%', startangle=90)
-        ax.axis('equal')
-        ax.set_title(title)
-        plt.show()
 
     def plot_hist(self, x, title, xlabel, ylabel,**kwargs):
         fig, ax = plt.subplots()
@@ -118,18 +112,6 @@ class Charts:
             return 'Verano'
         else:
             return 'Otoño'
-
-    def paintPlotTitle(self, data,key1,key2,ha='center',va='bottom',fontsize=10,color="black"):
-        for i in range(len(data)):
-            plt.text(
-                data[key1].iloc[i],
-                data[key2].iloc[i],
-                f'{data[key2].iloc[i]:.2f}',
-                ha=ha,
-                va=va,
-                fontsize=fontsize,
-                color=color
-            )
 
     def to_excel(self, data, filename):
         # Guardar como archivo Excel
