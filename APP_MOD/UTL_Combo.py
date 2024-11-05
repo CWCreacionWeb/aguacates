@@ -13,12 +13,15 @@ class Widget_lst:
         self.button_description = button_description
         self.on_button_click = on_button_click  # Función personalizada para manejar el clic
         
-        
+        # Creamos un Label para mostrar la descripción por encima del listbox
+        self.label_description = widgets.Label(value=self.description)
+
+
         # Creamos el widget de salida y el widget de selección múltiple
         self.salida = Output()
         self.wLista_widgets = widgets.SelectMultiple(
             options=self.data,
-            description=self.description,
+            #description=self.description,
             disabled=False
         )
         
@@ -41,7 +44,8 @@ class Widget_lst:
                 
     def mostrar(self):
         # Mostramos el widget de selección, el botón y el área de salida
-        display(VBox([self.wLista_widgets, self.wBtn_Lista, self.salida]))
+        #display(VBox([self.label_description,self.wLista_widgets, self.wBtn_Lista, self.salida]))
+        return VBox([self.label_description,self.wLista_widgets, self.wBtn_Lista, self.salida])
 
 
 """
