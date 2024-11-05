@@ -70,7 +70,7 @@ class Charts:
         plt.show()
 
     def plot(self, x, y, title, xlabel, ylabel,label=None,marker="o",show=True,**kwargs):
-        plt.plot(x, y,marker=marker,label=label)
+        plt.plot(x, y,marker=marker,label=label,color=self.getColor())
         plt.title(title)
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
@@ -87,7 +87,7 @@ class Charts:
     def plot_bar(self, x, y, title, xlabel, ylabel, ax=None, axis='both', alpha=0.75, ylim=None, show=True):
         if ax is None:
             fig, ax = plt.subplots()
-        ax.bar(x, y, label=title)  # Añadir `label` para cada serie
+        ax.bar(x, y, label=title,color=self.getColor())  # Añadir `label` para cada serie
 
         ax.set(xlabel=xlabel, ylabel=ylabel)
         ax.grid(axis=axis, alpha=alpha)
@@ -144,3 +144,22 @@ class Charts:
         if key not in self.df.columns:
             raise ValueError(f"La columna '{key}' no existe en el DataFrame.")
         return self.df[self.df[key] == value]
+
+    def getColor(self, color=None):
+        colors = [
+            '#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6', '#E6B333', '#3366E6', '#999966', '#99FF99',
+            '#B34D4D',
+            '#80B300', '#809900', '#E6B3B3', '#6680B3', '#66991A', '#FF99E6', '#CCFF1A', '#FF1A66', '#E6331A',
+            '#33FFCC',
+            '#66994D', '#B366CC', '#4D8000', '#B33300', '#CC80CC', '#66664D', '#991AFF', '#E666FF', '#4DB3FF',
+            '#1AB399',
+            '#E666B3', '#33991A', '#CC9999', '#B3B31A', '#00E680', '#4D8066', '#809980', '#E6FF80', '#1AFF33',
+            '#999933',
+            '#FF3380', '#CCCC00', '#66E64D', '#4D80CC', '#9900B3', '#E64D66', '#4DB380', '#FF4D4D', '#99E6E6', '#6666FF'
+        ]
+        #Acotamos la lista de colores al nuemero de self.region_labels
+        num_regions = len(self.region_labels)
+        colors = colors[:num_regions]
+        if color is None:
+            color = random.randint(0, len(colors) - 1)  # Elige un índice aleatorio de la lista
+        return colors[color]
