@@ -9,9 +9,10 @@ import matplotlib.dates as mdates
 import seaborn as sns
 import math
 import pandas as pd
+from APPModels.APP_FUN import APP_Enunciados,chart
 
 Datos =''    
-
+#vEnunciados = Enunciados()
 # --------------------- 3. Elasticidad del Precio ---------------------
 # Función para calcular la elasticidad
 def calcular_elasticidad(volumen, precio):
@@ -48,6 +49,8 @@ Si homogeneizamos los datos comparando solo 3 meses:
 
     display(Markdown(mDbg))
 
+    
+
 
     # Calcular el porcentaje de cambio en volumen y precio
     cambio_volumen = volumen.pct_change()
@@ -61,21 +64,18 @@ Si homogeneizamos los datos comparando solo 3 meses:
 
 
 def P3_1_Elasticidad_Precio_Demanda_Año(pListaRegiones =''):
-    """
-1. **Elasticidad Precio-Demanda por Año:**
-   - **Uso de Datos:** Usa las columnas `AveragePrice` y `Total Volume`.
-   - **Esperado:** Calcula la elasticidad del precio de la demanda para cada año.
-     - Calcula la variación porcentual de `Total Volume` y `AveragePrice` utilizando `pd.pct_change()`.
-     - Utiliza la fórmula de elasticidad para determinar la sensibilidad de la demanda respecto al precio.
-     - Presenta los resultados en un gráfico de líneas usando `plt.plot()` para mostrar la elasticidad por año.    
+
+    APP_Enunciados.getEnunciado('3.1')
+
+    mDbg = f"""
+- **parametros**:  
+     - **pClasificacionRegion:** `['AAA', 'BBBB']`
+     - **pListaRegiones:** `{pListaRegiones}`
+
     """
 
-    mDbg =P3_1_Elasticidad_Precio_Demanda_Año.__doc__
-
-    mDbg += f"""- **parametros**:  
-         - *pListaRegiones:*{pListaRegiones}
-    """
     display(Markdown(mDbg))
+
 
 
     print("Calculando Elasticidad Precio-Demanda por Año...")
@@ -374,6 +374,8 @@ def P3_5_Elasticidad_Precio_Ventas():
     global Datos
     MisDatos = Datos.copy()
     display(Markdown(mDbg))
+
+
 
     print("Analizando Elasticidad entre Precios y Ventas Totales...")
     # Calcular elasticidad entre precio promedio y volumen total

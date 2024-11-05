@@ -2,6 +2,8 @@ from IPython.display import display, Markdown, HTML
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.ticker import ScalarFormatter
+from APPModels.APP_FUN import APP_Enunciados,chart
+
 
 # Variable global de datos
 Datos = None
@@ -318,6 +320,8 @@ def P4_3_CohortesTipoBolsa(pTipoBolsa=['Total Bags','Small Bags','Large Bags','X
 
 # 4.4 Cohortes de Clientes Basadas en Ventas
 def P4_4_CohortesClientesVentas():
+    PRINT('esto es erroneo')
+def P4_4_CohortesClientesVentasX():
     """
 4. **Cohortes de Clientes Basadas en Ventas:**
    - **Uso de Datos:** Usa las columnas `Total Volume`, `Date` y `region`.

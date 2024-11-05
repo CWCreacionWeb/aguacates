@@ -8,10 +8,18 @@ import matplotlib.dates as mdates
 import seaborn as sns
 import math
 import pandas as pd
+from APPModels.APP_FUN import APP_Enunciados,chart
+
 
 Datos =''    
 
 # --------------------- 2. Gráficos para Visualización de Datos ---------------------
+def P21_Grafico_Violin_Volumen_Venta_RegionB():
+    APP_Enunciados.getEnunciado("2.1")
+    chart.figureConfig(title="Distribución de Ventas por Región (Top 5 Regiones)",xlabel="Región",ylabel="Volumen Total de Ventas")
+    sns.violinplot(x='region', y='Total Volume', data=chart.df, hue='region', palette="muted", dodge=False, legend=False)
+
+    APP_Enunciados.getExplicacion("2.1")
 
 def P21_Grafico_Violin_Volumen_Venta_Region(pClasificacionRegion ='', pListaRegiones =''):
     """

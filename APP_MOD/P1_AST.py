@@ -8,10 +8,11 @@ import matplotlib.dates as mdates
 import seaborn as sns
 import math
 import pandas as pd
-import UTL_Combo as UTL_CBO
+import APP_MOD.UTL_Combo as UTL_CBO
 #from IPython.display import display
-import ULT_FUNC as M_UF
 from ipywidgets import widgets, VBox, HBox, Output, Button
+import APP_MOD.ULT_FUNC as M_UF
+from APPModels.APP_FUN import APP_Enunciados,chart
 
 DatosORG =None
 Datos = None
@@ -66,48 +67,41 @@ def Btn_EjecutarRG(seleccion):
 def Btn_EjecutarRN(seleccion):
     print("Función personalizada. Selección realizada RG:", seleccion)
 
-def P1_1_Inicio():
-
+def P1_CfgListView():
+    print( len(Datos))
     vLista = M_UF.Lista_Atributo(Datos,'region')
     print(vLista)
     print ('P1_1_Inicio')
 
 
     vCBO_region = UTL_CBO.Widget_lst(vLista,'Regiones','BTN Regiones',Btn_Ejecutar)
-    vCBO_region.mostrar()
+    #vCBO_region.mostrar()
 
 
     vLista = M_UF.Lista_Atributo(Datos,'CalRegionGrupo')
     print(vLista)
 
     vCBO_CalRegionGrupo = UTL_CBO.Widget_lst(vLista,'CalRegionGrupo','BTN CalRegionGrupo',Btn_EjecutarRG)
-    vCBO_CalRegionGrupo.mostrar()
+    #vCBO_CalRegionGrupo.mostrar()
 
     vLista  = ["Todos", "Region Grupo", "Region"]
     vCBO_RegionNivel = UTL_CBO.Widget_lst(vLista,'RegionNivel','BTN RegionNivel',Btn_EjecutarRN)
-    vCBO_RegionNivel.mostrar()
+    #vCBO_RegionNivel.mostrar()
 
+    # Usar HBox para organizar los tres widgets en una misma fila
+    #display(HBox([vCBO_region.wLista_widgets, vCBO_CalRegionGrupo.wLista_widgets, vCBO_RegionNivel.wLista_widgets]))
 
-    
+    # Usamos HBox para organizar los widgets horizontalmente
+    display(HBox([vCBO_region.mostrar(), vCBO_CalRegionGrupo.mostrar(), vCBO_RegionNivel.mostrar()]))    
 
 # --------------------- 1. Análisis de Series Temporales ---------------------
-
+def DOC():
+    APP_Enunciados.getEnunciado('1')
 # P1.1_DescomposicionSerieTemporal
 def P1_1_DescomposicionSerieTemporal(pPeriodo=52,pCampo='AveragePrice'):
-    """
-1. **Descomposición de Series Temporales de Precios:** 
-   - **Uso de Datos:** Usa la columna `AveragePrice` y `Date`.
-   - **Esperado:** Utiliza la función `seasonal_decompose` de la librería `statsmodels` para descomponer la serie temporal de precios en componentes de tendencia, estacionalidad y ruido. 
-     - Convierte `Date` a tipo datetime usando `pd.to_datetime()`.
-     - Agrupa los datos por `Date` y calcula el promedio de `AveragePrice` utilizando `groupby()` si es necesario.
-     - Visualiza los componentes descompuestos usando `matplotlib` para cada uno de ellos.    
+    APP_Enunciados.getEnunciado('1.1')
 
-    """
-    global Datos
-    global mDbg
-    mDbg =P1_1_DescomposicionSerieTemporal.__doc__
-
-    mDbg += f"""- **parametros**:  
+    mDbg = f"""- **parametros**:  
          - *pPeriodo:*\t`{pPeriodo}`
          - *pCampo:*\t`{pCampo}`
     """
@@ -429,6 +423,13 @@ def P1_5_AnalisisCambiosPreciosMensuales():
     plt.show()
 
 def P1_5_AnalisisCambiosPreciosSemanales():
+    print('Las semanas están desplazadas, la primera lectura del año corresponde al domingo no al dia 1\n')
+    print('la primera semana puede empezar el 7, y los días anteriores se han computado a la semana 53 del anterior\n')
+    print('esto junto a que un mes puede tener 4 o 5 semamas, genera ruido en la información\n')
+    print('el mes no es una unidad omogénea\n')
+
+
+
     # Crear columnas de Año y Mes si no existen
     Datos['xYear'] = Datos['CalFecha'].dt.year
     #Datos['xWeek'] = Datos['CalFecha'].dt.isocalendar().week

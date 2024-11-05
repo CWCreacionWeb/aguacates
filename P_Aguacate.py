@@ -1,12 +1,15 @@
 from IPython.display import display, Markdown, HTML
 import timeit
-import P1_AST as P1
-import P2_GVD as P2
-import P3_EP as P3
-import P4_AC as P4
-import P5_ACR as P5
+from APP_MOD import PG_Clases as PG
+from APP_MOD import P1_AST as P1
+from APP_MOD import P2_GVD as P2
+from APP_MOD import P3_EP as P3
+from APP_MOD import P4_AC as P4
+from APP_MOD import P5_ACR as P5
 import pandas as pd
-import Region_Clasificacion as RC
+from APP_MOD import Region_Clasificacion as RC
+from APPModels.APP_FUN import APP_Enunciados,chart
+
 mFile ='datos/avocado.csv'
 mDbg =''
 def InicioDoc():
@@ -140,3 +143,6 @@ def Inicio():
 
 #Inicio()
 #P1.plot_average_price_by_region_estacion(DatosORG)
+def DOC():
+    APP_Enunciados.getEnunciado('0')
+    
