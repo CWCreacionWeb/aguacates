@@ -9,7 +9,7 @@ from sklearn.metrics import r2_score, mean_squared_error
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.model_selection import train_test_split
 import statsmodels.api as sm 
-
+from APPModels.APP_FUN import APP_Enunciados,chart
 
 Datos =''    
 
@@ -19,8 +19,9 @@ def P5_1_MatrizCorrelacion(pListaCampos=''):
     """
     Genera y visualiza la matriz de correlación entre las variables numéricas del DataFrame.
     """
-    print("Generando matriz de correlación...")
-    
+    APP_Enunciados.getExplicacion('5.1')
+
+    #display(Markdown(mDbg))
     #correlacion = Datos[['AveragePrice', 'Total Volume', '4046', '4225', '4770', 'Total Bags']].corr()
     #correlacion = Datos[['AveragePrice', 'Total Volume', '4046', '4225', '4770', 'Total Bags','Small Bags','Large Bags','XLarge Bags','year']].corr()
     correlacion = Datos[pListaCampos].corr()

@@ -1,0 +1,197 @@
+{
+  "0": {
+    "titulo": "",
+    "descripcion": "",
+    "contenido": "# Análisis del Conjunto de Datos de Precios de Aguacate\n\n**Conjunto de Datos de Precios de Aguacate**: El conjunto de datos 'Precios de Aguacate', obtenido de Kaggle, es un conjunto de datos ampliamente utilizado para proyectos de análisis de datos y aprendizaje automático. Proporciona datos históricos sobre precios y ventas de aguacates en varias regiones de los Estados Unidos. Este conjunto de datos es valioso para entender las tendencias en los precios de los aguacates, los volúmenes de ventas y su relación con diferentes factores.\n\n## Atributos Clave\n\n- **Columnas**: El conjunto de datos incluye varias columnas de información. Algunas de las columnas clave típicamente encontradas en este conjunto de datos incluyen:\n    - **Fecha** (`Date`): La fecha de observación.\n    - **Precio Promedio** (`AveragePrice`): El precio promedio de los aguacates.\n    - **Volumen Total** (`Total Volume`): El volumen total de aguacates vendidos.\n    - **4046**: Volumen de aguacates Hass pequeños vendidos.\n    - **4225**: Volumen de aguacates Hass grandes vendidos.\n    - **4770**: Volumen de aguacates Hass extra grandes vendidos.\n    - **Bolsas Totales** (`Total Bags`): Total de bolsas de aguacates vendidas.\n    - **Bolsas Pequeñas** (`Small Bags`): Bolsas de aguacates pequeños vendidas.\n    - **Bolsas Grandes** (`Large Bags`): Bolsas de aguacates grandes vendidas.\n    - **Bolsas Extra Grandes** (`XLarge Bags`): Bolsas de aguacates extra grandes vendidas.\n    - **Tipo** (`Type`): El tipo de aguacates, generalmente categorizados como convencionales u orgánicos.\n    - **Región** (`Region`): La región o ciudad dentro de los Estados Unidos donde se registraron los datos.\n\n- **Rango de Fechas**: El conjunto de datos abarca un rango de fechas, lo que permite el análisis de series de tiempo. Puedes examinar cómo cambian los precios y ventas de aguacates a lo largo de diferentes estaciones y años.\n\n- **Regiones**: Se proporciona información para varias regiones o ciudades a través de los Estados Unidos, lo que permite el análisis de variaciones de precios y ventas en diferentes mercados.\n\n- **Tipos**: El conjunto de datos distingue entre diferentes tipos de aguacates, como convencionales y orgánicos, lo que puede ser útil para comparar tendencias de precios entre estas categorías.\n\n- **Volumen**: Están disponibles datos sobre el volumen total de aguacates vendidos. Esta métrica de volumen se utiliza a menudo para analizar la demanda del mercado.\n\n- **Precio Promedio**: El conjunto de datos contiene el precio promedio de los aguacates, una métrica fundamental para entender las tendencias de precios.\n\n## Casos de Uso\n\n- Este conjunto de datos se utiliza comúnmente para aprender y practicar el análisis de datos, visualización de datos y modelado de regresión en proyectos de ciencia de datos y aprendizaje automático.\n\n- Sirve como un recurso valioso para entender cómo trabajar con datos del mundo real, extraer conocimientos y tomar decisiones basadas en datos.\n\n---\n"	,
+    "explicacion": ""
+  },
+
+  "1": {
+    "titulo": "",
+    "descripcion": "",
+    "contenido": "## Actividades de Análisis\n\n### 1. **Análisis de Series Temporales**\n**Resumen:** El análisis de series temporales permite identificar patrones, tendencias y estacionalidades en los precios y volúmenes de ventas de aguacates a lo largo del tiempo.\n",
+    "explicacion": ""
+  },
+
+
+  "1.1": {
+    "titulo": "**Descomposición de Series Temporales de Precios:** \n   ",
+    "descripcion": "**Descomposición de Series Temporales de Precios:** \n   ",
+    "contenido": "**Uso de Datos:** Usa la columna `AveragePrice` y `Date`.\n   - **Esperado:** Utiliza la función `seasonal_decompose` de la librería `statsmodels` para descomponer la serie temporal de precios en componentes de tendencia, estacionalidad y ruido. \n     - Convierte `Date` a tipo datetime usando `pd.to_datetime()`.\n     - Agrupa los datos por `Date` y calcula el promedio de `AveragePrice` utilizando `groupby()` si es necesario.\n     - Visualiza los componentes descompuestos usando `matplotlib` para cada uno de ellos.",
+    "explicacion": ""
+  },
+  "1.2": {
+    "titulo": "**Análisis de Estacionalidad por Región:** ",
+    "descripcion": "**Análisis de Estacionalidad por Región:** \n   ",
+    "contenido": "**Análisis de Estacionalidad por Región:** \n   - **Uso de Datos:**  Usa las columnas `AveragePrice`, `Date` y `Total Volume`.\n   - **Esperado:** Utiliza gráficos de líneas para visualizar cómo varían los precios de aguacates por región a lo largo de diferentes estaciones del año.\n     - Agrupa los datos por `region` y `Date` utilizando `groupby()`.\n     - Calcula el promedio de `AveragePrice` para cada región.\n     - Representa gráficamente las tendencias utilizando `plt.plot()` de `matplotlib`.",
+    "explicacion": "- **Cada línea representa una región específica y permite observar las tendencias estacionales en los precios. \n - **Por ejemplo, se pueden identificar picos o caídas en precios en ciertas épocas, lo que refleja la oferta y demanda."
+  },
+  "1.3": {
+    "titulo": "**Comparación de Precios Promedio Mensuales:**",
+    "descripcion": "**Comparación de Precios Promedio Mensuales:** \n   ",
+    "contenido": "**Uso de Datos:** Usa las columnas `AveragePrice` y `Date`.\n   - **Esperado:** Calcula y compara los precios promedio mensuales.\n     - Agrupa los datos por mes usando `pd.Grouper` con `freq='M'`.\n     - Calcula el promedio de `AveragePrice` para cada mes con `mean()`.\n     - Visualiza los resultados con un gráfico de líneas usando `plt.plot()`.",
+    "explicacion": ""
+  },
+  "1.4": {
+    "titulo": "**Tendencia de Ventas a lo Largo del Tiempo:**",
+    "descripcion": "**Tendencia de Ventas a lo Largo del Tiempo:** \n   ",
+    "contenido": "- **Uso de Datos:** Usa las columnas `Total Volume` y `Date`.\n   - **Esperado:** Analiza cómo varía el volumen total de ventas a lo largo del tiempo.\n     - Agrupa los datos por `Date` y suma el `Total Volume` usando `groupby()`.\n     - Visualiza los resultados usando un gráfico de líneas con `plt.plot()` para mostrar la tendencia.",
+    "explicacion": "**Tendencia de Ventas a lo Largo del Tiempo:**\n   - **Uso de Datos:** Usa las columnas `Total Volume` y `Date`.\n   - **Esperado:** Analiza cómo varía el volumen total de ventas a lo largo del tiempo.\n     - Agrupa los datos por `Date` y suma el `Total Volume` usando `groupby()`.\n     - Visualiza los resultados usando un gráfico de líneas con `plt.plot()` para mostrar la tendencia."
+  },
+  "1.5": {
+    "titulo": "**Análisis de Cambios en Precios Anuales:**",
+    "descripcion": "**Análisis de Cambios en Precios Anuales:** \n   ",
+    "contenido": "**Análisis de Cambios en Precios Anuales:**\n   - **Uso de Datos:** Usa las columnas `AveragePrice` y `year`.\n   - **Esperado:** Observa las diferencias anuales en los precios promedio.\n     - Agrupa los datos por `year` utilizando `groupby()`.\n     - Calcula el promedio de `AveragePrice` para cada año.\n     - Representa los resultados en un gráfico de barras usando `plt.bar()` que compare los precios de cada año.",
+    "explicacion": ""
+  },
+  "2.1": {
+    "titulo": "**Gráfico de Violín de Volumen de Ventas por Región:**",
+    "descripcion": "**Gráfico de Violín de Volumen de Ventas por Región:** \n   ",
+    "contenido": "- **Uso de Datos:** Usa las columnas `Total Volume` y `region`.\n   - **Esperado:** Visualiza la distribución de ventas en diferentes regiones.\n     - Utiliza la función `violinplot` de `seaborn` para crear gráficos de violín.\n     - Configura los ejes para mostrar la relación entre `Total Volume` y `region`.\n     - Añade etiquetas y títulos usando `plt.title()` y `plt.xlabel()` para facilitar la interpretación.",
+    "explicacion": ""
+  },
+  "2.2": {
+    "titulo": "**Boxplot Comparativo de Precios entre Años:**",
+    "descripcion": "**Boxplot Comparativo de Precios entre Años:** \n   ",
+    "contenido": "- **Uso de Datos:** Usa las columnas `AveragePrice` y `year`.\n   - **Esperado:** Genera boxplots para comparar la distribución de precios.\n     - Utiliza `boxplot` de `seaborn` para crear boxplots que comparen `AveragePrice` entre diferentes años.\n     - Asegúrate de que cada boxplot represente un año diferente.\n     - Incluye etiquetas y títulos descriptivos usando `plt.title()`.",
+    "explicacion": ""
+  },
+  "2.3": {
+    "titulo": "**Histograma de Volumen Total de Ventas:**",
+    "descripcion": "**Histograma de Volumen Total de Ventas:** \n   ",
+    "contenido": " - **Uso de Datos:** Usa la columna `Total Volume`.\n   - **Esperado:** Crea un histograma para mostrar la distribución del volumen total de ventas.\n     - Utiliza `hist()` de `matplotlib` para crear el histograma.\n     - Ajusta el número de bins para una visualización clara usando el parámetro `bins`.\n     - Añade etiquetas y un título que describa lo que se muestra.",
+    "explicacion": ""
+  },
+  "2.4": {
+    "titulo": "**Gráfico de Barras de Ventas por Tipo de Bolsa:**",
+    "descripcion": "**Gráfico de Barras de Ventas por Tipo de Bolsa:** \n   ",
+    "contenido": "- **Uso de Datos:** Utiliza las columnas `Total Bags`, `Small Bags`, `Large Bags` y `XLarge Bags`.\n   - **Esperado:** Compara las ventas de diferentes tipos de bolsas.\n     - Suma los volúmenes de ventas por tipo de bolsa utilizando `sum()`.\n     - Crea un gráfico de barras con `plt.bar()` para mostrar las diferencias en ventas.\n     - Asegúrate de incluir etiquetas para cada tipo de bolsa.",
+    "explicacion": ""
+  },
+  "2.5": {
+    "titulo": "**Gráfico de Líneas de Precios Promedios por Año:**",
+    "descripcion": "**Gráfico de Líneas de Precios Promedios por Año:** \n   ",
+    "contenido": "- **Uso de Datos:** Utiliza las columnas `AveragePrice` y `year`.\n   - **Esperado:** Visualiza la tendencia de precios promedio a lo largo de los años.\n     - Agrupa los datos por `year` y calcula el promedio de `AveragePrice`.\n     - Usa `plt.plot()` para crear un gráfico de líneas que muestre la evolución de precios.\n     - Añade un título y etiquetas descriptivas a los ejes usando `plt.title()` y `plt.xlabel()`.",
+    "explicacion": ""
+  },
+  "3.1": {
+    "titulo": "**Elasticidad Precio-Demanda por Año:**",
+    "descripcion": "**Elasticidad Precio-Demanda por Año:** \n   ",
+    "contenido": "- **Uso de Datos:** Usa las columnas `AveragePrice` y `Total Volume`.\n   - **Esperado:** Calcula la elasticidad del precio de la demanda para cada año.\n     - Calcula la variación porcentual de `Total Volume` y `AveragePrice` utilizando `pd.pct_change()`.\n     - Utiliza la fórmula de elasticidad para determinar la sensibilidad de la demanda respecto al precio.\n     - Presenta los resultados en un gráfico de líneas usando `plt.plot()` para mostrar la elasticidad por año.",
+    "explicacion": ""
+  },
+  "3.2": {
+    "titulo": "**Comparación de Elasticidad en Diferentes Mercados:**",
+    "descripcion": "**Comparación de Elasticidad en Diferentes Mercados:** \n   ",
+    "contenido": "- **Uso de Datos:** Utiliza las columnas `Total Volume` y `AveragePrice`.\n   - **Esperado:** Calcula la elasticidad del precio de la demanda en diferentes regiones.\n     - Agrupa los datos por `region` y calcula la elasticidad para cada región utilizando `pd.pct_change()`.\n     - Presenta un gráfico de barras que muestre la elasticidad por región usando `plt.bar()`.",
+    "explicacion": ""
+  },
+  "3.3": {
+    "titulo": "**Elasticidad a Nivel de Tipo de Bolsa:**",
+    "descripcion": "**Elasticidad a Nivel de Tipo de Bolsa:** \n   ",
+    "contenido": "- **Uso de Datos:** Usa las columnas `AveragePrice` y `Total Bags`.\n   - **Esperado:** Calcula la elasticidad del precio de la demanda específica para cada tipo de bolsa.\n     - Suma los volúmenes de ventas por tipo de bolsa utilizando `groupby()` y `sum()`.\n     - Calcula la elasticidad para cada tipo y presenta los resultados en un gráfico comparativo usando `plt.bar()`.",
+    "explicacion": " ** \nComentarios:\n a) Para calcular la elasticidad del precio de la demanda específica de cada tipo de bolsa (Small Bags, Large Bags, XLarge Bags) \n  en base al archivo CSV adjunto, haremos lo siguiente:\n b) Agruparemos y sumaremos los volúmenes de ventas por cada tipo de bolsa.\n c) Calcularemos la variación porcentual de AveragePrice y de cada tipo de bolsa por año usando pct_change.\n d) Calcularemos la elasticidad para cada tipo de bolsa dividiendo la variación porcentual de ventas por la variación porcentual del precio.\n e) Visualizaremos los resultados en un gráfico de barras para comparar las elasticidades entre los tipos de bolsa."
+  },
+  "3.4": {
+    "titulo": "**Análisis de Elasticidad Comparativa entre Orgánicos y Convencionales:**",
+    "descripcion": "**Análisis de Elasticidad Comparativa entre Orgánicos y Convencionales:** \n   ",
+    "contenido": "- **Uso de Datos:** Usa las columnas `AveragePrice`, `Total Volume` y `type`.\n   - **Esperado:** Compara la elasticidad de la demanda entre aguacates orgánicos y convencionales.\n     - Agrupa los datos por `type` y calcula la elasticidad utilizando `pd.pct_change()`.\n     - Presenta un gráfico que muestre la diferencia en elasticidad entre los dos tipos usando `plt.bar()`.",
+    "explicacion": ""
+  },
+  "3.5": {
+    "titulo": "**Análisis de la Elasticidad Precios-Ventas:**",
+    "descripcion": "**Análisis de la Elasticidad Precios-Ventas:** \n   ",
+    "contenido": "- **Uso de Datos:** Usa las columnas `AveragePrice` y `Total Volume`.\n   - **Esperado:** Examina cómo las variaciones en `AveragePrice` afectan a `Total Volume`.\n     - Realiza un análisis de la relación entre estas dos variables calculando la elasticidad.\n     - Presenta un gráfico de dispersión que muestre la relación y discute la tendencia observada utilizando `plt.scatter()` y `plt.plot()`.",
+    "explicacion": ""
+  },
+  "4.1": {
+    "titulo": "**Cohortes Basadas en Precios Promedios Trimestrales:**",
+    "descripcion": "**Cohortes Basadas en Precios Promedios Trimestrales:** \n   ",
+    "contenido": "- **Uso de Datos:** Usa las columnas `AveragePrice`, `Total Volume` y `Date`.\n   - **Esperado:** Crea cohortes trimestrales y analiza cambios en precios y volúmenes.\n     - Agrupa los datos por trimestre usando `pd.Grouper` con `freq='Q'`.\n     - Calcula el promedio de `AveragePrice` y suma `Total Volume` para cada cohorte.\n     - Visualiza los resultados en un gráfico de líneas que muestre la evolución de las cohortes.",
+    "explicacion": ""
+  },
+  "4.2": {
+    "titulo": "**Cohortes por Región y Fecha:**",
+    "descripcion": "**Cohortes por Región y Fecha:** \n   ",
+    "contenido": " - **Uso de Datos:** Utiliza las columnas `AveragePrice`, `Total Volume`, `region` y `Date`.\n   - **Esperado:** Analiza cómo varían las cohortes de diferentes regiones.\n     - Agrupa los datos por `region` y `Date` usando `groupby()`.\n     - Calcula el promedio de precios y volumen para cada cohorte.\n     - Presenta los resultados en gráficos de barras que muestren comparaciones entre regiones.",
+    "explicacion": "** Interpretación del Gráfico**\n ** El gráfico muestra la evolución de AveragePrice y Total Volume para cada región a lo largo del tiempo. \n** Las barras representan el volumen total y las líneas indican el precio promedio en cada trimestre, lo que ayuda a comparar \n** cómo las diferentes regiones responden a cambios en el mercado."
+  },
+  "4.3": {
+    "titulo": "**Análisis de Cohortes en Función del Tipo de Bolsa:**",
+    "descripcion": "**Cohortes por Región y Fecha:** \n   ",
+    "contenido": "- **Uso de Datos:** Usa las columnas `Total Bags`, `Small Bags`, `Large Bags`, `XLarge Bags` y `Date`.\n   - **Esperado:** Examina cómo se comportan las diferentes cohortes según el tipo de bolsa.\n     - Agrupa los datos por tipo de bolsa y `Date`.\n     - Calcula el volumen de ventas total y muestra los resultados en un gráfico de líneas.",
+    "explicacion": "- **Conversión de Fecha**: Convertimos Date a formato datetime y usamos pd.Grouper con freq='ME' para agrupar los datos mensualmente.\n# - **Agrupación y Cálculo del Volumen de Ventas Total** : Calculamos la suma de Small Bags, Large Bags, y XLarge Bags por cada mes.\n - **Visualización:**\n: Creamos un gráfico de líneas para cada tipo de bolsa (Small Bags, Large Bags, y XLarge Bags), lo que permite ver cómo cambia el volumen de ventas en cada fecha.\n - **Ajustamos la visualización con etiquetas, título, y leyenda**.\n - **Interpretación del Gráfico**\n# - El gráfico muestra la evolución mensual del volumen de ventas para cada tipo de bolsa.** \n - **Esto permite observar si algún tipo de bolsa predomina en volumen de ventas o si hay patrones estacionales o de tendencia en el tiempo para cada categoría.**"
+  },
+  "4.4": {
+    "titulo": "**Cohortes de Clientes Basadas en Ventas:**",
+    "descripcion": "**Cohortes por Región y Fecha:** \n   ",
+    "contenido": "- **Uso de Datos:** Usa las columnas `Total Volume`, `Date` y `region`.\n   - **Esperado:** Analiza el comportamiento de las cohortes según el volumen de ventas.\n     - Clasifica los clientes según su volumen de compras.\n     - Visualiza las cohortes en gráficos de líneas o barras que muestren el comportamiento de compra a lo largo del tiempo.",
+    "explicacion": "** Explicación del Código**: Agrupación y Suma de Ventas: Agrupamos los datos por Date (a nivel mensual) y region, sumando el Total Volume para obtener el volumen total de ventas por región y fecha.\n Clasificación en Cohortes:\n Calculamos el volumen de ventas promedio para cada región y lo dividimos en tres cohortes (Baja, Media y Alta) usando pd.qcut().\n Asignamos cada región a una cohorte en función de su volumen de ventas promedio.\n Visualización:\n# Creamos una línea para cada cohorte (Baja, Media, Alta), mostrando cómo varía el volumen de ventas total a lo largo del tiempo.\n# Interpretación del Gráfico\n# Este gráfico permite ver cómo se comportan las cohortes de clientes a lo largo del tiempo en función de su volumen de ventas. \n# Las tendencias pueden indicar patrones de compra diferenciados por región o períodos de alta/baja demanda según la cohorte."
+  },
+  "4.5": {
+    "titulo": "**Evaluación de Retención de Ventas por Cohorte:**",
+    "descripcion": "**Cohortes por Región y Fecha:** \n   ",
+    "contenido": "- **Uso de Datos:** Usa las columnas `Total Volume` y `Date`.\n   - **Esperado:** Estudia cómo se retienen las ventas en cohortes a lo largo de un año.\n     - Agrupa los datos por mes y cohortes.\n     - Calcula la retención de ventas y visualiza los resultados en un gráfico de líneas que muestre las tasas de retención.",
+    "explicacion": "**Explicación del Código**\n Agrupación Mensual: Agrupamos el volumen de ventas a nivel mensual.\n** Identificación de Cohortes: Cada mes se marca como el inicio de una nueva cohorte.\n** Cálculo de Retención: Para cada cohorte inicial, calculamos la tasa de retención mensual dividiendo el volumen de ventas en meses subsiguientes \n** por el volumen inicial.\n** Visualización: Creamos un gráfico de líneas en el que cada cohorte tiene su propia línea, mostrando la tasa de retención a lo largo de los meses.\n** Interpretación del Gráfico\n** Este gráfico mostrará cómo las ventas se retienen o disminuyen mes a mes para cada cohorte. Las tendencias ayudan a evaluar \n** la estabilidad de las ventas en el tiempo."
+  },
+  "5.1": {
+    "titulo": "**Matriz de Correlación:** ",
+    "descripcion": "",
+    "contenido": "- **Uso de Datos:** Utiliza las columnas numéricas del DataFrame (p. ej., `AveragePrice`, `Total Volume`, `4046`, `4225`, `4770`, `Total Bags`).\n   - **Esperado:** \n     - Importa las librerías necesarias: `import seaborn as sns` y `import matplotlib.pyplot as plt`.\n     - Calcula la matriz de correlación usando el método `.corr()` del DataFrame.\n     - Visualiza la matriz utilizando `sns.heatmap()`. \n     - Anota las correlaciones más significativas y discute su posible impacto en el análisis.",
+    "explicacion": "** Interpretación de la Matriz de Correlación\n** Una vez que ejecutes el gráfico, observa los siguientes puntos para evaluar el impacto de cada relación:\n\n** Relación de AveragePrice con Volumen de Ventas (Total Volume): Una correlación negativa significativa aquí podría indicar una elasticidad \n** en la demanda: al aumentar el precio promedio, el volumen de ventas disminuye, lo que es esperado en productos elásticos.\n** Relación entre Tipos de Aguacate (4046, 4225, 4770) y Total Volume: Correlaciones altas entre estos tipos y el volumen total indicarán que \n** los distintos tipos de aguacates contribuyen significativamente al volumen total.\n** Correlación entre Total Bags y Volumen de Ventas: Esta relación podría mostrar qué tipos de empaques afectan \n** las ventas y cómo varían con el volumen general.\n** Discusión\n** Este análisis ayuda a identificar cómo las variables se relacionan entre sí y nos da información clave para entender patrones de ventas \n** y precios en el mercado de aguacates. Las correlaciones más fuertes podrán indicar relaciones directas o indirectas entre \n** las variables y sugieren áreas en las que un cambio en una variable puede afectar a otra."
+  },
+  "5.2": {
+    "titulo": "**Análisis de Dispersión entre Variables Clave:** ",
+    "descripcion": "",
+    "contenido": "- **Uso de Datos:** Selecciona variables numéricas de interés como `AveragePrice` y `Total Volume`.\n   - **Esperado:** \n     - Importa las librerías necesarias: `import seaborn as sns` y `import matplotlib.pyplot as plt`.\n     - Crea un gráfico de dispersión con `sns.scatterplot()` para visualizar la relación entre `AveragePrice` y `Total Volume`.\n     - Añade una línea de regresión utilizando `sns.regplot()` para ilustrar las tendencias.\n     - Compara el ajuste de una regresión lineal frente a una polinómica.",
+    "explicacion": ""
+  },
+  "5.3": {
+    "titulo": "**Predicciones Mensuales Usando Datos Trimestrales:**",
+    "descripcion": "",
+    "contenido": "- **Uso de Datos:** Agrupa datos por trimestres y segmenta en meses utilizando `Date`, `AveragePrice`, y `Total Volume`.\n   - **Esperado:** \n     - Convierte la columna `Date` a tipo datetime si es necesario.\n     - Agrupa los datos por trimestre y calcula el promedio de `AveragePrice` y `Total Volume`.\n     - Utiliza los datos de los primeros 2 meses de un trimestre para predecir el precio del tercer mes.\n     - Compara los resultados de las predicciones con los precios reales.\n     - Evalúa la precisión de tus predicciones utilizando métricas como R² y RMSE.",
+    "explicacion": ""
+  },
+  "5.4": {
+    "titulo": "**Predicciones Trimestrales:**",
+    "descripcion": "",
+    "contenido": "- **Uso de Datos:** Agrupa los datos en trimestres usando solo variables numéricas.\n   - **Esperado:** \n     - Agrupa los datos por trimestres usando `pd.Grouper()` con `freq='Q'` para obtener promedios.\n     - Usa los datos de 1 o 2 trimestres anteriores para predecir el siguiente trimestre ajustando modelos de regresión lineal y polinómica.\n     - Compara los resultados de las predicciones con los precios reales.\n     - Evalúa la precisión de tus predicciones utilizando métricas como R² y RMSE.",
+    "explicacion": ""
+  },
+  "5.5": {
+    "titulo": "**Predicciones Anuales:**",
+    "descripcion": "",
+    "contenido": "- **Uso de Datos:** Agrupa los datos en años, utilizando únicamente columnas numéricas.\n   - **Esperado:** \n     - Agrupa los datos por año utilizando `pd.Grouper()` con `freq='Y'`.\n     - Usa los datos de 1 o 2 años anteriores para predecir el siguiente año ajustando modelos de regresión lineal y polinómica.\n     - Evalúa la precisión de tus predicciones utilizando métricas como R² y RMSE.",
+    "explicacion": ""
+  },
+  "5.6": {
+    "titulo": "**Desarrollo de Modelos de Regresión Múltiple:** ",
+    "descripcion": "",
+    "contenido": "- **Uso de Datos:** Selecciona varias variables numéricas como `Total Volume`, `4046`, `4225`, `4770`, y `Total Bags` para predecir `AveragePrice`.\n   - **Esperado:** \n     - Define las variables independientes (X) y dependientes (y).\n     - Ajusta modelos de regresión múltiple.\n     - Compara su rendimiento utilizando métricas como R² y RMSE y discute las implicaciones de los resultados.",
+    "explicacion": ""
+  },
+  "5.7": {
+    "titulo": "**Análisis de Coeficientes de Regresión Múltiple:**",
+    "descripcion": "",
+    "contenido": "- **Uso de Datos:** Examina los coeficientes de los modelos de regresión múltiple ajustados.\n   - **Esperado:** \n     - Extrae los coeficientes del modelo ajustado.\n     - Interpreta los coeficientes para entender el impacto de cada variable numérica en `AveragePrice`.\n     - Comenta sobre las variables más significativas y su relevancia.",
+    "explicacion": ""
+  },
+  "5.8": {
+    "titulo": "**Modelos de Regresión para Diferenciar Volúmenes de Ventas:**",
+    "descripcion": "",
+    "contenido": "- **Uso de Datos:** Usa `AveragePrice`, `Total Volume`, `4046`, `4225`, y `4770`.\n   - **Esperado:** \n     - Ajusta modelos de regresión para analizar cómo los diferentes volúmenes de ventas afectan `AveragePrice`.\n     - Compara los resultados de regresión lineal y polinómica.\n     - Presenta las conclusiones de tus análisis.",
+    "explicacion": ""
+  },
+  "5.9": {
+    "titulo": "**Análisis de la Influencia de las Ventas Totales en el Precio Promedio:**",
+    "descripcion": "",
+    "contenido": "- **Uso de Datos:** Usa `Total Volume`, `AveragePrice`, y `Total Bags`.\n   - **Esperado:** \n     - Ajusta un modelo de regresión lineal y polinómica para ver cómo varía `AveragePrice` en función del volumen total de ventas.\n     - Evalúa la significancia de los coeficientes y discute su relevancia.",
+    "explicacion": ""
+  },
+  "5.10": {
+    "titulo": "**Regresión para Predecir el Precio Promedio Según el Volumen de Aguacates por Tipo:**",
+    "descripcion": "",
+    "contenido": "- **Uso de Datos:** Usa `AveragePrice`, `4046`, `4225`, `4770`, y `Total Volume`.\n    - **Esperado:** \n      - Ajusta modelos de regresión lineal y polinómica.\n      - Evalúa la efectividad de ambos modelos utilizando métricas como R² y RMSE.\n      - Discute cuál modelo ofrece mejores predicciones y por qué, basándote en los resultados obtenidos.",
+    "explicacion": ""
+  }
+}
