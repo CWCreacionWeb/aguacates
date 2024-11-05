@@ -7,6 +7,8 @@ import pandas as pd
 import seaborn as sns
 import plotly.express as px
 from statsmodels.tsa.seasonal import seasonal_decompose
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score, mean_squared_error
 # import ipywidgets as widgets
 # from IPython.display import display
 import random
@@ -16,10 +18,17 @@ class Charts:
     def __init__(self, file):
         data = pd.read_csv(file)
         self.df = pd.DataFrame(data)
+        self.plt = plt
+        self.sns = sns
+        self.px = px
+        self.np = np
+        self.random = random
+        self.pd = pd
         # Configuro el label de todas las graficas con los nombres de las regiones
         self.region_labels = self.df['region'].unique()
         self.seasonal_decompose = seasonal_decompose
         self.formatDate('Date')
+        self.year = self.df['Date'].dt.year
 
     def figureConfig(self, width=11, height=6,**kwargs):
         plt.figure(figsize=(width, height))
@@ -75,16 +84,18 @@ class Charts:
         if show:
             plt.show()
 
-    def plot_bar(self, x, y, title, xlabel, ylabel,axis='both', alpha=0.75,ylim=None,show=True):
-        fig, ax = plt.subplots()
-        ax.bar(x, y)
-        ax.set(xlabel=xlabel, ylabel=ylabel, title=title)
+    def plot_bar(self, x, y, title, xlabel, ylabel, ax=None, axis='both', alpha=0.75, ylim=None, show=True):
+        if ax is None:
+            fig, ax = plt.subplots()
+        ax.bar(x, y, label=title)  # Añadir `label` para cada serie
+
+        ax.set(xlabel=xlabel, ylabel=ylabel)
         ax.grid(axis=axis, alpha=alpha)
         if ylim:
             ax.set_ylim(ylim)
         if show:
+            ax.legend(title="Tipo de Bolsa")  # Mostrar leyenda para identificar cada serie
             plt.show()
-
 
     def plot_hist(self, x, title, xlabel, ylabel,**kwargs):
         fig, ax = plt.subplots()
@@ -125,3 +136,11 @@ class Charts:
             self.df = self.df[self.df['region'] != exclude]
         else:
             self.df = self.df[self.df['region'].isin(self.df.groupby('region')['Total Volume'].sum().sort_values(ascending=False).head(num).index)]
+
+        self.region_labels = self.df['region'].unique()
+
+
+    def filtra(self, key, value):
+        if key not in self.df.columns:
+            raise ValueError(f"La columna '{key}' no existe en el DataFrame.")
+        return self.df[self.df[key] == value]
