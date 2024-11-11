@@ -3,7 +3,7 @@
     "titulo": "**Descomposición de Series Temporales de Precios:** \n   ",
     "descripcion": "**Descomposición de Series Temporales de Precios:** \n   ",
     "contenido": "**Uso de Datos:** Usa la columna `AveragePrice` y `Date`.\n   - **Esperado:** Utiliza la función `seasonal_decompose` de la librería `statsmodels` para descomponer la serie temporal de precios en componentes de tendencia, estacionalidad y ruido. \n     - Convierte `Date` a tipo datetime usando `pd.to_datetime()`.\n     - Agrupa los datos por `Date` y calcula el promedio de `AveragePrice` utilizando `groupby()` si es necesario.\n     - Visualiza los componentes descompuestos usando `matplotlib` para cada uno de ellos.",
-    "explicacion": ""
+    "explicacion": "** He agrupado por fecha y calculado el promedio de AveragePrice para cada fecha. Luego he descompuesto la serie temporal en componentes de tendencia, estacionalidad y residuos. \n\nLa tendencia muestra la evolución general de los precios a lo largo del tiempo, la estacionalidad refleja patrones recurrentes en los precios y los residuos representan la variabilidad no explicada por la tendencia y la estacionalidad. \n\nEste análisis ayuda a identificar patrones y tendencias en los precios de los aguacates, lo que puede ser útil para predecir futuros precios o entender la dinámica del mercado."
   },
   "1.2": {
     "titulo": "**Análisis de Estacionalidad por Región:** ",
@@ -15,25 +15,25 @@
     "titulo": "**Comparación de Precios Promedio Mensuales:**",
     "descripcion": "**Comparación de Precios Promedio Mensuales:** \n   ",
     "contenido": "**Uso de Datos:** Usa las columnas `AveragePrice` y `Date`.\n   - **Esperado:** Calcula y compara los precios promedio mensuales.\n     - Agrupa los datos por mes usando `pd.Grouper` con `freq='M'`.\n     - Calcula el promedio de `AveragePrice` para cada mes con `mean()`.\n     - Visualiza los resultados con un gráfico de líneas usando `plt.plot()`.",
-    "explicacion": ""
+    "explicacion": "**Grafica agrupada por mes usando Grouper que te da la opcion de agrupar por el mes, el año, el dia, etc.** \n**Calcula el promedio de AveragePrice para cada mes con mean()** \n**Visualiza los resultados con un gráfico de líneas usando plt.plot()**"
   },
   "1.4": {
     "titulo": "**Tendencia de Ventas a lo Largo del Tiempo:**",
     "descripcion": "**Tendencia de Ventas a lo Largo del Tiempo:** \n   ",
     "contenido": "- **Uso de Datos:** Usa las columnas `Total Volume` y `Date`.\n   - **Esperado:** Analiza cómo varía el volumen total de ventas a lo largo del tiempo.\n     - Agrupa los datos por `Date` y suma el `Total Volume` usando `groupby()`.\n     - Visualiza los resultados usando un gráfico de líneas con `plt.plot()` para mostrar la tendencia.",
-    "explicacion": "**Tendencia de Ventas a lo Largo del Tiempo:**\n   - **Uso de Datos:** Usa las columnas `Total Volume` y `Date`.\n   - **Esperado:** Analiza cómo varía el volumen total de ventas a lo largo del tiempo.\n     - Agrupa los datos por `Date` y suma el `Total Volume` usando `groupby()`.\n     - Visualiza los resultados usando un gráfico de líneas con `plt.plot()` para mostrar la tendencia."
+    "explicacion": ""
   },
   "1.5": {
     "titulo": "**Análisis de Cambios en Precios Anuales:**",
     "descripcion": "**Análisis de Cambios en Precios Anuales:** \n   ",
     "contenido": "**Análisis de Cambios en Precios Anuales:**\n   - **Uso de Datos:** Usa las columnas `AveragePrice` y `year`.\n   - **Esperado:** Observa las diferencias anuales en los precios promedio.\n     - Agrupa los datos por `year` utilizando `groupby()`.\n     - Calcula el promedio de `AveragePrice` para cada año.\n     - Representa los resultados en un gráfico de barras usando `plt.bar()` que compare los precios de cada año.",
-    "explicacion": ""
+    "explicacion": "- He quitado el año 2018 ya que no tenemos el año completo y no seria una evaluación real de los datos.** \n- He agrupado los datos por año y calculado el promedio de AveragePrice para cada año. \n - He representado los resultados en un gráfico de barras para comparar los precios de cada año. -- Vemos un incremento del precio medio de los aguacates en 2017 respecto a 2015 y 2016. \n - Añadiendo la linea plt.xticks convertirmos los años en enteros evitando que se muestren en notación científica."
   },
   "2.1": {
     "titulo": "**Gráfico de Violín de Volumen de Ventas por Región:**",
     "descripcion": "**Gráfico de Violín de Volumen de Ventas por Región:** \n   ",
     "contenido": "- **Uso de Datos:** Usa las columnas `Total Volume` y `region`.\n   - **Esperado:** Visualiza la distribución de ventas en diferentes regiones.\n     - Utiliza la función `violinplot` de `seaborn` para crear gráficos de violín.\n     - Configura los ejes para mostrar la relación entre `Total Volume` y `region`.\n     - Añade etiquetas y títulos usando `plt.title()` y `plt.xlabel()` para facilitar la interpretación.",
-    "explicacion": ""
+    "explicacion": "- Cada violín indica **la densidad de la distribución** del volumen de ventas de cada región.\n - La forma y el ancho del violín a lo largo del eje Y representan cuántas observaciones están dentro de ese rango de Total Volume para la región dada. Un violín más ancho en un área específica significa más datos en ese rango de ventas. \n - En cada violín puedes ver una línea central que marca la mediana, y a veces otras líneas para los cuartiles, dependiendo de la configuración predeterminada."
   },
   "2.2": {
     "titulo": "**Boxplot Comparativo de Precios entre Años:**",
@@ -45,7 +45,7 @@
     "titulo": "**Histograma de Volumen Total de Ventas:**",
     "descripcion": "**Histograma de Volumen Total de Ventas:** \n   ",
     "contenido": " - **Uso de Datos:** Usa la columna `Total Volume`.\n   - **Esperado:** Crea un histograma para mostrar la distribución del volumen total de ventas.\n     - Utiliza `hist()` de `matplotlib` para crear el histograma.\n     - Ajusta el número de bins para una visualización clara usando el parámetro `bins`.\n     - Añade etiquetas y un título que describa lo que se muestra.",
-    "explicacion": ""
+    "explicacion": "**bins**  \n**int o secuencia, predeterminado 10**  \nNúmero de *bins* (intervalos) para el histograma. Si se proporciona un número entero, se calculan y devuelven los bordes de los bins como `bins + 1`. Si se proporciona una secuencia, se especifican los bordes de los bins, incluyendo el borde izquierdo del primer bin y el borde derecho del último bin. En este caso, se devuelve `bins` sin modificar."
   },
   "2.4": {
     "titulo": "**Gráfico de Barras de Ventas por Tipo de Bolsa:**",
@@ -62,8 +62,8 @@
   "3.1": {
     "titulo": "**Elasticidad Precio-Demanda por Año:**",
     "descripcion": "**Elasticidad Precio-Demanda por Año:** \n   ",
-    "contenido": "- **Uso de Datos:** Usa las columnas `AveragePrice` y `Total Volume`.\n   - **Esperado:** Calcula la elasticidad del precio de la demanda para cada año.\n     - Calcula la variación porcentual de `Total Volume` y `AveragePrice` utilizando `pd.pct_change()`.\n     - Utiliza la fórmula de elasticidad para determinar la sensibilidad de la demanda respecto al precio.\n     - Presenta los resultados en un gráfico de líneas usando `plt.plot()` para mostrar la elasticidad por año.",
-    "explicacion": ""
+    "contenido": "- **Uso de Datos:** Usa las columnas `AveragePrice` y `Total Volume`.\n   - **Esperado:** Calcula la elasticidad del precio de la demanda para cada año.\n  - Calcula la variación porcentual de `Total Volume` y `AveragePrice` utilizando `pd.pct_change()`.\n     - Utiliza la fórmula de elasticidad para determinar la sensibilidad de la demanda respecto al precio.\n     - Presenta los resultados en un gráfico de líneas usando `plt.plot()` para mostrar la elasticidad por año.",
+    "explicacion": "- **Cálculos de variación porcentual:** - Usamos .pct_change() para calcular la variación porcentual en Total Volume y AveragePrice de un año a otro.\n - **Elasticidad:** - Se calcula la elasticidad como la razón de la variación porcentual del volumen sobre la variación porcentual del precio.\n - **Filtrado** de los datos: Se filtran los datos entre 2014 y 2017 usando chart.filterByRangeYear (asumí que esta función está correctamente definida en tu código).\n - **Gráfico de líneas:** - Usamos plt.plot() para trazar la elasticidad a lo largo de los años y añadir etiquetas y una leyenda."
   },
   "3.2": {
     "titulo": "**Comparación de Elasticidad en Diferentes Mercados:**",
@@ -75,7 +75,7 @@
     "titulo": "**Elasticidad a Nivel de Tipo de Bolsa:**",
     "descripcion": "**Elasticidad a Nivel de Tipo de Bolsa:** \n   ",
     "contenido": "- **Uso de Datos:** Usa las columnas `AveragePrice` y `Total Bags`.\n   - **Esperado:** Calcula la elasticidad del precio de la demanda específica para cada tipo de bolsa.\n     - Suma los volúmenes de ventas por tipo de bolsa utilizando `groupby()` y `sum()`.\n     - Calcula la elasticidad para cada tipo y presenta los resultados en un gráfico comparativo usando `plt.bar()`.",
-    "explicacion": " ** \nComentarios:\n a) Para calcular la elasticidad del precio de la demanda específica de cada tipo de bolsa (Small Bags, Large Bags, XLarge Bags) \n  en base al archivo CSV adjunto, haremos lo siguiente:\n b) Agruparemos y sumaremos los volúmenes de ventas por cada tipo de bolsa.\n c) Calcularemos la variación porcentual de AveragePrice y de cada tipo de bolsa por año usando pct_change.\n d) Calcularemos la elasticidad para cada tipo de bolsa dividiendo la variación porcentual de ventas por la variación porcentual del precio.\n e) Visualizaremos los resultados en un gráfico de barras para comparar las elasticidades entre los tipos de bolsa."
+    "explicacion": "\n El valor -0.2 ajusta la posición de las barras en el eje X. Esto es especialmente útil cuando quieres mostrar varias barras agrupadas por año (o cualquier otra categoría en el eje X) y evitar que se superpongan. \n - df_group3_3['year'] - 0.2 para una barra,\n - df_group3_3['year'] para otra,\n - df_group3_3['year'] + 0.2 para la siguiente, y así sucesivamente.\n **Comentarios:**\n - a) Para calcular la elasticidad del precio de la demanda específica de cada tipo de bolsa (Small Bags, Large Bags, XLarge Bags) \n  en base al archivo CSV adjunto, haremos lo siguiente:\n - b) Agruparemos y sumaremos los volúmenes de ventas por cada tipo de bolsa.\n - c) Calcularemos la variación porcentual de AveragePrice y de cada tipo de bolsa por año usando pct_change.\n - d) Calcularemos la elasticidad para cada tipo de bolsa dividiendo la variación porcentual de ventas por la variación porcentual del precio.\n e) Visualizaremos los resultados en un gráfico de barras para comparar las elasticidades entre los tipos de bolsa."
   },
   "3.4": {
     "titulo": "**Análisis de Elasticidad Comparativa entre Orgánicos y Convencionales:**",
@@ -87,7 +87,7 @@
     "titulo": "**Análisis de la Elasticidad Precios-Ventas:**",
     "descripcion": "**Análisis de la Elasticidad Precios-Ventas:** \n   ",
     "contenido": "- **Uso de Datos:** Usa las columnas `AveragePrice` y `Total Volume`.\n   - **Esperado:** Examina cómo las variaciones en `AveragePrice` afectan a `Total Volume`.\n     - Realiza un análisis de la relación entre estas dos variables calculando la elasticidad.\n     - Presenta un gráfico de dispersión que muestre la relación y discute la tendencia observada utilizando `plt.scatter()` y `plt.plot()`.",
-    "explicacion": ""
+    "explicacion": " Refleja un valor constante de 1.0 para todos los años. Esto sugiere que la **elasticidad es uniforme** en todos los años y está fijada en 1.0, lo que implica que el cambio porcentual en el volumen de ventas es exactamente proporcional al cambio porcentual en el precio promedio (es decir, un cambio del 1% en el precio se refleja en un cambio del 1% en el volumen de ventas)."
   },
   "4.1": {
     "titulo": "**Cohortes Basadas en Precios Promedios Trimestrales:**",
@@ -99,19 +99,19 @@
     "titulo": "**Cohortes por Región y Fecha:**",
     "descripcion": "**Cohortes por Región y Fecha:** \n   ",
     "contenido": " - **Uso de Datos:** Utiliza las columnas `AveragePrice`, `Total Volume`, `region` y `Date`.\n   - **Esperado:** Analiza cómo varían las cohortes de diferentes regiones.\n     - Agrupa los datos por `region` y `Date` usando `groupby()`.\n     - Calcula el promedio de precios y volumen para cada cohorte.\n     - Presenta los resultados en gráficos de barras que muestren comparaciones entre regiones.",
-    "explicacion": "** Interpretación del Gráfico**\n ** El gráfico muestra la evolución de AveragePrice y Total Volume para cada región a lo largo del tiempo. \n** Las barras representan el volumen total y las líneas indican el precio promedio en cada trimestre, lo que ayuda a comparar \n** cómo las diferentes regiones responden a cambios en el mercado."
+    "explicacion": "** Interpretación del Gráfico** \n - El gráfico muestra la evolución de AveragePrice y Total Volume para cada región a lo largo del tiempo. \n** Las barras representan el volumen total y las líneas indican el precio promedio en cada trimestre, lo que ayuda a comparar \n** cómo las diferentes regiones responden a cambios en el mercado."
   },
   "4.3": {
     "titulo": "**Análisis de Cohortes en Función del Tipo de Bolsa:**",
     "descripcion": "**Cohortes por Región y Fecha:** \n   ",
     "contenido": "- **Uso de Datos:** Usa las columnas `Total Bags`, `Small Bags`, `Large Bags`, `XLarge Bags` y `Date`.\n   - **Esperado:** Examina cómo se comportan las diferentes cohortes según el tipo de bolsa.\n     - Agrupa los datos por tipo de bolsa y `Date`.\n     - Calcula el volumen de ventas total y muestra los resultados en un gráfico de líneas.",
-    "explicacion": "- **Conversión de Fecha**: Convertimos Date a formato datetime y usamos pd.Grouper con freq='ME' para agrupar los datos mensualmente.\n# - **Agrupación y Cálculo del Volumen de Ventas Total** : Calculamos la suma de Small Bags, Large Bags, y XLarge Bags por cada mes.\n - **Visualización:**\n: Creamos un gráfico de líneas para cada tipo de bolsa (Small Bags, Large Bags, y XLarge Bags), lo que permite ver cómo cambia el volumen de ventas en cada fecha.\n - **Ajustamos la visualización con etiquetas, título, y leyenda**.\n - **Interpretación del Gráfico**\n# - El gráfico muestra la evolución mensual del volumen de ventas para cada tipo de bolsa.** \n - **Esto permite observar si algún tipo de bolsa predomina en volumen de ventas o si hay patrones estacionales o de tendencia en el tiempo para cada categoría.**"
+    "explicacion": ""
   },
   "4.4": {
     "titulo": "**Cohortes de Clientes Basadas en Ventas:**",
     "descripcion": "**Cohortes por Región y Fecha:** \n   ",
     "contenido": "- **Uso de Datos:** Usa las columnas `Total Volume`, `Date` y `region`.\n   - **Esperado:** Analiza el comportamiento de las cohortes según el volumen de ventas.\n     - Clasifica los clientes según su volumen de compras.\n     - Visualiza las cohortes en gráficos de líneas o barras que muestren el comportamiento de compra a lo largo del tiempo.",
-    "explicacion": "** Explicación del Código**: Agrupación y Suma de Ventas: Agrupamos los datos por Date (a nivel mensual) y region, sumando el Total Volume para obtener el volumen total de ventas por región y fecha.\n Clasificación en Cohortes:\n Calculamos el volumen de ventas promedio para cada región y lo dividimos en tres cohortes (Baja, Media y Alta) usando pd.qcut().\n Asignamos cada región a una cohorte en función de su volumen de ventas promedio.\n Visualización:\n# Creamos una línea para cada cohorte (Baja, Media, Alta), mostrando cómo varía el volumen de ventas total a lo largo del tiempo.\n# Interpretación del Gráfico\n# Este gráfico permite ver cómo se comportan las cohortes de clientes a lo largo del tiempo en función de su volumen de ventas. \n# Las tendencias pueden indicar patrones de compra diferenciados por región o períodos de alta/baja demanda según la cohorte."
+    "explicacion": "\n Este código analiza el volumen de ventas por región y clasifica las regiones en cohortes (Baja, Media y Alta) basadas en el promedio de sus ventas.\n - Después, genera una **gráfica de líneas que muestra cómo varía el volumen de ventas de cada cohorte a lo largo del tiempo**.\n\n **Agrupación de datos:**\n - Primero, agrupamos los datos por Date (fecha) y region para calcular el volumen total de ventas para cada combinación de estas dos variables.\n  - Esto nos permite tener un total de ventas por región y por fecha.\n\n **Clasificación en cohortes:**\n\n - Calculamos el volumen promedio de ventas para cada región y, usando los cuartiles, clasificamos estas regiones en tres cohortes: Baja, Media y Alta.\n - Cada región se clasifica en una cohorte dependiendo de su volumen de ventas promedio, y esta información se agrega a nuestro DataFrame principal.\n\n **Creación de la gráfica:**\n\n**Configuramos el título y los ejes de la gráfica.**\n - **Para cada cohorte, generamos una serie de datos que representa el total de ventas por fecha** y lo graficamos en líneas.\n - Esta visualización muestra la tendencia de ventas de cada cohorte en el tiempo, lo que puede ayudar a identificar patrones de comportamiento en los distintos grupos de clientes.\n\n\n **Conclusión**: Este análisis clasifica a las regiones en tres grupos (Baja, Media y Alta) según el volumen de ventas. Esto nos permite ver cómo cada grupo se comporta en el tiempo.\n\n - Las regiones de la cohorte Alta muestran ventas más estables y mayores, indicando un mercado sólido.\n - Las cohortes Baja y Media tienen menos ventas y más variación, lo que podría señalar oportunidades de crecimiento."
   },
   "4.5": {
     "titulo": "**Evaluación de Retención de Ventas por Cohorte:**",

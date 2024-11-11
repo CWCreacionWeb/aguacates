@@ -19,9 +19,8 @@ class Enunciados:
     def getExplicacion(self, key):
         # Accede al enunciado específico
         enunciado = self.enunciado.get(key, {})
-        explicacion = enunciado.get('explicacion', '')
         # Mostrar en formato Markdown
-        display(Markdown(f"{key} Explicación: | {explicacion}"))
+        display(Markdown(f"**{key} Explicación:**\n {enunciado.get('explicacion', '')}"))
 
 
     def get(self, key, default=None):
