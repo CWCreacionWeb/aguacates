@@ -19,7 +19,7 @@ def P4_1_CohortesPreciosPromedios():
 def P4_1_CohortesPreciosPromediosB():
     
     # Agrupación trimestral
-    datos_trimestrales = Datos.set_index('CalFecha').groupby(pd.Grouper(freq='Q')).agg({
+    datos_trimestrales = Datos.set_index('CalFecha').groupby(pd.Grouper(freq='QE')).agg({
         'AveragePrice': 'mean',
         'Total Volume': 'sum'
     })
