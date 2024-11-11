@@ -66,7 +66,7 @@ def GEN_MatrizCorrelacion(pDf, pListaCampos=''):
 def P5_1_MatrizCorrelacion(pListaCampos=''):
 
     APP_Enunciados.getEnunciado('5.1')
-    APP_Enunciados.getExplicacion('5.1')
+    #APP_Enunciados.getExplicacion('5.1')
 
     #display(Markdown(mDbg))
     #correlacion = Datos[['AveragePrice', 'Total Volume', '4046', '4225', '4770', 'Total Bags']].corr()

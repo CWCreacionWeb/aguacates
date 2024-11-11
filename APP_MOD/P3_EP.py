@@ -134,9 +134,8 @@ def calcular_elasticidadB(volumen, precio):
 
 def P3_3_Elasticidad_BolsasB():
     APP_Enunciados.getEnunciado("3.3")
-    APP_Enunciados.getExplicacion("3.3")
+    #APP_Enunciados.getExplicacion("3.3")
 
-    print("Calculando Elasticidad media de los 3 años,  para Cada Tipo de Bolsa...")
     global Datos
     # Agrupar y sumar los volúmenes de cada tipo de bolsa por año y calcular el precio promedio
     Datos_bolsas = Datos.groupby('CalYear').agg({
@@ -146,20 +145,16 @@ def P3_3_Elasticidad_BolsasB():
         'XLarge Bags': 'sum'
     }).reset_index()
 
-    print(Datos_bolsas)
 
     cambio_volumen = Datos_bolsas['Small Bags'].pct_change().fillna(0)  # Cambio porcentual en el volumen
-    print(cambio_volumen)
 
     # Calcular la elasticidad para cada tipo de bolsa
     Datos_bolsas['Elasticidad_Small'] = calcular_elasticidadB(Datos_bolsas['Small Bags'], Datos_bolsas['AveragePrice'])
     Datos_bolsas['Elasticidad_Large'] = calcular_elasticidadB(Datos_bolsas['Large Bags'], Datos_bolsas['AveragePrice'])
     Datos_bolsas['Elasticidad_XLarge'] = calcular_elasticidadB(Datos_bolsas['XLarge Bags'], Datos_bolsas['AveragePrice'])
 
-    
-    print(Datos_bolsas['Small Bags'])
-    print(Datos_bolsas['AveragePrice'])
-    print(Datos_bolsas['Elasticidad_Small'])
+
+    Datos_bolsas = Datos_bolsas.drop(index=0)
 
     # Calcular la elasticidad promedio
     elasticidades_promedio = [
@@ -167,11 +162,31 @@ def P3_3_Elasticidad_BolsasB():
         Datos_bolsas['Elasticidad_Large'].mean(),
         Datos_bolsas['Elasticidad_XLarge'].mean()
     ]
+    if 1==2: # codigo para debugar, no quiero ocultar el codigo por ahora
+        print ('cambio volumen small bags')
+        print(cambio_volumen)
+
+        print ('datos_bolsas Small Bags')
+        
+        print(Datos_bolsas['Small Bags'])
+        print ('AveragePrice')
+
+        print(Datos_bolsas['AveragePrice'])
+        print ('datos_bolsas Elasticidad_Small')
+
+        print(Datos_bolsas['Elasticidad_Small'])
+        print('elasticidades_promedio')
+        print(elasticidades_promedio)
 
     # Graficar las elasticidades de cada tipo de bolsa
     plt.figure(figsize=(12, 6))
     plt.bar(['Small Bags', 'Large Bags', 'XLarge Bags'], elasticidades_promedio, color=['blue', 'orange', 'green'])
+
+    # Añadir los valores de elasticidad sobre las barras
+    for i, valor in enumerate(elasticidades_promedio):
+        plt.text(i, valor + 0.02, f'{valor:.2f}', ha='center', va='bottom', fontsize=12)
     
+
     plt.title('Elasticidad Precio-Demanda por Tipo de Bolsa')
     plt.xlabel('Tipo de Bolsa')
     plt.ylabel('Elasticidad Promedio')
@@ -225,6 +240,8 @@ def P3_4_Elasticidad_Tipo():
     plt.ylabel('Elasticidad')
     plt.legend(title="Tipo de Aguacate")
     plt.grid(True)
+        # Formatear el eje x para mostrar años sin decimales
+    plt.xticks(ticks=años, labels=[int(año) for año in años])  # Convertir años a enteros
     plt.show()
 
 
@@ -233,7 +250,7 @@ def P3_4_Elasticidad_Tipo():
 # Punto 3.5 Análisis de la Elasticidad Precios-Ventas
 def P3_5_Elasticidad_Precio_Ventas():
     APP_Enunciados.getEnunciado("3.5")
-    APP_Enunciados.getExplicacion("3.5")
+    #APP_Enunciados.getExplicacion("3.5")
     global Datos
     MisDatos = Datos.copy()
 
@@ -245,7 +262,8 @@ def P3_5_Elasticidad_Precio_Ventas():
     MisDatos['Elasticidad_Precio_Ventas'] = elasticidad
     # Gráfico de dispersión de la relación entre precio y volumen
     plt.figure(figsize=(10, 6))
-    plt.scatter(MisDatos['AveragePrice'], MisDatos['Total Volume']/1000,MisDatos['Elasticidad_Precio_Ventas'], alpha=0.5, color='purple')
+    #plt.scatter(MisDatos['AveragePrice'], MisDatos['Total Volume']/1000,MisDatos['Elasticidad_Precio_Ventas'], alpha=0.5, color='purple')
+    plt.scatter(MisDatos['AveragePrice'], MisDatos['Total Volume'],s=MisDatos['Elasticidad_Precio_Ventas'], alpha=0.5, color='purple')
     sns.regplot(data=Datos, x='AveragePrice', y='Total Volume', scatter=False, color='red')
 
     plt.title('Relación entre Precio y Volumen de Ventas')
