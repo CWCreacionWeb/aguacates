@@ -83,10 +83,8 @@ def P5_1_MatrizCorrelacion(pListaCampos=''):
     print(correlacion)
 
 def P5_2_AnalisisDispersión():
-    print('5.2')
     APP_Enunciados.getEnunciado("5.2")
     APP_Enunciados.getExplicacion("5.2")
-    print('5.2')
 
     
     plt.figure(figsize=(10, 6))
@@ -452,14 +450,9 @@ def P5_6_Modelos_Regresión_Múltiple():
 
 
 def P5_7_CoefficientsRegresionMultiple():
-    """
-    7. Análisis de Coeficientes de Regresión Múltiple:
-       - Uso de Datos: Examina los coeficientes de los modelos de regresión múltiple ajustados.
-       - Esperado: 
-         - Extrae los coeficientes del modelo ajustado.
-         - Interpreta los coeficientes para entender el impacto de cada variable numérica en `AveragePrice`.
-         - Comenta sobre las variables más significativas y su relevancia.
-    """
+    APP_Enunciados.getEnunciado("5.7")
+    APP_Enunciados.getExplicacion("5.7")
+
     
     global Datos  # Asegurarse de que los datos están accesibles
     
@@ -508,6 +501,10 @@ def P5_7_CoefficientsRegresionMultiple():
 
 
 def P5_8_Regresion_VolumenVentas():
+    APP_Enunciados.getEnunciado("5.8")
+    APP_Enunciados.getExplicacion("5.8")
+
+
     global Datos
     
     # Verificamos si las columnas necesarias están en el DataFrame
@@ -559,10 +556,9 @@ def P5_8_Regresion_VolumenVentas():
         print("\nEl modelo de regresión lineal proporciona un ajuste comparable o mejor que el modelo polinómico para estos datos.")
 
 def P5_8_VolumenVentas():
-    """
-    Ajusta modelos de regresión para analizar cómo los diferentes volúmenes de ventas afectan AveragePrice.
-    """
-    print("Ajustando modelos de regresión para diferenciar volúmenes de ventas...")
+    APP_Enunciados.getEnunciado("5.8")
+    APP_Enunciados.getExplicacion("5.8")
+
     
     # Ajustar modelo de regresión
     X = Datos[['Total Volume', '4046', '4225', '4770']]
@@ -580,12 +576,9 @@ def P5_8_VolumenVentas():
     print(f"Modelo Lineal - MSE: {mse_lineal}, R²: {r2_lineal}")
 
 def P5_9_AnalisisInfluenciaVentas():
-    """
-    Análisis de la Influencia de las Ventas Totales en el Precio Promedio.
-    
-    Ajusta modelos de regresión lineal y polinómica para evaluar cómo varía 
-    el Precio Promedio en función del Volumen Total de Ventas.
-    """
+    APP_Enunciados.getEnunciado("5.9")
+    APP_Enunciados.getExplicacion("5.9")
+
     
     global Datos  # Asegurarse de que los datos están accesibles
 
@@ -627,12 +620,9 @@ def P5_9_AnalisisInfluenciaVentas():
     print(f"RMSE Polinómico: {rmse_polinomico:.6f}")
 
 def P5_10_RegresionPrecioPromedioPorTipo():
-    """
-    Regresión para Predecir el Precio Promedio Según el Volumen de Aguacates por Tipo.
-    
-    Ajusta modelos de regresión lineal y polinómica para evaluar cómo varía 
-    el Precio Promedio en función del volumen de aguacates por tipo.
-    """
+    APP_Enunciados.getEnunciado("5.10")
+    APP_Enunciados.getExplicacion("5.10")
+
     
     global Datos  # Asegurarse de que los datos están accesibles
 
