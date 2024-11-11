@@ -7,9 +7,8 @@ Requerimientos [Proyecto_Analisis_Aguacate.pdf](/documentacion/Proyecto_Analisis
 - **Extreme programming (XP) :** Como un equipo de Jazz,
 - **Trello :** Para gestionar la lista de tareas mediante KANBAN 
 - **Canales de comunicación equpipo :** whatsapp  y Google Meet video conferencia.
-- **Repositorio:** GitHub, cada usuario tiene un repositorio, con dos ramas para su organización main y DEV,para integrar los desarollos se realiza mediante Fork
-- este enfoque no ha sido practico y agil en el ejercicio y metos todavía para la gestión correcta de versiónes y una intregración que garantice la calidad en el repositorio principal
-con un entorno (o rama) de test e incluso otro de QA solucionaría el problema de calidad.
+- **Repositorio:** GitHub, cada usuario tiene un repositorio, con dos ramas para su organización main y DEV,para integrar los desarollos se realiza mediante Fork\nEste enfoque no ha sido practico y agil en el ejercicio y metos todavía para la gestión correcta de versiónes y una intregración que garantice la calidad en el repositorio principal
+\ncon un entorno (o rama) de test e incluso otro de QA solucionaría el problema de calidad.
 el costo de esta gestión no es menospreciable, el costo final que genera un error (tiempo perdido por los usuarios,feeling del cliente/usuario etc) puede y suele ser superior al de gestión de un entorno de test y QA.
 ## Descripción solución tecnica
   De partida se utiliza Jupyter como interfaz de usuario y python para el desarrollo.
