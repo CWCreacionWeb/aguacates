@@ -12,8 +12,6 @@
     "contenido": "## Actividades de Análisis\n\n### 1. **Análisis de Series Temporales**\n**Resumen:** El análisis de series temporales permite identificar patrones, tendencias y estacionalidades en los precios y volúmenes de ventas de aguacates a lo largo del tiempo.\n",
     "explicacion": ""
   },
-
-
   "1.1": {
     "titulo": "**Descomposición de Series Temporales de Precios:** \n   ",
     "descripcion": "**Descomposición de Series Temporales de Precios:** \n   ",
@@ -24,7 +22,7 @@
     "titulo": "**Análisis de Estacionalidad por Región:** ",
     "descripcion": "**Análisis de Estacionalidad por Región:** \n   ",
     "contenido": "**Análisis de Estacionalidad por Región:** \n   - **Uso de Datos:**  Usa las columnas `AveragePrice`, `Date` y `Total Volume`.\n   - **Esperado:** Utiliza gráficos de líneas para visualizar cómo varían los precios de aguacates por región a lo largo de diferentes estaciones del año.\n     - Agrupa los datos por `region` y `Date` utilizando `groupby()`.\n     - Calcula el promedio de `AveragePrice` para cada región.\n     - Representa gráficamente las tendencias utilizando `plt.plot()` de `matplotlib`.",
-    "explicacion": "- Se agrupa por 'region', 'CalYear','CalEstacion' y creamos una nueva columna Year_Estacion\n- **Cada línea representa una región específica y permite observar las tendencias estacionales en los precios. \n - **Por ejemplo, se pueden identificar picos o caídas en precios en ciertas épocas, lo que refleja la oferta y demanda."
+    "explicacion": "- Se agrupa por 'region', 'CalYear','CalEstacion' y creamos una nueva columna Year_Estacion\n- **Cada línea representa una región específica y permite observar las tendencias estacionales en los precios. \n - **Por ejemplo, se pueden identificar picos o caídas en precios en ciertas épocas, lo que refleja la oferta y demanda.",
     "contenido": "**Análisis de Estacionalidad por Región:** \n   - **Uso de Datos:** Usa las columnas `AveragePrice`, `Date` y `Total Volume`.\n   - **Esperado:** Utiliza gráficos de líneas para visualizar cómo varían los precios de aguacates por región a lo largo de diferentes estaciones del año.\n     - Agrupa los datos por `region` y `Date` utilizando `groupby()`.\n     - Calcula el promedio de `AveragePrice` para cada región.\n     - Representa gráficamente las tendencias utilizando `plt.plot()` de `matplotlib`.",
     "explicacion": "- **Cada línea representa una región específica y permite observar las tendencias estacionales en los precios. \n - **Por ejemplo, se pueden identificar picos o caídas en precios en ciertas épocas, lo que refleja la oferta y demanda."
   },
@@ -32,7 +30,7 @@
     "titulo": "**Comparación de Precios Promedio Mensuales:**",
     "descripcion": "**Comparación de Precios Promedio Mensuales:** \n   ",
     "contenido": "**Uso de Datos:** Usa las columnas `AveragePrice` y `Date`.\n   - **Esperado:** Calcula y compara los precios promedio mensuales.\n     - Agrupa los datos por mes usando `pd.Grouper` con `freq='M'`.\n     - Calcula el promedio de `AveragePrice` para cada mes con `mean()`.\n     - Visualiza los resultados con un gráfico de líneas usando `plt.plot()`.",
-    "explicacion": ""
+    "explicacion": "",
     "explicacion": "**Grafica agrupada por mes usando Grouper que te da la opcion de agrupar por el mes, el año, el dia, etc.** \n**Calcula el promedio de AveragePrice para cada mes con mean()** \n**Visualiza los resultados con un gráfico de líneas usando plt.plot()**"
   },
   "1.4": {
@@ -45,14 +43,14 @@
     "titulo": "**Análisis de Cambios en Precios Anuales:**",
     "descripcion": "**Análisis de Cambios en Precios Anuales:** \n   ",
     "contenido": "**Análisis de Cambios en Precios Anuales:**\n   - **Uso de Datos:** Usa las columnas `AveragePrice` y `year`.\n   - **Esperado:** Observa las diferencias anuales en los precios promedio.\n     - Agrupa los datos por `year` utilizando `groupby()`.\n     - Calcula el promedio de `AveragePrice` para cada año.\n     - Representa los resultados en un gráfico de barras usando `plt.bar()` que compare los precios de cada año.",
-    "explicacion": ""
+    "explicacion": "",
     "explicacion": "- He quitado el año 2018 ya que no tenemos el año completo y no seria una evaluación real de los datos.** \n- He agrupado los datos por año y calculado el promedio de AveragePrice para cada año. \n - He representado los resultados en un gráfico de barras para comparar los precios de cada año. -- Vemos un incremento del precio medio de los aguacates en 2017 respecto a 2015 y 2016. \n - Añadiendo la linea plt.xticks convertirmos los años en enteros evitando que se muestren en notación científica."
   },
   "2.1": {
     "titulo": "**Gráfico de Violín de Volumen de Ventas por Región:**",
     "descripcion": "**Gráfico de Violín de Volumen de Ventas por Región:** \n   ",
     "contenido": "- **Uso de Datos:** Usa las columnas `Total Volume` y `region`.\n   - **Esperado:** Visualiza la distribución de ventas en diferentes regiones.\n     - Utiliza la función `violinplot` de `seaborn` para crear gráficos de violín.\n     - Configura los ejes para mostrar la relación entre `Total Volume` y `region`.\n     - Añade etiquetas y títulos usando `plt.title()` y `plt.xlabel()` para facilitar la interpretación.",
-    "explicacion": "La información sobre la densidad está en ambas mitades del gráfico, pero solo una mitad representa el rango real de valores."
+    "explicacion": "La información sobre la densidad está en ambas mitades del gráfico, pero solo una mitad representa el rango real de valores.",
     "explicacion": "- Cada violín indica **la densidad de la distribución** del volumen de ventas de cada región.\n - La forma y el ancho del violín a lo largo del eje Y representan cuántas observaciones están dentro de ese rango de Total Volume para la región dada. Un violín más ancho en un área específica significa más datos en ese rango de ventas. \n - En cada violín puedes ver una línea central que marca la mediana, y a veces otras líneas para los cuartiles, dependiendo de la configuración predeterminada."
   },
   "2.2": {
@@ -65,7 +63,7 @@
     "titulo": "**Histograma de Volumen Total de Ventas:**",
     "descripcion": "**Histograma de Volumen Total de Ventas:** \n   ",
     "contenido": " - **Uso de Datos:** Usa la columna `Total Volume`.\n   - **Esperado:** Crea un histograma para mostrar la distribución del volumen total de ventas.\n     - Utiliza `hist()` de `matplotlib` para crear el histograma.\n     - Ajusta el número de bins para una visualización clara usando el parámetro `bins`.\n     - Añade etiquetas y un título que describa lo que se muestra.",
-    "explicacion": ""
+    "explicacion": "",
     "explicacion": "**bins**  \n**int o secuencia, predeterminado 10**  \nNúmero de *bins* (intervalos) para el histograma. Si se proporciona un número entero, se calculan y devuelven los bordes de los bins como `bins + 1`. Si se proporciona una secuencia, se especifican los bordes de los bins, incluyendo el borde izquierdo del primer bin y el borde derecho del último bin. En este caso, se devuelve `bins` sin modificar."
   },
   "2.4": {
@@ -84,7 +82,7 @@
     "titulo": "**Elasticidad Precio-Demanda por Año:**",
     "descripcion": "**Elasticidad Precio-Demanda por Año:** \n   ",
     "contenido": "- **Uso de Datos:** Usa las columnas `AveragePrice` y `Total Volume`.\n   - **Esperado:** Calcula la elasticidad del precio de la demanda para cada año.\n  - Calcula la variación porcentual de `Total Volume` y `AveragePrice` utilizando `pd.pct_change()`.\n     - Utiliza la fórmula de elasticidad para determinar la sensibilidad de la demanda respecto al precio.\n     - Presenta los resultados en un gráfico de líneas usando `plt.plot()` para mostrar la elasticidad por año.",
-    "explicacion": "- **Cálculos de variación porcentual:** - Usamos .pct_change() para calcular la variación porcentual en Total Volume y AveragePrice de un año a otro.\n - **Elasticidad:** - Se calcula la elasticidad como la razón de la variación porcentual del volumen sobre la variación porcentual del precio.\n - **Filtrado** de los datos: Se filtran los datos entre 2014 y 2017 usando chart.filterByRangeYear (asumí que esta función está correctamente definida en tu código).\n - **Gráfico de líneas:** - Usamos plt.plot() para trazar la elasticidad a lo largo de los años y añadir etiquetas y una leyenda."
+    "explicacion": "- **Cálculos de variación porcentual:** - Usamos .pct_change() para calcular la variación porcentual en Total Volume y AveragePrice de un año a otro.\n - **Elasticidad:** - Se calcula la elasticidad como la razón de la variación porcentual del volumen sobre la variación porcentual del precio.\n - **Filtrado** de los datos: Se filtran los datos entre 2014 y 2017 usando chart.filterByRangeYear (asumí que esta función está correctamente definida en tu código).\n - **Gráfico de líneas:** - Usamos plt.plot() para trazar la elasticidad a lo largo de los años y añadir etiquetas y una leyenda.",
     "contenido": "- **Uso de Datos:** Usa las columnas `AveragePrice` y `Total Volume`.\n   - **Esperado:** Calcula la elasticidad del precio de la demanda para cada año.\n     - Calcula la variación porcentual de `Total Volume` y `AveragePrice` utilizando `pd.pct_change()`.\n     - Utiliza la fórmula de elasticidad para determinar la sensibilidad de la demanda respecto al precio.\n     - Presenta los resultados en un gráfico de líneas usando `plt.plot()` para mostrar la elasticidad por año.",
     "explicacion": ""
   },
@@ -140,7 +138,7 @@
     "titulo": "**Evaluación de Retención de Ventas por Cohorte:**",
     "descripcion": "**Cohortes por Región y Fecha:** \n   ",
     "contenido": "- **Uso de Datos:** Usa las columnas `Total Volume` y `Date`.\n   - **Esperado:** Estudia cómo se retienen las ventas en cohortes a lo largo de un año.\n     - Agrupa los datos por mes y cohortes.\n     - Calcula la retención de ventas y visualiza los resultados en un gráfico de líneas que muestre las tasas de retención.",
-    "explicacion": "**Explicación del Código**\n Agrupación Mensual: Agrupamos el volumen de ventas a nivel mensual.\n** Identificación de Cohortes: Cada mes se marca como el inicio de una nueva cohorte.\n** Cálculo de Retención: Para cada cohorte inicial, calculamos la tasa de retención mensual dividiendo el volumen de ventas en meses subsiguientes \n** por el volumen inicial.\n** Visualización: Creamos un gráfico de líneas en el que cada cohorte tiene su propia línea, mostrando la tasa de retención a lo largo de los meses.\n** Interpretación del Gráfico\n** Este gráfico mostrará cómo las ventas se retienen o disminuyen mes a mes para cada cohorte. Las tendencias ayudan a evaluar \n** la estabilidad de las ventas en el tiempo."
+    "explicacion": ""
   },
   "5.1": {
     "titulo": "**Matriz de Correlación:** ",

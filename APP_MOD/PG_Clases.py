@@ -103,3 +103,37 @@ def P3_2_Elasticidad_Regiones():
     # Mostrar el gráfico
     plt.show()
 
+def P4_4_CohortesClientesVentas():
+    APP_Enunciados.getEnunciado("4.4")
+    # Convertir la columna 'Date' a datetime
+    chart.df = chart.df[(chart.df['year'] >= 2015) & (chart.df['year'] <= 2017)]
+    # Agrupar por region y Date, calculando el total de ventas
+    # [pd.Grouper(key='Date', freq='ME'), 'region']
+    ventas_por_region_fecha = chart.df.groupby(['Date','region']).agg(
+        TotalVolume=('Total Volume', 'sum')
+    ).reset_index()
+
+    # Clasificar las regiones en cohortes según el volumen de ventas promedio total
+    # Calculamos el volumen promedio para cada región
+    volumen_promedio_por_region = ventas_por_region_fecha.groupby('region')['TotalVolume'].mean()
+
+    # Definimos las cohortes: Baja, Media, Alta en función del cuartil
+    cuartiles = pd.qcut(volumen_promedio_por_region, 3, labels=['Baja', 'Media', 'Alta'])
+
+    # Agregar la cohorte a cada región en el DataFrame original
+    ventas_por_region_fecha['Cohorte'] = ventas_por_region_fecha['region'].map(cuartiles)
+
+    # Crear el gráfico de líneas para cada cohorte
+    chart.figureConfig(title="Cohortes según el volumen de ventas por Región",
+                       xlabel="Fecha", ylabel="Volumen Total de Ventas")
+
+    for cohorte in ventas_por_region_fecha['Cohorte'].unique():
+        subset = ventas_por_region_fecha[ventas_por_region_fecha['Cohorte'] == cohorte]
+        subset_grouped = subset.groupby('Date')['TotalVolume'].sum()
+
+        plt.plot(subset_grouped.index, subset_grouped, label=f'Cohorte {cohorte}')
+
+    # chart.plt.savefig("graficas/grafica_4_4.png")
+    plt.legend(title='Cohorte de ')
+    plt.show()
+    APP_Enunciados.getExplicacion("4.4")
