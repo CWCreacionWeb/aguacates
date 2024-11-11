@@ -1,3 +1,6 @@
+from sklearn.ensemble import RandomForestRegressor 
+from datetime import datetime
+import time
 from IPython.display import display, Markdown, HTML
 import pandas as pd
 import numpy as np
@@ -10,15 +13,59 @@ from sklearn.preprocessing import PolynomialFeatures
 from sklearn.model_selection import train_test_split
 import statsmodels.api as sm 
 from APPModels.APP_FUN import APP_Enunciados,chart
+import APPModels.APP_FUN as app_fun  # Importa el módulo completo
 
-Datos =''    
+from scipy.optimize import minimize
+from itertools import combinations
+from IPython.display import clear_output, display
 
 
+# Modelos de Regresión en scikit-learn
+# Regresión Lineal
+from sklearn.linear_model import LinearRegression
+# Regresión de Lasso (L1 regularization)
+from sklearn.linear_model import Lasso
+# Regresión Ridge (L2 regularization)
+from sklearn.linear_model import Ridge
+# Regresión ElasticNet (combina L1 y L2 regularization)
+from sklearn.linear_model import ElasticNet
+# Regresión de Árbol de Decisión
+from sklearn.tree import DecisionTreeRegressor
+# Regresión de Bosque Aleatorio (Random Forest)
+from sklearn.ensemble import RandomForestRegressor
+# Regresión de Gradient Boosting
+from sklearn.ensemble import GradientBoostingRegressor
+# Regresión de Máquinas de Vectores de Soporte (SVR)
+from sklearn.svm import SVR
+# Regresión K-Vecinos (KNN)
+from sklearn.neighbors import KNeighborsRegressor
+# Regresión en XGBoost (si está instalado)
+from xgboost import XGBRegressor
+# Regresión en LightGBM (si está instalado)
+import lightgbm as lgb
+
+Datos = None
+mDbg = None
+def GEN_MatrizCorrelacion(pDf, pListaCampos=''):
+
+    correlacion = pDf[pListaCampos].corr()
+    
+
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(correlacion, annot=True, cmap='coolwarm')
+    plt.title('Matriz de Correlación')
+    plt.show()
+    
+    #print("Correlaciones significativas encontradas:")
+    #print(correlacion)
+
+
+
+    
 
 def P5_1_MatrizCorrelacion(pListaCampos=''):
-    """
-    Genera y visualiza la matriz de correlación entre las variables numéricas del DataFrame.
-    """
+
+    APP_Enunciados.getEnunciado('5.1')
     APP_Enunciados.getExplicacion('5.1')
 
     #display(Markdown(mDbg))
@@ -36,45 +83,24 @@ def P5_1_MatrizCorrelacion(pListaCampos=''):
     print(correlacion)
 
 def P5_2_AnalisisDispersión():
-    """
-2. **Análisis de Dispersión entre Variables Clave:** 
-   - **Uso de Datos:** Selecciona variables numéricas de interés como `AveragePrice` y `Total Volume`.
-   - **Esperado:** 
-     - Importa las librerías necesarias: `import seaborn as sns` y `import matplotlib.pyplot as plt`.
-     - Crea un gráfico de dispersión con `sns.scatterplot()` para visualizar la relación entre `AveragePrice` y `Total Volume`.
-     - Añade una línea de regresión utilizando `sns.regplot()` para ilustrar las tendencias.
-     - Compara el ajuste de una regresión lineal frente a una polinómica.
-    """
-    mDbg =P5_2_AnalisisDispersión.__doc__
-
-
-    display(Markdown(mDbg))
+    APP_Enunciados.getEnunciado("5.2")
+    APP_Enunciados.getExplicacion("5.2")
 
     
     plt.figure(figsize=(10, 6))
     sns.scatterplot(data=Datos, x='Total Volume', y='AveragePrice')
     sns.regplot(data=Datos, x='Total Volume', y='AveragePrice', scatter=False, color='red')
     sns.regplot(data=Datos, x='Total Volume', y='AveragePrice', scatter=False, color='green',order=2)
-    sns.regplot(data=Datos, x='Total Volume', y='AveragePrice', scatter=False, color='green',order=3)
+    sns.regplot(data=Datos, x='Total Volume', y='AveragePrice', scatter=False, color='blue',order=3)
     plt.title('Análisis de Dispersión: AveragePrice vs Total Volume')
     plt.show()
     
     print("El gráfico muestra la relación entre AveragePrice y Total Volume.")
 
 def P5_2_AnalisisDispersiónN():
-    """
-2. **Análisis de Dispersión entre Variables Clave:** 
-   - **Uso de Datos:** Selecciona variables numéricas de interés como `AveragePrice` y `Total Volume`.
-   - **Esperado:** 
-     - Importa las librerías necesarias: `import seaborn as sns` y `import matplotlib.pyplot as plt`.
-     - Crea un gráfico de dispersión con `sns.scatterplot()` para visualizar la relación entre `AveragePrice` y `Total Volume`.
-     - Añade una línea de regresión utilizando `sns.regplot()` para ilustrar las tendencias.
-     - Compara el ajuste de una regresión lineal frente a una polinómica.
-    """
-    mDbg =P5_2_AnalisisDispersión.__doc__
+    APP_Enunciados.getEnunciado("5.2")
+    APP_Enunciados.getExplicacion("5.2")
 
-
-    display(Markdown(mDbg))
 
     
     plt.figure(figsize=(10, 6))
@@ -86,44 +112,67 @@ def P5_2_AnalisisDispersiónN():
     plt.title('Análisis de Dispersión:Total Volume vs AveragePrice  ')
     plt.show()
     
-    print("El gráfico muestra la relación entre AveragePrice y Total Volume.")
+    print("El gráfico muestra la relación entre Total Volume y AveragePrice.")
 
 
-def P5_3_PrediccionesMensuales():
-
+def P5_3_PrediccionesMensuales( pModelo ='Media'):
+    # Establece una altura de celda suficientemente grande
+#interpolante, obtener los pesos.
+    APP_Enunciados.getEnunciado('5.3')
+    mDbg =f""""<span style='font-size:20px; color:blue; font-style:italic;'>
+**promedio_precio = (Datos_trimestrales['AveragePrice'][i] + Datos_trimestrales['AveragePrice'][i + 1]) / 2**
+</span>
     """
-3. **Predicciones Mensuales Usando Datos Trimestrales:**
-   - **Uso de Datos:** Agrupa datos por trimestres y segmenta en meses utilizando `Date`, `AveragePrice`, y `Total Volume`.
-   - **Esperado:** 
-     - Convierte la columna `Date` a tipo datetime si es necesario.
-     - Agrupa los datos por trimestre y calcula el promedio de `AveragePrice` y `Total Volume`.
-     - Utiliza los datos de los primeros 2 meses de un trimestre para predecir el precio del tercer mes.
-     - Compara los resultados de las predicciones con los precios reales.
-     - Evalúa la precisión de tus predicciones utilizando métricas como R² y RMSE.
-         
-    """
-    mDbg =P5_3_PrediccionesMensuales.__doc__
 
+    SubDatos = app_fun.APP_DatosORG.copy()
 
     display(Markdown(mDbg))
 
-    
-    # Agrupación por trimestres y cálculo de promedios
-    Datos_trimestrales = Datos.groupby(pd.Grouper(key='CalFecha', freq='Q')).agg({'AveragePrice': 'mean', 'Total Volume': 'mean'}).reset_index()
-    Datos_trimestrales['Month'] = Datos_trimestrales['CalFecha'].dt.month
 
+    # Agrupación por trimestres y cálculo de promedios
+    #Datos_trimestrales = SubDatos.groupby(pd.Grouper(key='CalFecha', freq='Q')).agg({'AveragePrice': 'mean', 'Total Volume': 'mean'}).reset_index()
+    Datos_trimestrales = SubDatos.groupby(pd.Grouper(key='CalFecha', freq='Q')).agg({
+            'AveragePrice': 'mean', 
+            'Total Volume': 'mean'
+        }).reset_index()
+    
+    Datos_trimestrales['Month'] = Datos_trimestrales['CalFecha'].dt.month
     # Predicciones
     predicciones = []
+    fechas_prediccion = []
     for i in range(len(Datos_trimestrales) - 2):
-        promedio_precio = (Datos_trimestrales['AveragePrice'][i] + Datos_trimestrales['AveragePrice'][i + 1]) / 2
+        pModelo ='Media'
+        if pModelo=='Media':
+            promedio_precio = (Datos_trimestrales['AveragePrice'][i] + Datos_trimestrales['AveragePrice'][i + 1]) / 2
+        elif pModelo =='MediaPodenrada':
+            # Cálculo del promedio ponderado
+            total_vol_0 = Datos_trimestrales['Total Volume'][i]
+            total_vol_1 = Datos_trimestrales['Total Volume'][i + 1]
+            avg_price_0 = Datos_trimestrales['AveragePrice'][i]
+            avg_price_1 = Datos_trimestrales['AveragePrice'][i + 1]
+            
+            # Promedio ponderado de los precios utilizando el volumen total
+            promedio_precio = ((avg_price_0 * total_vol_0) + (avg_price_1 * total_vol_1)) / (total_vol_0 + total_vol_1)
+
+        elif pModelo=='MesAnt':
+            promedio_precio =  Datos_trimestrales['AveragePrice'][i + 1]
+
         predicciones.append(promedio_precio)
+        fechas_prediccion.append(Datos_trimestrales['CalFecha'][i + 2])  # Guardamos la fecha del tercer mes para el eje X
     
     # Comparar con los precios reales
     precios_reales = Datos_trimestrales['AveragePrice'][2:].reset_index(drop=True)
-    predicciones_df = pd.DataFrame({'Real': precios_reales, 'Predicción': predicciones})
+    predicciones_df = pd.DataFrame({
+        'Fecha': fechas_prediccion,
+        'Real': precios_reales,
+        'Predicción': predicciones
+    })
 
-    print("Comparación de precios reales vs predicciones:")
-    print(predicciones_df)
+    # Agregar todas las fechas reales (incluyendo las que no tienen predicción)
+    fechas_reales_completas = Datos_trimestrales['CalFecha'].reset_index(drop=True)  # Fechas reales completas
+    precios_reales_completos = Datos_trimestrales['AveragePrice'].reset_index(drop=True)
+
+
     # Evaluación de precisión
     r2 = r2_score(predicciones_df['Real'], predicciones_df['Predicción'])
     rmse = np.sqrt(mean_squared_error(predicciones_df['Real'], predicciones_df['Predicción']))
@@ -131,32 +180,47 @@ def P5_3_PrediccionesMensuales():
     print(f"\nR²: {r2:.4f}")
     print(f"RMSE: {rmse:.4f}")
 
-    # (Opcional) Graficar resultados
+    # Graficar resultados
     plt.figure(figsize=(10, 5))
-    plt.plot(predicciones_df['Real'], label='Precios Reales', marker='o')
-    plt.plot(predicciones_df['Predicción'], label='Predicciones', marker='o')
     plt.title('Comparación de Precios Reales y Predicciones')
     plt.xlabel('Meses (a partir del tercer mes del trimestre)')
+
+    # Graficar precios reales (todas las fechas)
+    plt.plot(fechas_reales_completas, precios_reales_completos, label='Precios Reales', marker='o', color='blue')
+
+    # Graficar predicciones
+    plt.plot(predicciones_df['Fecha'], predicciones_df['Predicción'], label='Predicciones', marker='o', color='red')
+
+    # (Opcional) Graficar resultados
+    #plt.figure(figsize=(10, 5))
+    #plt.plot(predicciones_df['Fecha'],predicciones_df['Real'], label='Precios Reales', marker='o')
+    #plt.plot(predicciones_df['Fecha'],predicciones_df['Predicción'], label='Predicciones', marker='o')
+    #plt.xticks(predicciones_df['Fecha'], predicciones_df['Fecha'].dt.strftime('%Y-%m'), rotation=45)  # Formato año-mes
+   # Formato de fecha en el eje X
+    plt.xticks(fechas_reales_completas, fechas_reales_completas.dt.strftime('%Y-%m'), rotation=45)
+      
     plt.ylabel('Average Price')
     plt.legend()
     plt.grid()
+    #plt.tight_layout()
     plt.show()
 
 
+    #GEN_MatrizCorrelacion(predicciones_df,['Fecha','Real','Predicción'])
+
+    #Elimina la primera fila que tiene las predicciones en nan
+
+    predicciones_df = predicciones_df.drop([0, 1]).reset_index(drop=True)
+    if 1==2: #no quiero que lo imprima por ahora, pero que sea visible el codigo
+        GEN_MatrizCorrelacion(predicciones_df,['Fecha','Real','Predicción'])
+    
+
+
+
+
 def P5_4_PrediccionesTrimestrales():
-    """
-4. **Predicciones Trimestrales:**
-   - **Uso de Datos:** Agrupa los datos en trimestres usando solo variables numéricas.
-   - **Esperado:** 
-     - Agrupa los datos por trimestres usando `pd.Grouper()` con `freq='Q'` para obtener promedios.
-     - Usa los datos de 1 o 2 trimestres anteriores para predecir el siguiente trimestre ajustando modelos de regresión lineal y polinómica.
-     - Compara los resultados de las predicciones con los precios reales.
-     - Evalúa la precisión de tus predicciones utilizando métricas como R² y RMSE    
-    """
-    mDbg =P5_4_PrediccionesTrimestrales.__doc__
-
-
-    display(Markdown(mDbg))
+    APP_Enunciados.getEnunciado("5.4")
+    APP_Enunciados.getExplicacion("5.4")
     global Datos
     # Filtrar solo las columnas numéricas para agrupar
     datos_trimestrales = Datos.groupby(pd.Grouper(key='CalFecha', freq='Q')).mean(numeric_only=True).reset_index()
@@ -257,20 +321,10 @@ def P5_4_PrediccionesTrimestrales():
     display(Markdown(interpretacion_md))
     
 def P5_5_PrediccionesAnuales(anios_previos=1):
-    """
-5. **Predicciones Anuales:**
-   - **Uso de Datos:** Agrupa los datos en años, utilizando únicamente columnas numéricas.
-   - **Esperado:** 
-     - Agrupa los datos por año utilizando `pd.Grouper()` con `freq='Y'`.
-     - Usa los datos de 1 o 2 años anteriores para predecir el siguiente año ajustando modelos de regresión lineal y polinómica.
-     - Evalúa la precisión de tus predicciones utilizando métricas como R² y RMSE.
+    APP_Enunciados.getEnunciado("5.5")
+    APP_Enunciados.getExplicacion("5.5")
 
-
-    """
-    mDbg =P5_5_PrediccionesAnuales.__doc__
-
-
-    mDbg += f"""- **parametros**:  
+    mDbg = f"""- **parametros**:  
          - **anios_previos:**`{anios_previos}` 
     """
 
@@ -347,14 +401,8 @@ def P5_5_PrediccionesAnuales(anios_previos=1):
     print(f"Resultados exportados a: P5_5_PrediccionesAnuales")
 
 def P5_6_Modelos_Regresión_Múltiple():
-    """
-    6. Desarrollo de Modelos de Regresión Múltiple:
-       - Uso de Datos: Selecciona varias variables numéricas como `Total Volume`, `4046`, `4225`, `4770`, y `Total Bags` para predecir `AveragePrice`.
-       - Esperado: 
-         - Define las variables independientes (X) y dependientes (y).
-         - Ajusta modelos de regresión múltiple.
-         - Compara su rendimiento utilizando métricas como R² y RMSE y discute las implicaciones de los resultados.
-    """
+    APP_Enunciados.getEnunciado("5.6")
+    APP_Enunciados.getExplicacion("5.6")
 
     global Datos  # Asegurarse de que los datos están accesibles
     
@@ -402,14 +450,9 @@ def P5_6_Modelos_Regresión_Múltiple():
 
 
 def P5_7_CoefficientsRegresionMultiple():
-    """
-    7. Análisis de Coeficientes de Regresión Múltiple:
-       - Uso de Datos: Examina los coeficientes de los modelos de regresión múltiple ajustados.
-       - Esperado: 
-         - Extrae los coeficientes del modelo ajustado.
-         - Interpreta los coeficientes para entender el impacto de cada variable numérica en `AveragePrice`.
-         - Comenta sobre las variables más significativas y su relevancia.
-    """
+    APP_Enunciados.getEnunciado("5.7")
+    APP_Enunciados.getExplicacion("5.7")
+
     
     global Datos  # Asegurarse de que los datos están accesibles
     
@@ -458,6 +501,10 @@ def P5_7_CoefficientsRegresionMultiple():
 
 
 def P5_8_Regresion_VolumenVentas():
+    APP_Enunciados.getEnunciado("5.8")
+    APP_Enunciados.getExplicacion("5.8")
+
+
     global Datos
     
     # Verificamos si las columnas necesarias están en el DataFrame
@@ -509,10 +556,9 @@ def P5_8_Regresion_VolumenVentas():
         print("\nEl modelo de regresión lineal proporciona un ajuste comparable o mejor que el modelo polinómico para estos datos.")
 
 def P5_8_VolumenVentas():
-    """
-    Ajusta modelos de regresión para analizar cómo los diferentes volúmenes de ventas afectan AveragePrice.
-    """
-    print("Ajustando modelos de regresión para diferenciar volúmenes de ventas...")
+    APP_Enunciados.getEnunciado("5.8")
+    APP_Enunciados.getExplicacion("5.8")
+
     
     # Ajustar modelo de regresión
     X = Datos[['Total Volume', '4046', '4225', '4770']]
@@ -530,12 +576,9 @@ def P5_8_VolumenVentas():
     print(f"Modelo Lineal - MSE: {mse_lineal}, R²: {r2_lineal}")
 
 def P5_9_AnalisisInfluenciaVentas():
-    """
-    Análisis de la Influencia de las Ventas Totales en el Precio Promedio.
-    
-    Ajusta modelos de regresión lineal y polinómica para evaluar cómo varía 
-    el Precio Promedio en función del Volumen Total de Ventas.
-    """
+    APP_Enunciados.getEnunciado("5.9")
+    APP_Enunciados.getExplicacion("5.9")
+
     
     global Datos  # Asegurarse de que los datos están accesibles
 
@@ -577,12 +620,9 @@ def P5_9_AnalisisInfluenciaVentas():
     print(f"RMSE Polinómico: {rmse_polinomico:.6f}")
 
 def P5_10_RegresionPrecioPromedioPorTipo():
-    """
-    Regresión para Predecir el Precio Promedio Según el Volumen de Aguacates por Tipo.
-    
-    Ajusta modelos de regresión lineal y polinómica para evaluar cómo varía 
-    el Precio Promedio en función del volumen de aguacates por tipo.
-    """
+    APP_Enunciados.getEnunciado("5.10")
+    APP_Enunciados.getExplicacion("5.10")
+
     
     global Datos  # Asegurarse de que los datos están accesibles
 

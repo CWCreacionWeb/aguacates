@@ -1,3 +1,8 @@
+#from APPModels.APP_FUN import APP_Enunciados,chart,APP_DatosORG
+from IPython.display import display, HTML
+from sklearn.preprocessing import StandardScaler,MinMaxScaler
+import APPModels.APP_FUN as app_fun  # Importa el módulo completo
+from APPModels.APP_FUN import APP_Enunciados
 from IPython.display import display, Markdown, HTML
 import timeit
 from APP_MOD import PG_Clases as PG
@@ -6,9 +11,9 @@ from APP_MOD import P2_GVD as P2
 from APP_MOD import P3_EP as P3
 from APP_MOD import P4_AC as P4
 from APP_MOD import P5_ACR as P5
+from APP_MOD import P99_TRAINING as P99_T
 import pandas as pd
 from APP_MOD import Region_Clasificacion as RC
-from APPModels.APP_FUN import APP_Enunciados,chart
 
 mFile ='datos/avocado.csv'
 mDbg =''
@@ -87,6 +92,22 @@ def PreparacionDatos():
     - **CalFecha:** Convierte el campo dato de un string con formato yyyy-mm-dd 
     - **CalYear:** Componente Year de la fecha
     - **CalMes:** Componente Mes de la fecha  
+
+- **Columnas FECHA formato numerico para los modelos de entrenamiento**: 
+    - **Cal_AAAAMM:** 
+    - **Cal_AAAA:** 
+    - **Cal_MM:** 
+    - **Cal_MM:** 
+    - **Cal_SS:** 
+    - **Cal_DDD:** 
+    - **Cal_AAAADDD:** 
+
+- **Columnas NORMALIZADAS para los modelos de entrenamiento**: 
+    - **CalNOR_Z_TotalVolume:**  Z-Score Normalization
+    - **CalNOR_MM_TotalVolume:**  Min-Max Normalization
+    - **Cal_NOR_MM_AAAADDD:**  Min-Max Normalization para DDD entre 1 y 1000
+
+    
     """
     #display(Markdown(PreparacionDatos.__doc__))
     global mDbg
@@ -103,6 +124,24 @@ def PreparacionDatos():
     # Extraer año y mes para análisis estacional
     DatosORG['CalYear'] = DatosORG['CalFecha'].dt.year
     DatosORG['CalMonth'] = DatosORG['CalFecha'].dt.month
+
+# Generar las columnas solicitadas
+    DatosORG['Cal_AAAAMM'] = DatosORG['CalFecha'].dt.year * 100 + DatosORG['CalFecha'].dt.month
+    DatosORG['Cal_AAAA'] = DatosORG['CalFecha'].dt.year 
+    DatosORG['Cal_MM'] = DatosORG['CalFecha'].dt.month
+    DatosORG['Cal_SS'] = DatosORG['CalFecha'].dt.isocalendar().week  # Para la semana del año
+    DatosORG['Cal_DDD'] = DatosORG['CalFecha'].dt.dayofyear
+    DatosORG['Cal_AAAADDD'] = DatosORG['CalFecha'].dt.year * 1000 + DatosORG['CalFecha'].dt.dayofyear
+    # Inicializar el StandardScaler para Z-score
+    scaler = StandardScaler()
+    # Normalizar el campo Total Volume
+    DatosORG['CalNOR_Z_TotalVolume'] = scaler.fit_transform(DatosORG[['Total Volume']])
+    # Inicializar el StandardScaler para Z-score
+    scaler = MinMaxScaler()
+    # Normalizar el campo Total Volume
+    DatosORG['CalNOR_MM_TotalVolume'] = scaler.fit_transform(DatosORG[['Total Volume']])
+
+
     display(Markdown(mDbg))  
     mDbg =""
 
@@ -115,6 +154,7 @@ def Inicio():
     global DatosORG
     global DatosRegionClasificacionVolumen
     global Lista_CalRegionGrupo
+    global APP_DatosORG
     tiempo_ejecucion = timeit.timeit(lambda: Ejecutar(), number=1) 
     tiempo_ejecucion*=1000
     mDbg+=f'Tiempo de ejecución ms:{tiempo_ejecucion}'
@@ -126,9 +166,7 @@ def Inicio():
     print(mDbg)
     #DatosORG = DatosORG[(DatosORG['CalRegion_Acumulado_Porcentaje'] > 99.85) | (DatosORG['CalRegion_Acumulado_Porcentaje'] <52)]
     #DatosORG = DatosORG[(DatosORG['CalRegion_Acumulado_Porcentaje'] > 99.85) | (DatosORG['CalRegion_Acumulado_Porcentaje'] <45)]
-    print('Len filtrado')
-    print(len(DatosORG))
-
+    app_fun.APP_DatosORG = DatosORG.copy()
     P1.DatosORG = DatosORG
 
 
@@ -138,11 +176,18 @@ def Inicio():
     P2.Datos = DatosORG
     P3.Datos = DatosORG
     P4.Datos = DatosORG
-    P5.Datos = DatosORG
+    P5.Datos = DatosORG.copy()
 
 
 #Inicio()
 #P1.plot_average_price_by_region_estacion(DatosORG)
+#P5.P5_3_PrediccionesMensuales()
+#P5.P5_3_PrediccionesMensualesConModeloTRAINING_TODOS()
+#P99_T.P99_1_Modelo_TRAINING_TODOS()
+#P99_T.P100_1_Modelo_TRAINING_Mod(True)
+#P1.P1_1_DescomposicionSerieTemporal()
+#P1.P1_2_EstacionalidadPorRegion()
+#P1.P1_3_ComparacionPreciosPromedioMensuales()
 def DOC():
     APP_Enunciados.getEnunciado('0')
     

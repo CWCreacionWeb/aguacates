@@ -4,7 +4,6 @@ from IPython.display import Markdown, display
 class ClsEnunciados:
 
     def __init__(self):
-        print('ClsEnunciados__init__\n')
         # Cargar el JSON desde un archivo dentro de la carpeta 'datos'
         with open('./datos/enunciados.json', 'r') as file:
             self.enunciado = json.load(file)
@@ -28,7 +27,7 @@ class ClsEnunciados:
         enunciado = self.enunciado.get(key, {})
         explicacion = enunciado.get('explicacion', '')
         # Mostrar en formato Markdown
-        display(Markdown(f"{key} Explicación: | {explicacion}"))
+        display(Markdown(f"{key} NOTAS: | <span style='font-size:16px; color:blue; font-style:italic;'>{explicacion}</span>"))
 
 
     def get(self, key, default=None):
