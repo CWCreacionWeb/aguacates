@@ -1,5 +1,7 @@
 from APPModels.Enunciados import ClsEnunciados
 from APPModels.Charts import Charts
+import pandas as pd
+
 APP_Enunciados =ClsEnunciados()
 
 file = 'datos/avocado.csv'
@@ -12,3 +14,5 @@ chart.clearData('Unnamed: 0')
 chart.isNull()
 chart.showData()
 enun = APP_Enunciados
+
+APP_DatosORG = pd.DataFrame()

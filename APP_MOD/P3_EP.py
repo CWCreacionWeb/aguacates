@@ -16,41 +16,6 @@ Datos =''
 # --------------------- 3. Elasticidad del Precio ---------------------
 # Función para calcular la elasticidad
 def calcular_elasticidad(volumen, precio):
-    """
-### 3. **Elasticidad del Precio**
-**Resumen:** El análisis de elasticidad precio-demanda permite evaluar cómo los cambios en los precios afectan la demanda de aguacates. Comprender la elasticidad puede ayudar a formular estrategias de precios más efectivas.
-
-La fórmula de elasticidad precio-demanda es:
-
-$$
-E_d = \frac{\% \text{Cambio en la cantidad demandada}}{\% \text{Cambio en el precio}} = \frac{\Delta Q / Q}{\Delta P / P}
-$$    
-    """
-    mDbg =calcular_elasticidad.__doc__
-
-    mDbg += f"""
-**Notas**:
-
-- El año 2018 no está completo, tenemos 3 meses, lo que representa que el volumen es un 25%.
-- El incremento de volumen respecto al año anterior es incorrecto y, por tanto, la elasticidad también.
-- El incremento de precio medio es relativo a 3 meses, por lo que el valor de la elasticidad es inconsistente.
-    - Disminuyen las ventas un 71% y el precio un 11%, resultando en una elasticidad de 6.
-
-Si homogeneizamos los datos comparando solo 3 meses:
-   - Las ventas se incrementan un 14% y el precio un 4%, con una elasticidad de 0.35.
-
-    """
-
-    mDbg += f"""
-- **parametros**:  
-         - *volumen:*
-         - *precio:* 
-    """
-
-    display(Markdown(mDbg))
-
-    
-
 
     # Calcular el porcentaje de cambio en volumen y precio
     cambio_volumen = volumen.pct_change()
@@ -69,7 +34,6 @@ def P3_1_Elasticidad_Precio_Demanda_Año(pListaRegiones =''):
 
     mDbg = f"""
 - **parametros**:  
-     - **pClasificacionRegion:** `['AAA', 'BBBB']`
      - **pListaRegiones:** `{pListaRegiones}`
 
     """
@@ -78,14 +42,11 @@ def P3_1_Elasticidad_Precio_Demanda_Año(pListaRegiones =''):
 
 
 
-    print("Calculando Elasticidad Precio-Demanda por Año...")
-    # Agrupar datos por año y calcular la elasticidad anual
-    #SubDatos = datos['region'] =''
     SubData= Datos
     if(pListaRegiones==''):
         SubData = SubData
     else:
-        SubData = SubData[Datos['region'] == 'TotalUS']
+        SubData = SubData[Datos['region'].isin(pListaRegiones)]  
 
     Datos_anual = SubData.groupby('CalYear').agg({'Total Volume': 'sum', 'AveragePrice': 'mean'}).reset_index()
 
@@ -153,98 +114,6 @@ def P3_2_Elasticidad_Regiones():
     plt.tight_layout()
     plt.show()
 
-def P3_2_Elasticidad_RegionesN():
-    """
-    Calcula la elasticidad del precio de la demanda por región y año
-    y muestra un gráfico de barras comparando elasticidades por región.
-    
-    - Datos: DataFrame que contiene las columnas 'Total Volume', 'AveragePrice', 'region', y 'CalYear'
-    """
-    global Datos
-
-    Datos_anual = Datos.groupby('region','CalYear').agg({'Total Volume': 'sum', 'AveragePrice': 'mean'}).reset_index()
-
-
-    Datos_anual['Elasticidad'], Datos_anual['Cambio_Volumen'], Datos_anual['Cambio_Precio'] =  calcular_elasticidad(Datos_anual['Total Volume'], Datos_anual['AveragePrice'])
-    DatosN = Datos_anual.copy()
-    """
-    DatosN = Datos.copy()
-    # Calcular el cambio porcentual en 'Total Volume' y 'AveragePrice' por año y región
-    DatosN['Cambio_Volumen'] = DatosN.groupby(['region', 'CalYear'])['Total Volume'].pct_change()
-    DatosN['Cambio_Precio'] = DatosN.groupby(['region', 'CalYear'])['AveragePrice'].pct_change()
-    
-
-
-    
-    # Calcular la elasticidad como cambio de volumen sobre cambio de precio
-    DatosN['Elasticidad'] = DatosN['Cambio_Volumen'] / DatosN['Cambio_Precio']
-    """
-    # Filtrar los datos para eliminar filas con NaN en elasticidad (primera fila de cada grupo)
-    print(DatosN)
-    Datos_filtrado = DatosN.dropna(subset=['Elasticidad'])
-    
-    # Agrupar por región y año para obtener la elasticidad promedio anual en cada región
-    Elasticidad_por_region = Datos_filtrado.groupby(['region', 'CalYear'])['Elasticidad'].mean().reset_index()
-    
-    # Graficar elasticidad por región y año
-    plt.figure(figsize=(14, 8))
-    
-    # Crear un gráfico de barras donde cada región tenga una barra por año
-    for region in Elasticidad_por_region['region'].unique():
-        # Filtrar datos de la región actual
-        datos_region = Elasticidad_por_region[Elasticidad_por_region['region'] == region]
-        # Crear gráfico de barras para la región actual
-        plt.bar(datos_region['CalYear'] + 0.1 * Elasticidad_por_region['region'].unique().tolist().index(region), 
-                datos_region['Elasticidad'], 
-                width=0.2, 
-                label=f'Región: {region}')
-    
-    # Configuración del gráfico
-    plt.title('Elasticidad Precio-Demanda por Región y Año')
-    plt.xlabel('Año')
-    plt.ylabel('Elasticidad')
-    plt.xticks(Elasticidad_por_region['CalYear'].unique())  # Años como etiquetas en el eje x
-    plt.legend(title='Región')
-    plt.grid(axis='y', linestyle='--', alpha=0.7)
-    plt.show()
-
-# Punto 3.3 Elasticidad a Nivel de Tipo de Bolsa
-def P3_3_Elasticidad_BolsasA():
-    """
-    3. **Elasticidad a Nivel de Tipo de Bolsa:**
-       - **Uso de Datos:** Usa las columnas `AveragePrice` y `Total Bags`.
-       - **Esperado:** Calcula la elasticidad del precio de la demanda específica para cada tipo de bolsa.
-         - Suma los volúmenes de ventas por tipo de bolsa utilizando `groupby()` y `sum()`.
-         - Calcula la elasticidad para cada tipo y presenta los resultados en un gráfico comparativo usando `plt.bar()`.
-    """
-    
-    mDbg = P3_3_Elasticidad_Bolsas.__doc__
-    display(Markdown(mDbg))
-
-    print("Calculando Elasticidad para Cada Tipo de Bolsa...")
-
-    # Sumar volúmenes de cada tipo de bolsa por año y calcular elasticidad
-    Datos_bolsas = Datos.groupby('CalYear').agg({'Total Bags': 'sum', 'AveragePrice': 'mean'}).reset_index()
-    
-    # Calcular cambios porcentuales en el volumen total de bolsas y el precio promedio
-    Datos_bolsas['Cambio_Volumen'] = Datos_bolsas['Total Bags'].pct_change()
-    Datos_bolsas['Cambio_Precio'] = Datos_bolsas['AveragePrice'].pct_change()
-    
-    # Calcular la elasticidad: cambio de volumen dividido por cambio de precio
-    Datos_bolsas['Elasticidad'] = Datos_bolsas['Cambio_Volumen'] / Datos_bolsas['Cambio_Precio']
-    
-    # Eliminar filas con valores NaN (debido al cálculo de pct_change en la primera fila)
-    Datos_bolsas = Datos_bolsas.dropna(subset=['Elasticidad'])
-
-    # Gráfico comparativo de elasticidad para cada año
-    plt.figure(figsize=(10, 6))
-    plt.bar(Datos_bolsas['CalYear'].astype(str), Datos_bolsas['Elasticidad'], color='blue')
-    plt.title('Elasticidad Precio-Demanda por Tipo de Bolsa')
-    plt.xlabel('Año')
-    plt.ylabel('Elasticidad')
-    plt.grid(axis='y', linestyle='--', alpha=0.7)
-    plt.show()    
-
 
 
 def calcular_elasticidadB(volumen, precio):
@@ -264,14 +133,10 @@ def calcular_elasticidadB(volumen, precio):
     return elasticidad
 
 def P3_3_Elasticidad_BolsasB():
-    """
-    3. **Elasticidad a Nivel de Tipo de Bolsa:**
-       - **Uso de Datos:** Usa las columnas `AveragePrice`, `Small Bags`, `Large Bags`, `XLarge Bags`.
-       - **Esperado:** Calcula la elasticidad del precio de la demanda específica para cada tipo de bolsa.
-         - Suma los volúmenes de ventas por tipo de bolsa utilizando `groupby()` y `sum()`.
-         - Calcula la elasticidad para cada tipo y presenta los resultados en un gráfico comparativo usando `plt.bar()`.
-    """
-    print("Calculando Elasticidad para Cada Tipo de Bolsa...")
+    APP_Enunciados.getEnunciado("3.3")
+    APP_Enunciados.getExplicacion("3.3")
+
+    print("Calculando Elasticidad media de los 3 años,  para Cada Tipo de Bolsa...")
     global Datos
     # Agrupar y sumar los volúmenes de cada tipo de bolsa por año y calcular el precio promedio
     Datos_bolsas = Datos.groupby('CalYear').agg({
@@ -281,10 +146,20 @@ def P3_3_Elasticidad_BolsasB():
         'XLarge Bags': 'sum'
     }).reset_index()
 
+    print(Datos_bolsas)
+
+    cambio_volumen = Datos_bolsas['Small Bags'].pct_change().fillna(0)  # Cambio porcentual en el volumen
+    print(cambio_volumen)
+
     # Calcular la elasticidad para cada tipo de bolsa
     Datos_bolsas['Elasticidad_Small'] = calcular_elasticidadB(Datos_bolsas['Small Bags'], Datos_bolsas['AveragePrice'])
     Datos_bolsas['Elasticidad_Large'] = calcular_elasticidadB(Datos_bolsas['Large Bags'], Datos_bolsas['AveragePrice'])
     Datos_bolsas['Elasticidad_XLarge'] = calcular_elasticidadB(Datos_bolsas['XLarge Bags'], Datos_bolsas['AveragePrice'])
+
+    
+    print(Datos_bolsas['Small Bags'])
+    print(Datos_bolsas['AveragePrice'])
+    print(Datos_bolsas['Elasticidad_Small'])
 
     # Calcular la elasticidad promedio
     elasticidades_promedio = [
@@ -303,18 +178,9 @@ def P3_3_Elasticidad_BolsasB():
     plt.show()
     
 def P3_4_Elasticidad_Tipo():
-    """
-    4. **Análisis de Elasticidad Comparativa entre Orgánicos y Convencionales:**
-       - **Uso de Datos:** Usa las columnas `AveragePrice`, `Total Volume` y `type`.
-       - **Esperado:** Compara la elasticidad de la demanda entre aguacates orgánicos y convencionales.
-         - Agrupa los datos por `type` y calcula la elasticidad utilizando `pd.pct_change()`.
-         - Presenta un gráfico que muestre la diferencia en elasticidad entre los dos tipos usando `plt.plot()`
-    """
-    
-    mDbg = P3_4_Elasticidad_Tipo.__doc__
-    display(Markdown(mDbg))
+    APP_Enunciados.getEnunciado("3.4")
+    APP_Enunciados.getExplicacion("3.4")
 
-    print("Comparando Elasticidad entre Aguacates Orgánicos y Convencionales...")
 
     # Agrupar datos por año y tipo de aguacate, y calcular volumen total y precio promedio
     Datos_tipo = Datos.groupby(['CalYear', 'type']).agg({
@@ -322,6 +188,9 @@ def P3_4_Elasticidad_Tipo():
         'AveragePrice': 'mean'
     }).reset_index()
 
+
+    
+    
     # Calcular cambios porcentuales
     Datos_tipo['Cambio_Volumen'] = Datos_tipo.groupby('type')['Total Volume'].pct_change()
     Datos_tipo['Cambio_Precio'] = Datos_tipo.groupby('type')['AveragePrice'].pct_change()
@@ -363,17 +232,10 @@ def P3_4_Elasticidad_Tipo():
 
 # Punto 3.5 Análisis de la Elasticidad Precios-Ventas
 def P3_5_Elasticidad_Precio_Ventas():
-    """
-5. **Análisis de la Elasticidad Precios-Ventas:**
-   - **Uso de Datos:** Usa las columnas `AveragePrice` y `Total Volume`.
-   - **Esperado:** Examina cómo las variaciones en `AveragePrice` afectan a `Total Volume`.
-     - Realiza un análisis de la relación entre estas dos variables calculando la elasticidad.
-     - Presenta un gráfico de dispersión que muestre la relación y discute la tendencia observada utilizando `plt.scatter()` y `plt.plot()`    
-    """
-    mDbg =P3_5_Elasticidad_Precio_Ventas.__doc__
+    APP_Enunciados.getEnunciado("3.5")
+    APP_Enunciados.getExplicacion("3.5")
     global Datos
     MisDatos = Datos.copy()
-    display(Markdown(mDbg))
 
 
 
@@ -383,7 +245,9 @@ def P3_5_Elasticidad_Precio_Ventas():
     MisDatos['Elasticidad_Precio_Ventas'] = elasticidad
     # Gráfico de dispersión de la relación entre precio y volumen
     plt.figure(figsize=(10, 6))
-    plt.scatter(MisDatos['AveragePrice'], MisDatos['Total Volume']/1000, alpha=0.5, color='purple')
+    plt.scatter(MisDatos['AveragePrice'], MisDatos['Total Volume']/1000,MisDatos['Elasticidad_Precio_Ventas'], alpha=0.5, color='purple')
+    sns.regplot(data=Datos, x='AveragePrice', y='Total Volume', scatter=False, color='red')
+
     plt.title('Relación entre Precio y Volumen de Ventas')
     plt.xlabel('Precio Promedio')
     plt.ylabel('Volumen Total (miles)')
@@ -427,358 +291,4 @@ def STP_Visualizar():
 
 
 
-
-def prueba():
-        # Agrupar los datos por fecha y calcular el precio promedio diario
-    avg_price_daily = Datos.groupby('Date')['AveragePrice'].mean()
-    avg_price_daily = Datos.groupby('Fecha')['AveragePrice'].mean()
-    #print(avg_price_daily)
-    mDbg =f'Agrupación dias:{avg_price_daily.__len__()}\n'
-    #mDbg +=f'Fecha minima:{avg_price_daily.index.tolist}\n'
-    mDbg +=f'Fecha minima:{avg_price_daily.iloc[0]}\n'
-    mDbg +=f'xFecha maxima:{avg_price_daily.iloc[-1]}\n'
-    mDbg +=f'180\n'
-    print(mDbg)
-    """
-        valores_fecha = avg_price_daily.index.tolist()
-        # Encontrar el elemento máximo y mínimo del índice
-        elemento_maximo = max(valores_fecha)
-        elemento_minimo = min(valores_fecha)
-        e0 = avg_price_daily.index[0]
-        #s1= e0.strftime("%d-%m-%Y")
-        s0 = e0.strftime("%d-%m-%Y")
-        mDbg +=f'Fecha maxima:{avg_price_daily.index.__len__()}\n'
-        mDbg +=f'Fecha maxima:{avg_price_daily.index[0].strftime("%d-%m-%Y")}\n'
-        mDbg +=f'Fecha maxima:{avg_price_daily.index[-1].strftime("%d-%m-%Y")}\n'
-    """ 
-    # Realizar la descomposición de la serie temporal
-    decomposition = seasonal_decompose(avg_price_daily, model='additive', period=180)  # Ajuste 'period' si es necesario
-    print('180')
-            
-
-    # Graficar los componentes
-    plt.figure(figsize=(14, 28))
-    plt.subplot(411)
-
-    plt.title('TITULO')
-    plt.xlabel('XLABEL')
-    plt.ylabel('YLABEL')
-    plt.grid(axis='y')
-    plt.xticks(rotation=45)
-    plt.legend(loc='upper left')
-    #plt.style.use('dark_background')
-
-    #plt.plot(color='red')
-    plt.show()
-
-def ignore_nan(arr):
-    return max(filter(lambda x: not math.isnan(x), arr))
-def P11_DST_TEST(pPeriod):
-    decomposition =seasonal_decompose(avg_price_daily, model='additive', period=pPeriod)
-    plt.rcParams["figure.figsize"] = (10,10)
-    fig = decomposition.plot()
-    plt.show()
-class P11_DST:
-    #PrepararDatos([30,52,80])
-    global avg_price_daily
-    mPeriodos=[]
-    #Level
-    #Trend
-    #Season
-    #Noise
-    mTipo='Level'
-    mTipoDesc='Level'
-    def __init__(self):
-        self.mPeriodos = [52]
-        self.mTipo = 'Trend'
-    def Periodos(self, pPeriodos):
-        self.mPeriodos = pPeriodos
-    def MostrarGrafico(self):
-        max = 0
-        plt.figure(figsize=(14, 10))
-        periodoMax=0
-        #for periodo in range(80,1,-7):
-        for periodo in self.mPeriodos:
-            print(f'period={periodo}')
-            decomposition = seasonal_decompose(avg_price_daily, model='additive', period=periodo)  # Ajuste 'period' si es necesario
-            if periodo < 30:
-                vColor = 'black'
-            elif periodo < 52:
-                vColor = 'green'
-            elif periodo == 52:
-                vColor = 'red'
-            elif periodo > 52:
-                vColor = 'blue'
-            if self.mTipo =='trend':
-                plt.plot(decomposition.trend,color=vColor, label=f'Tendencia {periodo}')
-                mTipoDesc=''
-            elif self.mTipo=='observed':
-                plt.plot(decomposition.observed,color=vColor, label=f'Tendencia {periodo}')
-            elif self.mTipo=='seasonal':
-                plt.plot(decomposition.seasonal,color=vColor, label=f'Tendencia {periodo}')
-            elif self.mTipo=='resid':
-                plt.plot(decomposition.resid,color=vColor, label=f'Tendencia {periodo}')
-        plt.title(f'Componente de {self.mTipo}')
-        plt.xlabel('Fecha')
-        plt.ylabel('Precio')
-        plt.xticks(rotation=45)
-        plt.legend(loc='upper left')
-        plt.grid(axis='y')  # Cuadrícula horizontal
-        plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-        #plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))    
-        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y"))    
-        plt.tight_layout()
-        plt.show()
-        
-    
-# ejemplo P1_Proceso( [1,30,52,60])
-def P1_Proceso( pLista):
-    max = 0
-    
-    plt.figure(figsize=(14, 28))
-    periodoMax=0
-    #for periodo in range(80,1,-7):
-    for periodo in pLista:
-        print(f'period={periodo}')
-        decomposition = seasonal_decompose(avg_price_daily, model='additive', period=periodo)  # Ajuste 'period' si es necesario
-        if periodo < 30:
-            vColor = 'black'
-        elif periodo < 52:
-            vColor = 'green'
-        elif periodo == 52:
-            vColor = 'red'
-        elif periodo > 52:
-            vColor = 'blue'
-
-        plt.plot(decomposition.trend,color=vColor, label=f'Tendencia {periodo}')
-    plt.title(f'Componente de Tendencia')
-    plt.xlabel('Fecha')
-    plt.ylabel('Precio')
-    plt.xticks(rotation=45)
-    plt.legend(loc='upper left')
-    plt.grid(axis='y')  # Cuadrícula horizontal
-    plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))    
-    plt.tight_layout()
-    plt.show()
-
-def P1_ProcesoRuido():
-    max = 0
-    
-    plt.figure(figsize=(14, 28))
-    periodoMax=0
-    #for periodo in range(80,1,-7):
-    for periodo in[1,30,52,60]:
-        print(f'period={periodo}')
-        decomposition = seasonal_decompose(avg_price_daily, model='additive', period=periodo)  # Ajuste 'period' si es necesario
-        vArr = decomposition.resid.values
-        maxAux = ignore_nan(vArr)
-
-        if periodo == 1:
-            vColor = 'black'
-        elif periodo == 30:
-            vColor = 'green'
-        elif periodo == 52:
-            vColor = 'red'
-        elif periodo == 60:
-            vColor = 'blue'
-
-        plt.plot(decomposition.resid,color=vColor, label=f'Tendencia {periodo}')
-    plt.title(f'Componente de Tendencia')
-    plt.xlabel('Fecha')
-    plt.ylabel('Precio')
-    plt.xticks(rotation=45)
-    plt.legend(loc='upper left')
-    plt.grid(axis='y')  # Cuadrícula horizontal
-    plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))    
-    plt.tight_layout()
-    plt.show()
-
-
-
-def P1_Series_Temporales_Precios():
-    # Agrupar los datos por fecha y calcular el precio promedio diario
-    avg_price_daily = Datos.groupby('Date')['AveragePrice'].mean()
-    avg_price_daily = Datos.groupby('Fecha')['AveragePrice'].mean()
-    #print(avg_price_daily)
-    mDbg =f'Agrupación dias:{avg_price_daily.__len__()}\n'
-    #mDbg +=f'Fecha minima:{avg_price_daily.index.tolist}\n'
-    mDbg +=f'Fecha minima:{avg_price_daily.iloc[0]}\n'
-    mDbg +=f'Fecha maxima:{avg_price_daily.iloc[-1]}\n'
-    print(mDbg)
-    """
-        valores_fecha = avg_price_daily.index.tolist()
-        # Encontrar el elemento máximo y mínimo del índice
-        elemento_maximo = max(valores_fecha)
-        elemento_minimo = min(valores_fecha)
-        e0 = avg_price_daily.index[0]
-        #s1= e0.strftime("%d-%m-%Y")
-        s0 = e0.strftime("%d-%m-%Y")
-        mDbg +=f'Fecha maxima:{avg_price_daily.index.__len__()}\n'
-        mDbg +=f'Fecha maxima:{avg_price_daily.index[0].strftime("%d-%m-%Y")}\n'
-        mDbg +=f'Fecha maxima:{avg_price_daily.index[-1].strftime("%d-%m-%Y")}\n'
-    """ 
-    # Realizar la descomposición de la serie temporal
-    decomposition26 = seasonal_decompose(avg_price_daily, model='additive', period=26)  # Ajuste 'period' si es necesario
-    decomposition52 = seasonal_decompose(avg_price_daily, model='additive', period=52)  # Ajuste 'period' si es necesario
-    decomposition = seasonal_decompose(avg_price_daily, model='additive', period=4)  # Ajuste 'period' si es necesario
-    print('period=360/7')
-    plt.figure(figsize=(14, 28))
-    plt.subplot(221)
-    plt.plot(decomposition52.observed,color='red', label='observed')
-    plt.title('Componente de observed 52')
-    plt.xlabel('Fecha')
-    plt.ylabel('Precio')
-    plt.xticks(rotation=45)
-    plt.legend(loc='upper left')
-    plt.grid(axis='y')  # Cuadrícula horizontal
-    plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))    
-    plt.subplot(222)
-    plt.plot(decomposition26.observed,color='red', label='observed')
-    plt.title('Componente de observed 26')
-    plt.xlabel('Fecha')
-    plt.ylabel('Precio')
-    plt.xticks(rotation=45)
-    plt.legend(loc='upper left')
-    plt.grid(axis='y')  # Cuadrícula horizontal
-    plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))    
-    plt.tight_layout()
-    plt.show()
-
-
-
-    plt.figure(figsize=(14, 28))
-    plt.subplot(221)
-    plt.plot(decomposition52.trend,color='red', label='Tendencia')
-    plt.title('Componente de Tendencia 52')
-    plt.xlabel('Fecha')
-    plt.ylabel('Precio')
-    plt.xticks(rotation=45)
-    plt.legend(loc='upper left')
-    plt.grid(axis='y')  # Cuadrícula horizontal
-    plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))    
-    plt.subplot(222)
-    plt.plot(decomposition26.trend,color='red', label='Tendencia')
-    plt.title('Componente de Tendencia 26')
-    plt.xlabel('Fecha')
-    plt.ylabel('Precio')
-    plt.xticks(rotation=45)
-    plt.legend(loc='upper left')
-    plt.grid(axis='y')  # Cuadrícula horizontal
-    plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))    
-            
-
-    plt.figure(figsize=(14, 28))
-    plt.subplot(221)
-    plt.plot(decomposition52.seasonal,color='red', label='Estacionalidad')
-    plt.title('Componente de Estacionalidad 52')
-    plt.xlabel('Fecha')
-    plt.ylabel('Precio')
-    plt.xticks(rotation=45)
-    plt.legend(loc='upper left')
-    plt.grid(axis='y')  # Cuadrícula horizontal
-    plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))    
-    plt.subplot(222)
-    plt.plot(decomposition26.seasonal,color='red', label='Estacionalidad')
-    plt.title('Componente de Estacionalidad 26')
-    plt.xlabel('Fecha')
-    plt.ylabel('Precio')
-    plt.xticks(rotation=45)
-    plt.legend(loc='upper left')
-    plt.grid(axis='y')  # Cuadrícula horizontal
-    plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))    
-
-    # Graficar los componentes
-    plt.figure(figsize=(14, 28))
-    #plt.subplot(411)
-    #plt.style.use('dark_background')
-
-    #plt.plot(color='red')
-    #plt.show()
-
-    plt.title('TITULO')
-    plt.xlabel('XLABEL')
-    plt.ylabel('YLABEL')
-    plt.grid(axis='y')
-    plt.xticks(rotation=45)
-    plt.legend(loc='upper left')
-
-    plt.plot(decomposition.observed, label='Original')
-        
-    #plt.title('TITULO')
-    #plt.xlabel('XLABEL')
-    #plt.ylabel('YLABEL')
-    #plt.grid(axis='y')
-    #plt.xticks(rotation=45)
-    #plt.legend(loc='upper left')
-    plt.subplot(412)
-    plt.plot(decomposition.trend,color='red', label='Tendencia')
-    plt.title('Componente de Tendencia')
-    plt.xlabel('Fecha')
-    plt.ylabel('Precio')
-    plt.xticks(rotation=45)
-    plt.legend(loc='upper left')
-    plt.grid(axis='y')  # Cuadrícula horizontal
-    plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))    
-
-    plt.subplot(413)
-    plt.plot(decomposition.seasonal,color='blue', label='Estacionalidad')
-    plt.title('Componente Estacional')
-    plt.xlabel('Fecha')
-    plt.ylabel('Efecto Estacional')
-    plt.xticks(rotation=45)
-    plt.legend(loc='upper left') 
-    plt.grid(axis='y')  # Cuadrícula horizontal  
-    plt.grid(axis='x')  # Cuadrícula vertical  
-    plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))    
-    plt.tight_layout()
-    plt.show()
-
-
-    plt.subplot(414)
-    plt.plot(decomposition.resid,color='red', label='Ruido')
-    plt.title('Componente de Ruido')
-    plt.xlabel('Fecha')
-    plt.ylabel('Ruido')
-    plt.xticks(rotation=45)
-    plt.legend(loc='upper left')
-    plt.grid(axis='y')  # Cuadrícula horizontal
-    plt.tight_layout()
-    plt.show()
-
-
-    # **Punto 6**: Generar un solo gráfico con las tres líneas (observado, tendencia, estacionalidad)
-    plt.figure(figsize=(14, 8))
-    plt.plot(decomposition26.observed, color='red', label='Original')
-    plt.plot(decomposition26.trend, color='blue', label='Tendencia')
-    plt.plot(decomposition26.seasonal, color='green', label='Estacionalidad')
-    plt.title('Componentes de la Serie Temporal 26')
-    plt.xlabel('Fecha')
-    plt.ylabel('Valores')
-    plt.xticks(rotation=45)
-    plt.legend(loc='upper left')
-    plt.grid(axis='y')
-    plt.show()
-
-
-    plt.figure(figsize=(14, 8))
-    plt.plot(decomposition52.observed, color='red', label='Original')
-    plt.plot(decomposition52.trend, color='blue', label='Tendencia')
-    plt.plot(decomposition52.seasonal, color='green', label='Estacionalidad')
-    plt.title('Componentes de la Serie Temporal 52')
-    plt.xlabel('Fecha')
-    plt.ylabel('Valores')
-    plt.xticks(rotation=45)
-    plt.legend(loc='upper left')
-    plt.grid(axis='y')
-    plt.show()
 

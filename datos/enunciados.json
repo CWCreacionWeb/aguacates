@@ -18,13 +18,13 @@
     "titulo": "**Descomposición de Series Temporales de Precios:** \n   ",
     "descripcion": "**Descomposición de Series Temporales de Precios:** \n   ",
     "contenido": "**Uso de Datos:** Usa la columna `AveragePrice` y `Date`.\n   - **Esperado:** Utiliza la función `seasonal_decompose` de la librería `statsmodels` para descomponer la serie temporal de precios en componentes de tendencia, estacionalidad y ruido. \n     - Convierte `Date` a tipo datetime usando `pd.to_datetime()`.\n     - Agrupa los datos por `Date` y calcula el promedio de `AveragePrice` utilizando `groupby()` si es necesario.\n     - Visualiza los componentes descompuestos usando `matplotlib` para cada uno de ellos.",
-    "explicacion": ""
+    "explicacion": "En la tendencia la función realiza  promedios centrados por lo que se 'pierden' los 26 primeros y ultimos valores"
   },
   "1.2": {
     "titulo": "**Análisis de Estacionalidad por Región:** ",
     "descripcion": "**Análisis de Estacionalidad por Región:** \n   ",
     "contenido": "**Análisis de Estacionalidad por Región:** \n   - **Uso de Datos:**  Usa las columnas `AveragePrice`, `Date` y `Total Volume`.\n   - **Esperado:** Utiliza gráficos de líneas para visualizar cómo varían los precios de aguacates por región a lo largo de diferentes estaciones del año.\n     - Agrupa los datos por `region` y `Date` utilizando `groupby()`.\n     - Calcula el promedio de `AveragePrice` para cada región.\n     - Representa gráficamente las tendencias utilizando `plt.plot()` de `matplotlib`.",
-    "explicacion": "- **Cada línea representa una región específica y permite observar las tendencias estacionales en los precios. \n - **Por ejemplo, se pueden identificar picos o caídas en precios en ciertas épocas, lo que refleja la oferta y demanda."
+    "explicacion": "- Se agrupa por 'region', 'CalYear','CalEstacion' y creamos una nueva columna Year_Estacion\n- **Cada línea representa una región específica y permite observar las tendencias estacionales en los precios. \n - **Por ejemplo, se pueden identificar picos o caídas en precios en ciertas épocas, lo que refleja la oferta y demanda."
   },
   "1.3": {
     "titulo": "**Comparación de Precios Promedio Mensuales:**",
@@ -48,7 +48,7 @@
     "titulo": "**Gráfico de Violín de Volumen de Ventas por Región:**",
     "descripcion": "**Gráfico de Violín de Volumen de Ventas por Región:** \n   ",
     "contenido": "- **Uso de Datos:** Usa las columnas `Total Volume` y `region`.\n   - **Esperado:** Visualiza la distribución de ventas en diferentes regiones.\n     - Utiliza la función `violinplot` de `seaborn` para crear gráficos de violín.\n     - Configura los ejes para mostrar la relación entre `Total Volume` y `region`.\n     - Añade etiquetas y títulos usando `plt.title()` y `plt.xlabel()` para facilitar la interpretación.",
-    "explicacion": ""
+    "explicacion": "La información sobre la densidad está en ambas mitades del gráfico, pero solo una mitad representa el rango real de valores."
   },
   "2.2": {
     "titulo": "**Boxplot Comparativo de Precios entre Años:**",
@@ -90,7 +90,7 @@
     "titulo": "**Elasticidad a Nivel de Tipo de Bolsa:**",
     "descripcion": "**Elasticidad a Nivel de Tipo de Bolsa:** \n   ",
     "contenido": "- **Uso de Datos:** Usa las columnas `AveragePrice` y `Total Bags`.\n   - **Esperado:** Calcula la elasticidad del precio de la demanda específica para cada tipo de bolsa.\n     - Suma los volúmenes de ventas por tipo de bolsa utilizando `groupby()` y `sum()`.\n     - Calcula la elasticidad para cada tipo y presenta los resultados en un gráfico comparativo usando `plt.bar()`.",
-    "explicacion": " ** \nComentarios:\n a) Para calcular la elasticidad del precio de la demanda específica de cada tipo de bolsa (Small Bags, Large Bags, XLarge Bags) \n  en base al archivo CSV adjunto, haremos lo siguiente:\n b) Agruparemos y sumaremos los volúmenes de ventas por cada tipo de bolsa.\n c) Calcularemos la variación porcentual de AveragePrice y de cada tipo de bolsa por año usando pct_change.\n d) Calcularemos la elasticidad para cada tipo de bolsa dividiendo la variación porcentual de ventas por la variación porcentual del precio.\n e) Visualizaremos los resultados en un gráfico de barras para comparar las elasticidades entre los tipos de bolsa."
+    "explicacion": " ** \nComentarios:<BR> Calculando Elasticidad media de los 3 años,  para Cada Tipo de Bolsa...<BR>a) Para calcular la elasticidad del precio de la demanda específica de cada tipo de bolsa (Small Bags, Large Bags, XLarge Bags) <BR>  en base al archivo CSV adjunto, haremos lo siguiente:<BR> b) Agruparemos y sumaremos los volúmenes de ventas por cada tipo de bolsa.<BR> c) Calcularemos la variación porcentual de AveragePrice y de cada tipo de bolsa por año usando pct_change.<BR> d) Calcularemos la elasticidad para cada tipo de bolsa dividiendo la variación porcentual de ventas por la variación porcentual del precio.<BR> e) Visualizaremos los resultados en un gráfico de barras para comparar las elasticidades entre los tipos de bolsa."
   },
   "3.4": {
     "titulo": "**Análisis de Elasticidad Comparativa entre Orgánicos y Convencionales:**",
@@ -136,61 +136,61 @@
   },
   "5.1": {
     "titulo": "**Matriz de Correlación:** ",
-    "descripcion": "",
+    "descripcion": "SIN DESCRIPCION",
     "contenido": "- **Uso de Datos:** Utiliza las columnas numéricas del DataFrame (p. ej., `AveragePrice`, `Total Volume`, `4046`, `4225`, `4770`, `Total Bags`).\n   - **Esperado:** \n     - Importa las librerías necesarias: `import seaborn as sns` y `import matplotlib.pyplot as plt`.\n     - Calcula la matriz de correlación usando el método `.corr()` del DataFrame.\n     - Visualiza la matriz utilizando `sns.heatmap()`. \n     - Anota las correlaciones más significativas y discute su posible impacto en el análisis.",
     "explicacion": "** Interpretación de la Matriz de Correlación\n** Una vez que ejecutes el gráfico, observa los siguientes puntos para evaluar el impacto de cada relación:\n\n** Relación de AveragePrice con Volumen de Ventas (Total Volume): Una correlación negativa significativa aquí podría indicar una elasticidad \n** en la demanda: al aumentar el precio promedio, el volumen de ventas disminuye, lo que es esperado en productos elásticos.\n** Relación entre Tipos de Aguacate (4046, 4225, 4770) y Total Volume: Correlaciones altas entre estos tipos y el volumen total indicarán que \n** los distintos tipos de aguacates contribuyen significativamente al volumen total.\n** Correlación entre Total Bags y Volumen de Ventas: Esta relación podría mostrar qué tipos de empaques afectan \n** las ventas y cómo varían con el volumen general.\n** Discusión\n** Este análisis ayuda a identificar cómo las variables se relacionan entre sí y nos da información clave para entender patrones de ventas \n** y precios en el mercado de aguacates. Las correlaciones más fuertes podrán indicar relaciones directas o indirectas entre \n** las variables y sugieren áreas en las que un cambio en una variable puede afectar a otra."
   },
   "5.2": {
     "titulo": "**Análisis de Dispersión entre Variables Clave:** ",
-    "descripcion": "",
+    "descripcion": "SIN DESCRIPCION",
     "contenido": "- **Uso de Datos:** Selecciona variables numéricas de interés como `AveragePrice` y `Total Volume`.\n   - **Esperado:** \n     - Importa las librerías necesarias: `import seaborn as sns` y `import matplotlib.pyplot as plt`.\n     - Crea un gráfico de dispersión con `sns.scatterplot()` para visualizar la relación entre `AveragePrice` y `Total Volume`.\n     - Añade una línea de regresión utilizando `sns.regplot()` para ilustrar las tendencias.\n     - Compara el ajuste de una regresión lineal frente a una polinómica.",
     "explicacion": ""
   },
   "5.3": {
     "titulo": "**Predicciones Mensuales Usando Datos Trimestrales:**",
-    "descripcion": "",
+    "descripcion": "SIN DESCRIPCION",
     "contenido": "- **Uso de Datos:** Agrupa datos por trimestres y segmenta en meses utilizando `Date`, `AveragePrice`, y `Total Volume`.\n   - **Esperado:** \n     - Convierte la columna `Date` a tipo datetime si es necesario.\n     - Agrupa los datos por trimestre y calcula el promedio de `AveragePrice` y `Total Volume`.\n     - Utiliza los datos de los primeros 2 meses de un trimestre para predecir el precio del tercer mes.\n     - Compara los resultados de las predicciones con los precios reales.\n     - Evalúa la precisión de tus predicciones utilizando métricas como R² y RMSE.",
     "explicacion": ""
   },
   "5.4": {
     "titulo": "**Predicciones Trimestrales:**",
-    "descripcion": "",
+    "descripcion": "SIN DESCRIPCION",
     "contenido": "- **Uso de Datos:** Agrupa los datos en trimestres usando solo variables numéricas.\n   - **Esperado:** \n     - Agrupa los datos por trimestres usando `pd.Grouper()` con `freq='Q'` para obtener promedios.\n     - Usa los datos de 1 o 2 trimestres anteriores para predecir el siguiente trimestre ajustando modelos de regresión lineal y polinómica.\n     - Compara los resultados de las predicciones con los precios reales.\n     - Evalúa la precisión de tus predicciones utilizando métricas como R² y RMSE.",
     "explicacion": ""
   },
   "5.5": {
     "titulo": "**Predicciones Anuales:**",
-    "descripcion": "",
+    "descripcion": "SIN DESCRIPCION",
     "contenido": "- **Uso de Datos:** Agrupa los datos en años, utilizando únicamente columnas numéricas.\n   - **Esperado:** \n     - Agrupa los datos por año utilizando `pd.Grouper()` con `freq='Y'`.\n     - Usa los datos de 1 o 2 años anteriores para predecir el siguiente año ajustando modelos de regresión lineal y polinómica.\n     - Evalúa la precisión de tus predicciones utilizando métricas como R² y RMSE.",
     "explicacion": ""
   },
   "5.6": {
     "titulo": "**Desarrollo de Modelos de Regresión Múltiple:** ",
-    "descripcion": "",
+    "descripcion": "SIN DESCRIPCION",
     "contenido": "- **Uso de Datos:** Selecciona varias variables numéricas como `Total Volume`, `4046`, `4225`, `4770`, y `Total Bags` para predecir `AveragePrice`.\n   - **Esperado:** \n     - Define las variables independientes (X) y dependientes (y).\n     - Ajusta modelos de regresión múltiple.\n     - Compara su rendimiento utilizando métricas como R² y RMSE y discute las implicaciones de los resultados.",
     "explicacion": ""
   },
   "5.7": {
     "titulo": "**Análisis de Coeficientes de Regresión Múltiple:**",
-    "descripcion": "",
+    "descripcion": "SIN DESCRIPCION",
     "contenido": "- **Uso de Datos:** Examina los coeficientes de los modelos de regresión múltiple ajustados.\n   - **Esperado:** \n     - Extrae los coeficientes del modelo ajustado.\n     - Interpreta los coeficientes para entender el impacto de cada variable numérica en `AveragePrice`.\n     - Comenta sobre las variables más significativas y su relevancia.",
     "explicacion": ""
   },
   "5.8": {
     "titulo": "**Modelos de Regresión para Diferenciar Volúmenes de Ventas:**",
-    "descripcion": "",
+    "descripcion": "SIN DESCRIPCION",
     "contenido": "- **Uso de Datos:** Usa `AveragePrice`, `Total Volume`, `4046`, `4225`, y `4770`.\n   - **Esperado:** \n     - Ajusta modelos de regresión para analizar cómo los diferentes volúmenes de ventas afectan `AveragePrice`.\n     - Compara los resultados de regresión lineal y polinómica.\n     - Presenta las conclusiones de tus análisis.",
     "explicacion": ""
   },
   "5.9": {
     "titulo": "**Análisis de la Influencia de las Ventas Totales en el Precio Promedio:**",
-    "descripcion": "",
+    "descripcion": "SIN DESCRIPCION",
     "contenido": "- **Uso de Datos:** Usa `Total Volume`, `AveragePrice`, y `Total Bags`.\n   - **Esperado:** \n     - Ajusta un modelo de regresión lineal y polinómica para ver cómo varía `AveragePrice` en función del volumen total de ventas.\n     - Evalúa la significancia de los coeficientes y discute su relevancia.",
     "explicacion": ""
   },
   "5.10": {
     "titulo": "**Regresión para Predecir el Precio Promedio Según el Volumen de Aguacates por Tipo:**",
-    "descripcion": "",
+    "descripcion": "SIN DESCRIPCION",
     "contenido": "- **Uso de Datos:** Usa `AveragePrice`, `4046`, `4225`, `4770`, y `Total Volume`.\n    - **Esperado:** \n      - Ajusta modelos de regresión lineal y polinómica.\n      - Evalúa la efectividad de ambos modelos utilizando métricas como R² y RMSE.\n      - Discute cuál modelo ofrece mejores predicciones y por qué, basándote en los resultados obtenidos.",
     "explicacion": ""
   }
