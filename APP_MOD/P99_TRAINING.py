@@ -53,7 +53,7 @@ class ModeloManager:
         Inicializa un gestor para los modelos y sus metadatos.
         """
         self.registros = []  # Lista de registros (diccionarios)
-    def exportar_a_excel(self, nombre_archivo="registros_modelos.xlsx"):
+    def exportar_a_excel(self, nombre_archivo="P_TRAINING_Resultado.xlsx"):
         """
         Exporta todos los registros a un archivo Excel (.xlsx).
 
@@ -220,6 +220,21 @@ class ModeloManager:
 
 gestor_modelos = ModeloManager()
 
+def P99_1_Modelo_TRAINING_UNO():
+    global mDbg
+    mDbg =''
+    modelo_base=LinearRegression()
+    P99_1_Modelo_TRAINING(modelo_base)
+    gestor_modelos.grabar_registros('P00_TRAINING_RES')
+    gestor_modelos.exportar_a_excel()
+    # Crear el enlace HTML
+    archivo ='P_TRAINING_Resultado.xlsx'
+    # Crear el enlace para la descarga
+    link = f'<a href="{archivo}" download style="font-size: 14px; color: blue; text-decoration: underline;">Descargar archivo Excel</a>'
+
+    # Mostrar el enlace en Jupyter
+    display(HTML(link))
+
 def P99_1_Modelo_TRAINING_TODOS():
         # Lista de modelos base a utilizar
     global mDbg
@@ -250,8 +265,8 @@ def P100_1_Modelo_TRAINING_Mod(pAddColum=False):
     SubDatos = app_fun.APP_DatosORG.copy()
         # Definir las columnas independientes y dependientes
     campo_independiente = "AveragePrice"
-    #campos_dependientes = ["Total Volume", "4046", "4225", "4770", "Total Bags", "Small Bags", "Large Bags", "XLarge Bags", "Cal_AAAAMM", "Cal_AAAA", "Cal_MM","Cal_SS","Cal_DDD","Cal_AAAADDD","CalNOR_TotalVolume"]
-    campos_dependientes = ["CalNOR_TotalVolume",   "Cal_AAAA", "Cal_MM"]
+    #campos_dependientes = ["Total Volume", "4046", "4225", "4770", "Total Bags", "Small Bags", "Large Bags", "XLarge Bags", "Cal_AAAAMM", "Cal_AAAA", "Cal_MM","Cal_SS","Cal_DDD","Cal_AAAADDD","CalNOR_MM_TotalVolume"]
+    campos_dependientes = ["CalNOR_MM_TotalVolume",   "Cal_AAAA", "Cal_MM"]
 
         # Separar los datos en características (X) y objetivo (y)
     X = SubDatos[campos_dependientes]
@@ -294,9 +309,9 @@ def P99_1_Modelo_TRAINING(pModelo,pAddColum=False):
     SubDatos = app_fun.APP_DatosORG.copy()
         # Definir las columnas independientes y dependientes
     campo_independiente = "AveragePrice"
-    #campos_dependientes = ["Total Volume", "4046", "4225", "4770", "Total Bags", "Small Bags", "Large Bags", "XLarge Bags", "Cal_AAAAMM", "Cal_AAAA", "Cal_MM","Cal_SS","Cal_DDD","Cal_AAAADDD","CalNOR_TotalVolume"]
+    #campos_dependientes = ["Total Volume", "4046", "4225", "4770", "Total Bags", "Small Bags", "Large Bags", "XLarge Bags", "Cal_AAAAMM", "Cal_AAAA", "Cal_MM","Cal_SS","Cal_DDD","Cal_AAAADDD","CalNOR_MM_TotalVolume"]
 
-    campos_dependientes = ["Total Volume","CalNOR_TotalVolume",  "Cal_AAAAMM", "Cal_AAAA", "Cal_MM","Cal_SS","Cal_DDD","Cal_AAAADDD"]
+    campos_dependientes = ["Total Volume","CalNOR_MM_TotalVolume",  "Cal_AAAAMM", "Cal_AAAA", "Cal_MM","Cal_SS","Cal_DDD","Cal_AAAADDD"]
 
         # Crear un DataFrame para almacenar resultados
     resultados = pd.DataFrame(columns=["campos_actuales", "error", "tiempo_ejecucion"])
@@ -319,7 +334,8 @@ def P99_1_Modelo_TRAINING(pModelo,pAddColum=False):
 
 
             #display(campos_actuales)
-            display(len(gestor_modelos.registros))
+            vCad = f'<span style="font-size: 20px; color: blue;">{len(gestor_modelos.registros)} <BR>Combinacion campos:{campos_actuales}</span>'
+            display(HTML(vCad))
 
     mDbg += f"{pModelo.__class__.__name__} Error  {error_minimo:.3f} a {error_maximo:.3f} con campos {campos_error_minimo}<br>"
     display(HTML(  mDbg))

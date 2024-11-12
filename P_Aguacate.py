@@ -11,6 +11,7 @@ from APP_MOD import P2_GVD as P2
 from APP_MOD import P3_EP as P3
 from APP_MOD import P4_AC as P4
 from APP_MOD import P5_ACR as P5
+from APP_MOD import P105_Predicciones as P105_PRED
 from APP_MOD import P99_TRAINING as P99_T
 import pandas as pd
 from APP_MOD import Region_Clasificacion as RC
@@ -188,6 +189,7 @@ def Inicio():
 #P1.P1_1_DescomposicionSerieTemporal()
 #P1.P1_2_EstacionalidadPorRegion()
 #P1.P1_3_ComparacionPreciosPromedioMensuales()
+#P105_PRED.P100_1_Modelo_TRAINING_Mod(pNameModelo='LinearRegression',pFechaReal='2018-10-01')
 def DOC():
     APP_Enunciados.getEnunciado('0')
     
