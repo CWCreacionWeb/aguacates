@@ -19,7 +19,7 @@ def P4_1_CohortesPreciosPromedios():
 def P4_1_CohortesPreciosPromediosB():
     
     # Agrupación trimestral
-    datos_trimestrales = Datos.set_index('CalFecha').groupby(pd.Grouper(freq='QE')).agg({
+    datos_trimestrales = Datos.set_index('CalFecha').groupby(pd.Grouper(freq='Q')).agg({
         'AveragePrice': 'mean',
         'Total Volume': 'sum'
     })
@@ -147,7 +147,7 @@ def P4_2_CohortesRegionFechaB(regiones, anio):
 # 4.3 Análisis de Cohortes en Función del Tipo de Bolsa
 def P4_3_CohortesTipoBolsa(pTipoBolsa=['Total Bags','Small Bags','Large Bags','XLarge Bags'],pTipoEscala='',pPorcentaje='NO'):
     APP_Enunciados.getEnunciado("4.3")
-    APP_Enunciados.getExplicacion("4.3")
+    #APP_Enunciados.getExplicacion("4.3")
 
     mDbg = f"""- **parametros**:  
          - **pTipoBolsa:**`{[pTipoBolsa]}` 
@@ -209,7 +209,7 @@ def P4_3_CohortesTipoBolsa(pTipoBolsa=['Total Bags','Small Bags','Large Bags','X
 
 def P4_3_CohortesTipoBolsaB(pTipoBolsa=['Total Bags','Small Bags','Large Bags','XLarge Bags'],pPorcentaje='NO'):
     APP_Enunciados.getEnunciado("4.3")
-    APP_Enunciados.getExplicacion("4.3")
+    #APP_Enunciados.getExplicacion("4.3")
     mDbg = f"""- **parametros**:  
          - **pTipoBolsa:**`{[pTipoBolsa]}` 
          - **pTipoBolsa:**`{[pPorcentaje]}`   **Posibles valores** SI, NO                
