@@ -113,17 +113,28 @@ def P105_3_PrediccionesMensuales(pModelo='Media'):
     r2_PREV = r2_score(predicciones_df['Real'], predicciones_df['Real_PREV'])
     rmse_PREV = np.sqrt(mean_squared_error(predicciones_df['Real'], predicciones_df['Real_PREV']))
 
+
+    # Evaluación de precisión SEM
+    r2_PREV_SEM = r2_score(SubDatos['AveragePrice'], SubDatos['AveragePrice_PREV'])
+    rmse_PREV_SEN = np.sqrt(mean_squared_error(SubDatos['AveragePrice'], SubDatos['AveragePrice_PREV']))
+
     r2_real = r2_score(Datos_mensuales['AveragePrice'], Datos_mensuales['AveragePrice_PREV'])
     r2_realT = r2_score(SubDatos['AveragePrice'], SubDatos['AveragePrice_PREV'])
 
 
     print(f"\nR²: {r2:.6f}")
     print(f"RMSE: {rmse:.6f}")
-
+    print(f"------------------------------")
     print(f"\nR²_PREV: {r2_PREV:.6f}")
     print(f"RMSE_PREV: {rmse_PREV:.6f}")
+    print(f"\nR²_PREV_SEN: {r2_PREV_SEM:.6f}")
+    print(f"RMSE_PREV_SEN: {rmse_PREV_SEN:.6f}")
+    print(f"------------------------------")
+
     print(f"r2_real datos agrupadas por mes : {r2_real:.6f}")
     print(f"r2_real datos DESGLOSADOS: {r2_realT:.6f}")
+
+    
 
     # Graficar resultados
     plt.figure(figsize=(10, 5))
@@ -180,7 +191,6 @@ def P100_1_Modelo_TRAINING_Mod(pNameModelo ='LinearRegression',pFechaReal='2018-
     print(pFechaReal)
     
 
-    RandomForestRegressor(n_estimators=100, random_state=42)
     # Mostrar el enunciado
     SubDatos = app_fun.APP_DatosORG.copy()
     print(len(SubDatos))
@@ -192,8 +202,11 @@ def P100_1_Modelo_TRAINING_Mod(pNameModelo ='LinearRegression',pFechaReal='2018-
     #campos_dependientes = ["Total Volume", "4046", "4225", "4770", "Total Bags", "Small Bags", "Large Bags", "XLarge Bags", "Cal_AAAAMM", "Cal_AAAA", "Cal_MM","Cal_SS","Cal_DDD","Cal_AAAADDD","CalNOR_MM_TotalVolume"]
     
     #campos_dependientes = ["CalNOR_MM_TotalVolume", "Total Volume",  "Cal_AAAA", "Cal_MM",'Cal_DDD']
-    campos_dependientes = ["CalNOR_MM_TotalVolume",  "Cal_AAAA", "Cal_MM",'Cal_DDD']
-    #campos_dependientes = ["Total Volume","Cal_MM"]
+    #campos_dependientes = ["CalNOR_MM_TotalVolume",  "Cal_AAAA", "Cal_MM",'Cal_DDD']
+    #campos_dependientes = ["Total Volume", "Cal_AAAA",  "Cal_DDD"] #CalNOR_SS Cal_SS
+    #campos_dependientes = ["CalNOR_MM_TotalVolume",   'Cal_DDD']
+    #campos_dependientes = ["Total Volume","Cal_M","Cal_AAAA"]
+    campos_dependientes = ["Total Volume","Cal_SS","Cal_AAAA"] #CalNOR_SS Cal_SS
 
         # Separar los datos en características (X) y objetivo (y)
     X = SubDatos[campos_dependientes]
@@ -260,6 +273,21 @@ def P100_1_Modelo_TRAINING_Mod(pNameModelo ='LinearRegression',pFechaReal='2018-
     vCoef = ''
     vCoef = P99_1_Modelo_TRAINING_FIT_Coef(vModelo,campo_independiente,campos_dependientes)
     print(vCoef)
+    reg = vModelo
+    if vModelo.__class__.__name__ =='LinearRegression':
+        # Fórmula de la regresión lineal
+        intercepto = reg.intercept_
+        coeficientes = reg.coef_
+        formula = f"y = {intercepto:.4f} + " + " + ".join([f"{coef:.4f} * {campo}" for coef, campo in zip(coeficientes, campos_dependientes)])
+
+        # Mostrar la fórmula y los coeficientes
+        print(f"\nFórmula de la regresión lineal:")
+        print(f"{formula}")
+        print(f"Coeficientes (pesos):")
+        for campo, coef in zip(campos_dependientes, coeficientes):
+            print(f"{campo}: {coef:.4f}")
+        print(f"Intercepto: {intercepto:.4f}")
+
     # Aplicar el modelo a los datos org
     #app_fun.APP_DatosORG[campo_independiente + '_PREV'] = vModelo.predict(SubDatos[campos_dependientes])
     app_fun.APP_DatosORG[campo_independiente + '_PREV'] = None

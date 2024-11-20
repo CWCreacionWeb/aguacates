@@ -10,6 +10,7 @@ import seaborn as sns
 import math
 import pandas as pd
 from APPModels.APP_FUN import APP_Enunciados,chart
+import plotly.graph_objects as go
 
 Datos =''    
 #vEnunciados = Enunciados()
@@ -48,7 +49,7 @@ def P3_1_Elasticidad_Precio_Demanda_Año(pListaRegiones =''):
     else:
         SubData = SubData[Datos['region'].isin(pListaRegiones)]  
 
-    Datos_anual = SubData.groupby('CalYear').agg({'Total Volume': 'sum', 'AveragePrice': 'mean'}).reset_index()
+    Datos_anual = SubData.groupby('CalYear').agg({'Total Volume': 'mean', 'AveragePrice': 'mean'}).reset_index()
 
 
     #Datos_anual['Elasticidad'] = calcular_elasticidad(Datos_anual['Total Volume'], Datos_anual['AveragePrice'])
@@ -198,14 +199,35 @@ def P3_4_Elasticidad_Tipo():
 
 
     # Agrupar datos por año y tipo de aguacate, y calcular volumen total y precio promedio
-    Datos_tipo = Datos.groupby(['CalYear', 'type']).agg({
+    Datos_tipo = Datos.groupby(['CalFecha', 'type']).agg({
         'Total Volume': 'sum', 
         'AveragePrice': 'mean'
     }).reset_index()
 
+    # Ordenar el DataFrame por tipo y año
+    Datos_tipo = Datos_tipo.sort_values(by=['type', 'CalFecha'])
 
+    # Calcular los cambios porcentuales dentro de cada tipo usando groupby
+    Datos_tipo['Delta_Q'] = Datos_tipo.groupby('type')['Total Volume'].pct_change()  # % cambio en el volumen
+    Datos_tipo['Delta_P'] = Datos_tipo.groupby('type')['AveragePrice'].pct_change()  # % cambio en el precio
+
+    # Calcular la elasticidad
+    Datos_tipo['Elasticidad'] = Datos_tipo['Delta_Q'] / Datos_tipo['Delta_P']
+
+    # Reemplazar valores inf y -inf por NaN en el campo 'Elasticidad'
+    Datos_tipo['Elasticidad'] = Datos_tipo['Elasticidad'].replace([float('inf'), -float('inf')], float('nan'))
     
-    
+    # Eliminar las filas con valores NaN en el campo 'Elasticidad'
+    Datos_tipo = Datos_tipo.dropna(subset=['Elasticidad'])
+
+    # Filtrar y eliminar los registros donde Elasticidad > 15 o < -15
+    #Datos_tipo = Datos_tipo[(Datos_tipo['Elasticidad'] <= 10) & (Datos_tipo['Elasticidad'] >= -10)]
+
+            # Exportar a un archivo Excel
+    archivo_salida = 'P3_4_Elasticidad_Tipo.xlsx'
+    Datos_tipo.to_excel(archivo_salida, index=False)  # Exporta el DataFrame a un archivo Excel
+
+    """
     # Calcular cambios porcentuales
     Datos_tipo['Cambio_Volumen'] = Datos_tipo.groupby('type')['Total Volume'].pct_change()
     Datos_tipo['Cambio_Precio'] = Datos_tipo.groupby('type')['AveragePrice'].pct_change()
@@ -215,34 +237,91 @@ def P3_4_Elasticidad_Tipo():
     
     # Eliminar filas con valores NaN (primera fila de cada grupo)
     Datos_tipo = Datos_tipo.dropna(subset=['Elasticidad'])
-
-    # Gráfico comparativo de elasticidad entre tipos de aguacates
-    plt.figure(figsize=(10, 6))
     """
+
+
+    # Crear la figura
+    fig = go.Figure()
+
+    # Agregar líneas para cada tipo de aguacate
     for tipo in Datos_tipo['type'].unique():
-        subset = Datos_tipo[Datos_tipo['type'] == tipo]
-        plt.plot(subset['CalYear'].astype(str), subset['Elasticidad'], marker='o', label=f'{tipo}')
-    """
-        # Configuración del gráfico
-    plt.figure(figsize=(12, 6))
-    años = Datos_tipo['CalYear'].unique()
-    ancho_barra = 0.35  # Ancho de las barras
-    # Generar el gráfico de barras para cada tipo (orgánico y convencional)
-    for i, tipo in enumerate(Datos_tipo['type'].unique()):
-        subset = Datos_tipo[Datos_tipo['type'] == tipo]
-        # Posiciones en el eje X con desplazamiento para evitar superposición
-        posiciones_x = subset['CalYear'] + (i * ancho_barra) - ancho_barra / 2
-        plt.bar(posiciones_x, subset['Elasticidad'], width=ancho_barra, label=f'{tipo}')
+        # Filtrar los datos para el tipo específico
+        df_tipo = Datos_tipo[Datos_tipo['type'] == tipo]
+        
+        # Añadir una línea de tipo "line" para cada conjunto de datos
+        fig.add_trace(go.Scatter(
+            x=df_tipo['CalFecha'],
+            y=df_tipo['Elasticidad'],
+            mode='lines+markers',  # Líneas con puntos
+            name=tipo  # Nombre de la serie (conventional, organic)
+        ))
+
+    # Personalización del gráfico
+    fig.update_layout(
+        title='Elasticidad Precio-Volumen por Tipo de Aguacate',
+        xaxis_title='CalFecha',
+        yaxis_title='Elasticidad',
+        template='plotly_white',  # Estilo limpio
+        showlegend=True,  # Mostrar leyenda
+        autosize=True,  # Permite que el gráfico se ajuste al tamaño de la pantalla
+        height=800,  # Ajusta la altura del gráfico
+        width=1200,  # Ajusta el ancho del gráfico (puedes ponerlo más grande si lo necesitas)
+        xaxis=dict(
+            rangeslider=dict(visible=True),  # Mostrar barra de desplazamiento
+            type='date',  # Asegura que el eje X se trate como fechas
+        )
+    )
+
+    # Mostrar la figura
+    fig.show()
 
 
-    plt.title('Elasticidad Comparativa: Orgánicos vs Convencionales')
-    plt.xlabel('Año')
-    plt.ylabel('Elasticidad')
-    plt.legend(title="Tipo de Aguacate")
-    plt.grid(True)
-        # Formatear el eje x para mostrar años sin decimales
-    plt.xticks(ticks=años, labels=[int(año) for año in años])  # Convertir años a enteros
-    plt.show()
+        # Crear gráfico de líneas agrupado por Año (resumen por año)
+    Datos_tipo['CalYear'] = Datos_tipo['CalFecha'].dt.year
+
+    # Agrupar los datos por año y tipo para calcular la elasticidad anual
+    Datos_tipo_anual = Datos_tipo.groupby(['CalYear', 'type']).agg({
+        'Elasticidad': 'mean'  # Promedio de la elasticidad por año
+    }).reset_index()
+
+    # Exportar a un archivo Excel
+    archivo_salida = 'P3_4_Elasticidad_Tipo_agno.xlsx'
+    Datos_tipo_anual.to_excel(archivo_salida, index=False)  # Exporta el DataFrame a un archivo Excel
+
+
+    # Crear el gráfico para elasticidad por año
+    fig2 = go.Figure()
+
+    # Añadir líneas para cada tipo de aguacate en el gráfico anual
+    for tipo in Datos_tipo_anual['type'].unique():
+        # Filtrar los datos para el tipo específico
+        df_tipo_anual = Datos_tipo_anual[Datos_tipo_anual['type'] == tipo]
+
+        # Añadir una línea de tipo "line" para cada conjunto de datos
+        fig2.add_trace(go.Bar(
+            x=df_tipo_anual['CalYear'],
+            y=df_tipo_anual['Elasticidad'],
+            name=tipo,  # Nombre de la serie (conventional, organic)
+        ))
+
+    # Personalización del segundo gráfico (por año)
+    fig2.update_layout(
+        title='Elasticidad Precio-Volumen por Año',
+        xaxis_title='Año',
+        yaxis_title='Elasticidad',
+        template='plotly_white',  # Estilo limpio
+        showlegend=True,  # Mostrar leyenda
+        autosize=True,  # Permite que el gráfico se ajuste al tamaño de la pantalla
+        height=500,  # Ajusta la altura del gráfico
+        width=1200,  # Ajusta el ancho del gráfico
+        xaxis=dict(
+            type='category',  # Eje X para el gráfico anual (categoría de años)
+            title='Año',  # Título para el eje X del gráfico anual
+        ),
+    )
+
+    # Mostrar el segundo gráfico
+    fig2.show()    
 
 
 

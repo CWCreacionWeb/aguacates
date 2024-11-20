@@ -1,5 +1,7 @@
 from IPython.display import display, Markdown, HTML
 import pandas as pd
+import APPModels.APP_FUN as app_fun  # Importa el módulo completo
+from APPModels.APP_FUN import APP_Enunciados
 # Array que representa la clasificación de regiones
 Region_Segmentacion = [
     ['Albany', 'City'],
@@ -109,7 +111,8 @@ def PreparacionDatosSegmentacion(pDfDatos):
     # Paso 4: Usar map para agregar la nueva columna 'clasificacionNueva'
     pDfDatos['CalRegionGrupo'] = pDfDatos['region'].map(Map_Segmentacion)
     pDfDatos['CalEstacion'] = pDfDatos['CalMonth'].map(Estacion_Segmentacion)
-    display(Markdown(mDbg))
+    if APP_Enunciados.MostrarEnunciado ==True:
+        display(Markdown(mDbg))
 
 
 
@@ -159,7 +162,8 @@ De este dataFrame obtenido, se desnormaliza y añade a los datos estos campos.
 
     # Fusionar los resultados con el dataframe original
     #pDfDatos = pDfDatos.merge(total_volumen_por_region, on='region', how='left', inplace=True)    
-    display(Markdown(mDbg))
+    if APP_Enunciados.MostrarEnunciado ==True:
+        display(Markdown(mDbg))
 
     return total_volumen_por_region
 

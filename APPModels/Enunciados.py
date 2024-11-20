@@ -1,14 +1,19 @@
 import json
 from IPython.display import Markdown, display
 
+
 class ClsEnunciados:
 
     def __init__(self):
+        self.MostrarEnunciado =True
         # Cargar el JSON desde un archivo dentro de la carpeta 'datos'
+
         with open('./datos/enunciados.json', 'r') as file:
             self.enunciado = json.load(file)
 
     def getEnunciado(self, key,moreData=None):
+        if self.MostrarEnunciado == False:
+            pass
         # Accede al enunciado específico
         enunciado = self.enunciado.get(key, {})
         descripcion = enunciado.get('descripcion', '')

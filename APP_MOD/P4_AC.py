@@ -6,6 +6,7 @@ from matplotlib.ticker import ScalarFormatter
 from APPModels.APP_FUN import APP_Enunciados,chart
 
 
+
 # Variable global de datos
 Datos = None
 

@@ -12,53 +12,13 @@ from APP_MOD import P3_EP as P3
 from APP_MOD import P4_AC as P4
 from APP_MOD import P5_ACR as P5
 from APP_MOD import P105_Predicciones as P105_PRED
+from APP_MOD import P103_Elasticidad as P103_E
 from APP_MOD import P99_TRAINING as P99_T
 import pandas as pd
 from APP_MOD import Region_Clasificacion as RC
 
 mFile ='datos/avocado.csv'
 mDbg =''
-def InicioDoc():
-    """
-# Análisis del Conjunto de Datos de Precios de Aguacate
-
-**Conjunto de Datos de Precios de Aguacate**: El conjunto de datos "Precios de Aguacate", obtenido de Kaggle, es un conjunto de datos ampliamente utilizado para proyectos de análisis de datos y aprendizaje automático. Proporciona datos históricos sobre precios y ventas de aguacates en varias regiones de los Estados Unidos. Este conjunto de datos es valioso para entender las tendencias en los precios de los aguacates, los volúmenes de ventas y su relación con diferentes factores.
-
-## Atributos Clave
-
-- **Columnas**: El conjunto de datos incluye varias columnas de información. Algunas de las columnas clave típicamente encontradas en este conjunto de datos incluyen:
-    - **Fecha** (`Date`): La fecha de observación.
-    - **Precio Promedio** (`AveragePrice`): El precio promedio de los aguacates.
-    - **Volumen Total** (`Total Volume`): El volumen total de aguacates vendidos.
-    - **4046**: Volumen de aguacates Hass pequeños vendidos.
-    - **4225**: Volumen de aguacates Hass grandes vendidos.
-    - **4770**: Volumen de aguacates Hass extra grandes vendidos.
-    - **Bolsas Totales** (`Total Bags`): Total de bolsas de aguacates vendidas.
-    - **Bolsas Pequeñas** (`Small Bags`): Bolsas de aguacates pequeños vendidas.
-    - **Bolsas Grandes** (`Large Bags`): Bolsas de aguacates grandes vendidas.
-    - **Bolsas Extra Grandes** (`XLarge Bags`): Bolsas de aguacates extra grandes vendidas.
-    - **Tipo** (`Type`): El tipo de aguacates, generalmente categorizados como convencionales u orgánicos.
-    - **Región** (`Region`): La región o ciudad dentro de los Estados Unidos donde se registraron los datos.
-
-- **Rango de Fechas**: El conjunto de datos abarca un rango de fechas, lo que permite el análisis de series de tiempo. Puedes examinar cómo cambian los precios y ventas de aguacates a lo largo de diferentes estaciones y años.
-
-- **Regiones**: Se proporciona información para varias regiones o ciudades a través de los Estados Unidos, lo que permite el análisis de variaciones de precios y ventas en diferentes mercados.
-
-- **Tipos**: El conjunto de datos distingue entre diferentes tipos de aguacates, como convencionales y orgánicos, lo que puede ser útil para comparar tendencias de precios entre estas categorías.
-
-- **Volumen**: Están disponibles datos sobre el volumen total de aguacates vendidos. Esta métrica de volumen se utiliza a menudo para analizar la demanda del mercado.
-
-- **Precio Promedio**: El conjunto de datos contiene el precio promedio de los aguacates, una métrica fundamental para entender las tendencias de precios.
-
-## Casos de Uso
-
-- Este conjunto de datos se utiliza comúnmente para aprender y practicar el análisis de datos, visualización de datos y modelado de regresión en proyectos de ciencia de datos y aprendizaje automático.
-
-- Sirve como un recurso valioso para entender cómo trabajar con datos del mundo real, extraer conocimientos y tomar decisiones basadas en datos.
-
----
-    """
-
 
 def Cargar(pFile):
     data = pd.read_csv(pFile)
@@ -141,21 +101,25 @@ def PreparacionDatos():
     scaler = MinMaxScaler()
     # Normalizar el campo Total Volume
     DatosORG['CalNOR_MM_TotalVolume'] = scaler.fit_transform(DatosORG[['Total Volume']])
+    DatosORG['CalNOR_SS'] = scaler.fit_transform(DatosORG[['Cal_SS']])
 
 
-    display(Markdown(mDbg))  
+    if APP_Enunciados.MostrarEnunciado ==True:
+        display(Markdown(mDbg))  
     mDbg =""
 
 
 DatosRegionClasificacionVolumen = None
 
 
-def Inicio():
+def Inicio(pMostrarEnunciado =True):
     global mDbg
     global DatosORG
     global DatosRegionClasificacionVolumen
     global Lista_CalRegionGrupo
     global APP_DatosORG
+
+    APP_Enunciados.MostrarEnunciado = pMostrarEnunciado
     tiempo_ejecucion = timeit.timeit(lambda: Ejecutar(), number=1) 
     tiempo_ejecucion*=1000
     mDbg+=f'Tiempo de ejecución ms:{tiempo_ejecucion}'
@@ -180,7 +144,7 @@ def Inicio():
     P5.Datos = DatosORG.copy()
 
 
-#Inicio()
+Inicio(pMostrarEnunciado=False)
 #P1.plot_average_price_by_region_estacion(DatosORG)
 #P5.P5_3_PrediccionesMensuales()
 #P5.P5_3_PrediccionesMensualesConModeloTRAINING_TODOS()
@@ -190,6 +154,12 @@ def Inicio():
 #P1.P1_2_EstacionalidadPorRegion()
 #P1.P1_3_ComparacionPreciosPromedioMensuales()
 #P105_PRED.P100_1_Modelo_TRAINING_Mod(pNameModelo='LinearRegression',pFechaReal='2018-10-01')
+P103_E.Inicio()
+#P103_E.P3_1_Elasticidad_Precio_Demanda_01()
+#P103_E.mostrar_elasticidad_precio_demanda( agrupacion='MM',dos_escalas=False)
+#P103_E.P3_1_Elasticidad_Precio_Demanda_02('MM')
+#P103_E.graficar_Data_ElasticidadMensuales_Dispersion()
+
 def DOC():
     APP_Enunciados.getEnunciado('0')
     

@@ -90,9 +90,17 @@ def P5_2_AnalisisDispersión():
     plt.figure(figsize=(10, 6))
     sns.scatterplot(data=Datos, x='Total Volume', y='AveragePrice')
     sns.regplot(data=Datos, x='Total Volume', y='AveragePrice', scatter=False, color='red')
-    sns.regplot(data=Datos, x='Total Volume', y='AveragePrice', scatter=False, color='green',order=2)
-    sns.regplot(data=Datos, x='Total Volume', y='AveragePrice', scatter=False, color='blue',order=3)
+    sns.regplot(data=Datos, x='Total Volume', y='AveragePrice', scatter=False, color='green',order=5)
+    sns.regplot(data=Datos, x='Total Volume', y='AveragePrice', scatter=False, color='blue',order=6)
+    sns.regplot(data=Datos, x='Total Volume', y='AveragePrice', scatter=False, color='black',order=7)
     plt.title('Análisis de Dispersión: AveragePrice vs Total Volume')
+
+
+    # Escala logarítmica en el eje y
+    plt.yscale('log')
+
+    # Establecer los límites del eje x entre 1 y 1,000,000
+    plt.xlim(1, 10000000)
     plt.show()
     
     print("El gráfico muestra la relación entre AveragePrice y Total Volume.")
